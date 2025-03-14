@@ -132,17 +132,6 @@ CREATE TABLE Image_Meal_Log (
     FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id)
 );
 
--- ✅ 검색 식사 기록 테이블
-CREATE TABLE Search_Meal_Log (
-    search_meal_log_id INT AUTO_INCREMENT PRIMARY KEY,
-	user_id VARCHAR(50) NOT NULL,
-    meal_id INT NOT NULL,
-    food_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES User(user_id),
-    FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id),
-	FOREIGN KEY (food_id) REFERENCES Food_Data(food_id)
-);
-
 -- ✅ 요리 데이터 테이블
 CREATE TABLE Food_Data (
     food_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -169,6 +158,17 @@ CREATE TABLE Food_Data (
     potassium DECIMAL(10,2) NOT NULL,
     l_arginine DECIMAL(10,2) NOT NULL,
     omega3 DECIMAL(10,2) NOT NULL
+);
+
+-- ✅ 검색 식사 기록 테이블
+CREATE TABLE Search_Meal_Log (
+    search_meal_log_id INT AUTO_INCREMENT PRIMARY KEY,
+	user_id VARCHAR(50) NOT NULL,
+    meal_id INT NOT NULL,
+    food_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id),
+	FOREIGN KEY (food_id) REFERENCES Food_Data(food_id)
 );
 
 -- ✅ 영양소 기록 테이블
