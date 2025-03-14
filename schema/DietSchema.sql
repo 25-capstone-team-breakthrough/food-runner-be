@@ -4,11 +4,12 @@ USE foodrunner;
 -- ✅ 1. 사용자 테이블 최적화
 CREATE TABLE User (
     user_id VARCHAR(50) PRIMARY KEY NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(50) NOT NULL,
     age INT NOT NULL,
     gender ENUM('m', 'f') NOT NULL,
     height FLOAT NOT NULL,
-    weight FLOAT NOT NULL
+    weight FLOAT NOT NULL,
+    name VARCHAR(50) NOT NULL
 );
 
 -- ✅ 2. 영양제 데이터 최적화
