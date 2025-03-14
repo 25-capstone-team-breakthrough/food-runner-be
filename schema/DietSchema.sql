@@ -1,7 +1,7 @@
 CREATE DATABASE foodrunner;
 USE foodrunner;
 
--- ✅ 1. 사용자 테이블 최적화
+-- ✅ 사용자 테이블 최적화
 CREATE TABLE User (
     user_id VARCHAR(50) PRIMARY KEY NOT NULL,
     password VARCHAR(50) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE User (
     name VARCHAR(50) NOT NULL
 );
 
--- ✅ 2. 영양제 데이터 최적화
+-- ✅ 영양제 데이터 테이블
 CREATE TABLE Supplement_Data (
     supplement_id INT AUTO_INCREMENT PRIMARY KEY,
     company VARCHAR(255) NOT NULL,
@@ -25,6 +25,7 @@ CREATE TABLE Supplement_Data (
     base_standard TEXT NOT NULL
 );
 
+-- ✅ 영양제 기록 테이블
 CREATE TABLE Supplement_Log (
     supplement_log_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(50) NOT NULL,
@@ -42,7 +43,7 @@ CREATE TABLE Supplement_Log (
     FOREIGN KEY (supplement_id) REFERENCES Supplement_Data(supplement_id)
 );
 
--- ✅ 3. 식재료 테이블 최적화
+-- ✅ 식재료 데이터 테이블
 CREATE TABLE Ingredient_Data (
     ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
     ingredient_name VARCHAR(255) NOT NULL,
@@ -50,6 +51,7 @@ CREATE TABLE Ingredient_Data (
     ingredient_cal DECIMAL(10,2) NOT NULL
 );
 
+-- ✅ 선호 식재료 테이블
 CREATE TABLE Preferred_Ingredient (
     preingredient_id INT AUTO_INCREMENT PRIMARY KEY,
     ingredient_id INT NOT NULL,
@@ -58,7 +60,16 @@ CREATE TABLE Preferred_Ingredient (
     FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
 
--- ✅ 4. 레시피 테이블 최적화 (related_recipe 테이블 분리)
+-- ✅ 추천 식재료 테이블
+CREATE TABLE Recommended_Ingredient (
+    recommendation_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
+    ingredient_id INT NOT NULL,
+    user_id VARCHAR(50) NOT NULL,
+    FOREIGN KEY (ingredient_id) REFERENCES Ingredient_Data(ingredient_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
+
+-- ✅ 레시피 데이터 테이블
 CREATE TABLE Recipe_Data (
     recipe_id INT AUTO_INCREMENT PRIMARY KEY,
     recipe_name VARCHAR(255) NOT NULL,
@@ -83,7 +94,7 @@ CREATE TABLE Recipe_Data (
 );
 
 
--- ✅ 5. 추천 식단 테이블 최적화
+-- ✅ 추천 식단 테이블
 CREATE TABLE Recommended_Diet (
     recommended_diet_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(50) NOT NULL,
@@ -94,11 +105,11 @@ CREATE TABLE Recommended_Diet (
     FOREIGN KEY (recipe_id) REFERENCES Recipe_Data(recipe_id)
 );
 
--- ✅ 6. 식사 기록 테이블 최적화
+-- ✅ 식사 기록 테이블
 CREATE TABLE Meal_Log (
     meal_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(50) NOT NULL,
-    type ENUM('search', 'image', '식사') NOT NULL,
+    type ENUM('search', 'image') NOT NULL,
     calories DECIMAL(10,2) DEFAULT 0,
     protein DECIMAL(10,2) DEFAULT 0,
     carbohydrate DECIMAL(10,2) DEFAULT 0,
@@ -110,7 +121,88 @@ CREATE TABLE Meal_Log (
     FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
 
--- ✅ 7. 권장 영양소 테이블 최적화
+-- ✅ 사진 식사 기록 테이블
+CREATE TABLE Image_Meal_Log (
+    image_meal_log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL,
+    meal_id INT NOT NULL,
+    meal_name VARCHAR(255) NOT NULL,
+    meal_image VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id)
+);
+
+-- ✅ 검색 식사 기록 테이블
+CREATE TABLE Search_Meal_Log (
+    search_meal_log_id INT AUTO_INCREMENT PRIMARY KEY,
+	user_id VARCHAR(50) NOT NULL,
+    meal_id INT NOT NULL,
+    food_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id),
+	FOREIGN KEY (food_id) REFERENCES Food_Data(food_id)
+);
+
+-- ✅ 요리 데이터 테이블
+CREATE TABLE Food_Data (
+    food_id INT AUTO_INCREMENT PRIMARY KEY,
+    food_image VARCHAR(255),
+    calories DECIMAL(10,2) NOT NULL,
+    protein DECIMAL(10,2) NOT NULL,
+    carbohydrate DECIMAL(10,2) NOT NULL,
+    fat DECIMAL(10,2) NOT NULL,
+    sugar DECIMAL(10,2) NOT NULL,
+    sodium DECIMAL(10,2) NOT NULL,
+    dietary_fiber DECIMAL(10,2) NOT NULL,
+    calcium DECIMAL(10,2) NOT NULL,
+    saturated_fat DECIMAL(10,2) NOT NULL,
+    trans_fat DECIMAL(10,2) NOT NULL,
+    cholesterol DECIMAL(10,2) NOT NULL,
+    vitamin_a DECIMAL(10,2) NOT NULL,
+    vitamin_b1 DECIMAL(10,2) NOT NULL,
+    vitamin_c DECIMAL(10,2) NOT NULL,
+    vitamin_d DECIMAL(10,2) NOT NULL,
+    vitamin_e DECIMAL(10,2) NOT NULL,
+    magnesium DECIMAL(10,2) NOT NULL,
+    zinc DECIMAL(10,2) NOT NULL,
+    lactium DECIMAL(10,2) NOT NULL,
+    potassium DECIMAL(10,2) NOT NULL,
+    l_arginine DECIMAL(10,2) NOT NULL,
+    omega3 DECIMAL(10,2) NOT NULL
+);
+
+-- ✅ 영양소 기록 테이블
+CREATE TABLE Nutrition_Log (
+    nutrition_log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL,
+    calories DECIMAL(10,2) NOT NULL,
+    protein DECIMAL(10,2) NOT NULL,
+    carbohydrate DECIMAL(10,2) NOT NULL,
+    fat DECIMAL(10,2) NOT NULL,
+    sugar DECIMAL(10,2) NOT NULL,
+    sodium DECIMAL(10,2) NOT NULL,
+    dietary_fiber DECIMAL(10,2) NOT NULL,
+    calcium DECIMAL(10,2) NOT NULL,
+    saturated_fat DECIMAL(10,2) NOT NULL,
+    trans_fat DECIMAL(10,2) NOT NULL,
+    cholesterol DECIMAL(10,2) NOT NULL,
+    vitamin_a DECIMAL(10,2) NOT NULL,
+    vitamin_b1 DECIMAL(10,2) NOT NULL,
+    vitamin_c DECIMAL(10,2) NOT NULL,
+    vitamin_d DECIMAL(10,2) NOT NULL,
+    vitamin_e DECIMAL(10,2) NOT NULL,
+    magnesium DECIMAL(10,2) NOT NULL,
+    zinc DECIMAL(10,2) NOT NULL,
+    lactium DECIMAL(10,2) NOT NULL,
+    potassium DECIMAL(10,2) NOT NULL,
+    l_arginine DECIMAL(10,2) NOT NULL,
+    omega3 DECIMAL(10,2) NOT NULL,
+    date DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
+
+
+-- ✅ 권장 영양소 테이블
 CREATE TABLE Recommended_Nutrition (
     recommended_nutrition_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(50) NOT NULL,
@@ -133,11 +225,39 @@ CREATE TABLE Recommended_Nutrition (
     calcium_max DECIMAL(10,2) NOT NULL,
     omega3_min DECIMAL(10,2) NOT NULL,
     omega3_max DECIMAL(10,2) NOT NULL,
+    saturated_fat_min DECIMAL(10,2) NOT NULL,
+    saturated_fat_max DECIMAL(10,2) NOT NULL,
+    trans_fat_min DECIMAL(10,2) NOT NULL,
+    trans_fat_max DECIMAL(10,2) NOT NULL,
+    cholesterol_min DECIMAL(10,2) NOT NULL,
+    cholesterol_max DECIMAL(10,2) NOT NULL,
+    vitamin_a_min DECIMAL(10,2) NOT NULL,
+    vitamin_a_max DECIMAL(10,2) NOT NULL,
+    vitamin_b1_min DECIMAL(10,2) NOT NULL,
+    vitamin_b1_max DECIMAL(10,2) NOT NULL,
+    vitamin_c_min DECIMAL(10,2) NOT NULL,
+    vitamin_c_max DECIMAL(10,2) NOT NULL,
+    vitamin_d_min DECIMAL(10,2) NOT NULL,
+    vitamin_d_max DECIMAL(10,2) NOT NULL,
+    vitamin_e_min DECIMAL(10,2) NOT NULL,
+    vitamin_e_max DECIMAL(10,2) NOT NULL,
+    magnesium_min DECIMAL(10,2) NOT NULL,
+    magnesium_max DECIMAL(10,2) NOT NULL,
+    zinc_min DECIMAL(10,2) NOT NULL,
+    zinc_max DECIMAL(10,2) NOT NULL,
+    lactium_min DECIMAL(10,2) NOT NULL,
+    lactium_max DECIMAL(10,2) NOT NULL,
+    potassium_min DECIMAL(10,2) NOT NULL,
+    potassium_max DECIMAL(10,2) NOT NULL,
+    l_arginine_min DECIMAL(10,2) NOT NULL,
+    l_arginine_max DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
 
--- ✅ 8. 성능 최적화를 위한 인덱스 추가
+
+
+-- ✅ 성능 최적화를 위한 인덱스 추가
 CREATE INDEX idx_user_id ON User(user_id);
 CREATE INDEX idx_recipe_id ON Recipe_Data(recipe_id);
 CREATE INDEX idx_ingredient_id ON Ingredient_Data(ingredient_id);
-
+CREATE INDEX idx_meal_id ON Meal_Log(meal_id);
