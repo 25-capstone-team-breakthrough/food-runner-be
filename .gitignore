@@ -12,6 +12,10 @@ build/
 .env.production.local
 .env.local
 
+# .dsstore
+
+.DS_Store
+
 ### STS ###
 .apt_generated
 .classpath
