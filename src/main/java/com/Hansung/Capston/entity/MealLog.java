@@ -27,73 +27,73 @@ public class MealLog {
     @Column(name = "type", nullable = false)
     private MealType type; // ENUM ('search', 'image')
 
-    @Column(name = "calories", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    // ✅ NULL 허용 + 기본값 0 설정
+    @Column(name = "calories", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double calories;
 
-    @Column(name = "protein", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    @Column(name = "protein", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double protein;
 
-    @Column(name = "carbohydrate", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    @Column(name = "carbohydrate", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double carbohydrate;
 
-    @Column(name = "fat", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    @Column(name = "fat", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double fat;
 
-    @Column(name = "sugar", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    @Column(name = "sugar", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double sugar;
 
-    @Column(name = "sodium", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    @Column(name = "sodium", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double sodium;
 
-    @Column(name = "dietary_fiber", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    @Column(name = "dietary_fiber", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double dietaryFiber;
 
-    @Column(name = "calcium", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "calcium", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double calcium;
 
-    @Column(name = "saturated_fat", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "saturated_fat", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double saturatedFat;
 
-    @Column(name = "trans_fat", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "trans_fat", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double transFat;
 
-    @Column(name = "cholesterol", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "cholesterol", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double cholesterol;
 
-    @Column(name = "vitamin_a", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "vitamin_a", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double vitaminA;
 
-    @Column(name = "vitamin_b1", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "vitamin_b1", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double vitaminB1;
 
-    @Column(name = "vitamin_c", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "vitamin_c", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double vitaminC;
 
-    @Column(name = "vitamin_d", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "vitamin_d", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double vitaminD;
 
-    @Column(name = "vitamin_e", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "vitamin_e", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double vitaminE;
 
-    @Column(name = "magnesium", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "magnesium", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double magnesium;
 
-    @Column(name = "zinc", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "zinc", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double zinc;
 
-    @Column(name = "lactium", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "lactium", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double lactium;
 
-    @Column(name = "potassium", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "potassium", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double potassium;
 
-    @Column(name = "l_arginine", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "l_arginine", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double lArginine;
 
-    @Column(name = "omega3", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    @Column(name = "omega3", columnDefinition = "DECIMAL(10,2) DEFAULT 0", nullable = true)
     private Double omega3;
 
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 }
-
