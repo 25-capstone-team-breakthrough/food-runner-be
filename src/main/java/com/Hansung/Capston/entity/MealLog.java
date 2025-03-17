@@ -27,7 +27,7 @@ public class MealLog {
     @Column(name = "type", nullable = false)
     private MealType type; // ENUM ('search', 'image')
 
-    @Column(name = "calories", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+    @Column(name = "calories", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
     private Double calories;
 
     @Column(name = "protein", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
