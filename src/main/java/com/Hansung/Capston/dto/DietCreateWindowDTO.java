@@ -1,6 +1,7 @@
 package com.Hansung.Capston.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,21 +36,21 @@ public class DietCreateWindowDTO {
   private LocalDateTime selectDate;
 
   // ImageMealLog 테이블
-  private String[] mealLogImage;
+  private List<String> mealLogImage;
   // SearchMealLog 테이블
   private String[] foodLogImage;
   // PreferredFood 테이블
-  private String[] preferredFoodImage;
+  private List<String> preferredFoodImage;
   // PreferredSupplement 테이블
-  private String[] preferredSupplementImage;
+  private List<String> preferredSupplementImage;
   // FoodData 테이블
-  private String[] foodDataImage;
-  private String[] foodDataName;
-  private String[] foodDataCompany;
-  private String[] foodDataCalories;
+  private List<String> foodDataImage;
+  private List<String> foodDataName;
+  private List<String> foodDataCompany;
+  private List<String> foodDataCalories;
   // SupplementData 테이블
-  private String[] supplementDataImage;
-  private String[] supplementDataName;
-  private String[] supplementDataCompany;
-  private String[] baseStandard;
+  private List<String> supplementDataImage;
+  private List<String> supplementDataName;
+  private List<String> supplementDataCompany;
+  private List<String> baseStandard;
 }
