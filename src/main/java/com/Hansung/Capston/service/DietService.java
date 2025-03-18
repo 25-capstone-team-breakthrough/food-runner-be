@@ -119,7 +119,7 @@ public class DietService {
 
   public DietCreateWindowDTO dietCreatePage(User user, LocalDateTime date) {
     DietCreateWindowDTO dietCreateWindowDTO = new DietCreateWindowDTO();
-    NutritionLog nutritionLog = nutritionLogRepository.getReferenceById()
+    NutritionLog nutritionLog = nutritionLogRepository.getReferenceById();
 
     dietCreateWindowDTO.setUserId(user.getUserId());
     dietCreateWindowDTO.setCalories(nutritionLogRepository.findById(user));
