@@ -18,6 +18,7 @@ import com.Hansung.Capston.repository.PreferredSupplementRepository;
 import com.Hansung.Capston.repository.SearchMealLogRepository;
 import com.Hansung.Capston.repository.SupplementDataRepository;
 import com.Hansung.Capston.repository.UserRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,10 +120,33 @@ public class DietService {
 
   public DietCreateWindowDTO dietCreatePage(User user, LocalDateTime date) {
     DietCreateWindowDTO dietCreateWindowDTO = new DietCreateWindowDTO();
-    NutritionLog nutritionLog = nutritionLogRepository.getReferenceById()
+    NutritionLog nutritionLog = nutritionLogRepository.findByDateAndUserId(date,user.getUserId());
 
     dietCreateWindowDTO.setUserId(user.getUserId());
-    dietCreateWindowDTO.setCalories(nutritionLogRepository.findById(user));
+    dietCreateWindowDTO.setCalories(nutritionLog.getCalories());
+    dietCreateWindowDTO.setProtein(nutritionLog.getProtein());
+    dietCreateWindowDTO.setCarbohydrate(nutritionLog.getCarbohydrate());
+    dietCreateWindowDTO.setFat(nutritionLog.getFat());
+    dietCreateWindowDTO.setSugar(nutritionLog.getSugar());
+    dietCreateWindowDTO.setSodium(nutritionLog.getSodium());
+    dietCreateWindowDTO.setDietaryFiber(nutritionLog.getDietaryFiber());
+    dietCreateWindowDTO.setCalcium(nutritionLog.getCalcium());
+    dietCreateWindowDTO.setSaturatedFat(nutritionLog.getSaturatedFat());
+    dietCreateWindowDTO.setTransFat(nutritionLog.getTransFat());
+    dietCreateWindowDTO.setCholesterol(nutritionLog.getCholesterol());
+    dietCreateWindowDTO.setVitaminA(nutritionLog.getVitaminA());
+    dietCreateWindowDTO.setVitaminB1(nutritionLog.getVitaminB1());
+    dietCreateWindowDTO.setVitaminC(nutritionLog.getVitaminC());
+    dietCreateWindowDTO.setVitaminD(nutritionLog.getVitaminD());
+    dietCreateWindowDTO.setVitaminE(nutritionLog.getVitaminE());
+    dietCreateWindowDTO.setMagnesium(nutritionLog.getMagnesium());
+    dietCreateWindowDTO.setZinc(nutritionLog.getZinc());
+    dietCreateWindowDTO.setLactium(nutritionLog.getLactium());
+    dietCreateWindowDTO.setPotassium(nutritionLog.getPotassium());
+    dietCreateWindowDTO.setLArginine(nutritionLog.getLArginine());
+    dietCreateWindowDTO.setOmega3(nutritionLog.getOmega3());
+    dietCreateWindowDTO.setSelectDate(date);
+
 
 
     return dietCreateWindowDTO;
