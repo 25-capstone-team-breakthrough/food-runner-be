@@ -231,6 +231,38 @@ CREATE TABLE Image_Meal_Log (
     FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id)
 );
 
+
+-- ✅ 요리 데이터 테이블
+CREATE TABLE Food_Data (
+                           food_id INT AUTO_INCREMENT PRIMARY KEY,
+                           food_image VARCHAR(255),
+                           food_name VARCHAR(255) not null,
+                           food_company VARCHAR(255),
+                           calories DECIMAL(10,2) DEFAULT 0,
+                           protein DECIMAL(10,2) DEFAULT 0,
+                           carbohydrate DECIMAL(10,2) DEFAULT 0,
+                           fat DECIMAL(10,2) DEFAULT 0,
+                           sugar DECIMAL(10,2) DEFAULT 0,
+                           sodium DECIMAL(10,2) DEFAULT 0,
+                           dietary_fiber DECIMAL(10,2) DEFAULT 0,
+                           calcium DECIMAL(10,2) DEFAULT 0,
+                           saturated_fat DECIMAL(10,2) DEFAULT 0,
+                           trans_fat DECIMAL(10,2)DEFAULT 0,
+                           cholesterol DECIMAL(10,2) DEFAULT 0,
+                           vitamin_a DECIMAL(10,2) DEFAULT 0,
+                           vitamin_b1 DECIMAL(10,2) DEFAULT 0,
+                           vitamin_c DECIMAL(10,2) DEFAULT 0,
+                           vitamin_d DECIMAL(10,2) DEFAULT 0,
+                           vitamin_e DECIMAL(10,2) DEFAULT 0,
+                           magnesium DECIMAL(10,2) DEFAULT 0,
+                           zinc DECIMAL(10,2) DEFAULT 0,
+                           lactium DECIMAL(10,2) DEFAULT 0,
+                           potassium DECIMAL(10,2) DEFAULT 0,
+                           l_arginine DECIMAL(10,2) DEFAULT 0,
+                           omega3 DECIMAL(10,2) DEFAULT 0
+);
+
+
 -- ✅ 검색 식사 기록 테이블
 CREATE TABLE Search_Meal_Log (
     search_meal_log_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -240,36 +272,6 @@ CREATE TABLE Search_Meal_Log (
     FOREIGN KEY (user_id) REFERENCES User(user_id),
     FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id),
 	FOREIGN KEY (food_id) REFERENCES Food_Data(food_id)
-);
-
--- ✅ 요리 데이터 테이블
-CREATE TABLE Food_Data (
-    food_id INT AUTO_INCREMENT PRIMARY KEY,
-    food_image VARCHAR(255),
-    food_name VARCHAR(255) not null,
-    food_company VARCHAR(255),
-    calories DECIMAL(10,2) DEFAULT 0,
-    protein DECIMAL(10,2) DEFAULT 0,
-    carbohydrate DECIMAL(10,2) DEFAULT 0,
-    fat DECIMAL(10,2) DEFAULT 0,
-    sugar DECIMAL(10,2) DEFAULT 0,
-    sodium DECIMAL(10,2) DEFAULT 0,
-    dietary_fiber DECIMAL(10,2) DEFAULT 0,
-    calcium DECIMAL(10,2) DEFAULT 0,
-    saturated_fat DECIMAL(10,2) DEFAULT 0,
-    trans_fat DECIMAL(10,2)DEFAULT 0,
-    cholesterol DECIMAL(10,2) DEFAULT 0,
-    vitamin_a DECIMAL(10,2) DEFAULT 0,
-    vitamin_b1 DECIMAL(10,2) DEFAULT 0,
-    vitamin_c DECIMAL(10,2) DEFAULT 0,
-    vitamin_d DECIMAL(10,2) DEFAULT 0,
-    vitamin_e DECIMAL(10,2) DEFAULT 0,
-    magnesium DECIMAL(10,2) DEFAULT 0,
-    zinc DECIMAL(10,2) DEFAULT 0,
-    lactium DECIMAL(10,2) DEFAULT 0,
-    potassium DECIMAL(10,2) DEFAULT 0,
-    l_arginine DECIMAL(10,2) DEFAULT 0,
-    omega3 DECIMAL(10,2) DEFAULT 0
 );
 
 -- ✅ 영양소 기록 테이블
