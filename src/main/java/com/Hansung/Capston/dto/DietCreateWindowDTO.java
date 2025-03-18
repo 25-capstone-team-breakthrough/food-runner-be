@@ -1,7 +1,11 @@
 package com.Hansung.Capston.dto;
 
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class DietCreateWindowDTO {
   // Users 테이블
   private String userId;  // 사용자 ID
@@ -48,5 +52,4 @@ public class DietCreateWindowDTO {
   private String[] supplementDataName;
   private String[] supplementDataCompany;
   private String[] baseStandard;
-
 }

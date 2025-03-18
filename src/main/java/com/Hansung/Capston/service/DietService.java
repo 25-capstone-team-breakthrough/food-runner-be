@@ -1,17 +1,24 @@
 package com.Hansung.Capston.service;
 
 import com.Hansung.Capston.dto.DietCreateDTO;
+import com.Hansung.Capston.dto.DietCreateWindowDTO;
 import com.Hansung.Capston.entity.FoodData;
 import com.Hansung.Capston.entity.ImageMealLog;
 import com.Hansung.Capston.entity.MealLog;
 import com.Hansung.Capston.entity.MealType;
+import com.Hansung.Capston.entity.NutritionLog;
 import com.Hansung.Capston.entity.SearchMealLog;
 import com.Hansung.Capston.entity.User;
 import com.Hansung.Capston.repository.FoodDataRepository;
 import com.Hansung.Capston.repository.ImageMealLogRepository;
 import com.Hansung.Capston.repository.MealLogRepository;
+import com.Hansung.Capston.repository.NutritionLogRepository;
+import com.Hansung.Capston.repository.PreferredFoodRepository;
+import com.Hansung.Capston.repository.PreferredSupplementRepository;
 import com.Hansung.Capston.repository.SearchMealLogRepository;
+import com.Hansung.Capston.repository.SupplementDataRepository;
 import com.Hansung.Capston.repository.UserRepository;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,22 +30,33 @@ public class DietService {
   private final ImageMealLogRepository imageMealLogRepository;
   private final SearchMealLogRepository searchMealLogRepository;
   private final UserRepository userRepository;
-  private final FoodDataRepository foodRepository;
+  private final FoodDataRepository foodDataRepository;
+  private final SupplementDataRepository supplementDataRepository;
+  private final NutritionLogRepository nutritionLogRepository;
+  private final PreferredFoodRepository preferredFoodRepository;
+  private final PreferredSupplementRepository preferredSupplementRepository;
 
   @Autowired
   public DietService(MealLogRepository mealLogRepository,
       ImageMealLogRepository imageMealLogRepository,
       SearchMealLogRepository searchMealLogRepository,
       UserRepository userRepository,
-      FoodDataRepository foodDataRepository) {
+      FoodDataRepository foodDataRepository, SupplementDataRepository supplementDataRepository,
+      NutritionLogRepository nutritionLogRepository,
+      PreferredFoodRepository preferredFoodRepository,
+      PreferredSupplementRepository preferredSupplementRepository) {
     this.mealLogRepository = mealLogRepository;
     this.imageMealLogRepository = imageMealLogRepository;
     this.searchMealLogRepository = searchMealLogRepository;
     this.userRepository = userRepository;
-    this.foodRepository = foodDataRepository;
+    this.foodDataRepository = foodDataRepository;
+    this.supplementDataRepository = supplementDataRepository;
+    this.nutritionLogRepository = nutritionLogRepository;
+    this.preferredFoodRepository = preferredFoodRepository;
+    this.preferredSupplementRepository = preferredSupplementRepository;
   }
 
-  // MealLog 저장와 세부 정보 저장
+  // MealLog 저장
   @Transactional
   public MealLog save(DietCreateDTO dietCreateDTO) {
     User user = userRepository.findById(dietCreateDTO.getUserId()) // user_id 외래키 참조용
@@ -87,7 +105,7 @@ public class DietService {
 
 //     type이 'search'이면 SearchMealLog 저장
     else if (dietCreateDTO.getType() == MealType.SEARCH) {
-      FoodData food = foodRepository.findById(dietCreateDTO.getFoodId())
+      FoodData food = foodDataRepository.findById(dietCreateDTO.getFoodId())
           .orElseThrow(() -> new IllegalArgumentException("음식을 찾을 수 없음"));
 
       SearchMealLog searchMealLog = new SearchMealLog();
@@ -97,6 +115,17 @@ public class DietService {
     }
 
     return mealLog;
+  }
+
+  public DietCreateWindowDTO dietCreatePage(User user, LocalDateTime date) {
+    DietCreateWindowDTO dietCreateWindowDTO = new DietCreateWindowDTO();
+    NutritionLog nutritionLog = nutritionLogRepository.getReferenceById()
+
+    dietCreateWindowDTO.setUserId(user.getUserId());
+    dietCreateWindowDTO.setCalories(nutritionLogRepository.findById(user));
+
+
+    return dietCreateWindowDTO;
   }
 
 
