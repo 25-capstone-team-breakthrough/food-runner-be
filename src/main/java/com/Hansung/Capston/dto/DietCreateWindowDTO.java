@@ -35,10 +35,12 @@ public class DietCreateWindowDTO {
   private Double omega3;
   private LocalDateTime selectDate;
 
+  // MealLog 테이블
+  private List<Long> mealIds;
   // ImageMealLog 테이블
   private List<String> mealLogImage;
   // SearchMealLog 테이블
-  private String[] foodLogImage;
+  private List<String> foodLogImage;
   // PreferredFood 테이블
   private List<String> preferredFoodImage;
   // PreferredSupplement 테이블

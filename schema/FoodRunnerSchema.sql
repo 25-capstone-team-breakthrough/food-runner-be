@@ -101,6 +101,7 @@ CREATE TABLE Supplement_Data (
     supplement_id INT AUTO_INCREMENT PRIMARY KEY,
     company VARCHAR(255) NOT NULL,
     supplement_name VARCHAR(255) NOT NULL,
+    supplement_image VARCHAR(255),
     distribution_period VARCHAR(50) NOT NULL,
     usage_method TEXT NOT NULL,
     preservation_period VARCHAR(50) NOT NULL,

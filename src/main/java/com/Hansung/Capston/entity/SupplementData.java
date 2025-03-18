@@ -32,6 +32,9 @@ public class SupplementData {
   @Column(name = "supplement_name", nullable = false)
   private String supplementName; // 영양제 이름
 
+  @Column(name = "supplement_image")
+  private String supplementImage;
+
   @Column(name = "distribution_period", nullable = false)
   private String distributionPeriod; // 유통기한
 

@@ -2,13 +2,7 @@ package com.Hansung.Capston.service;
 
 import com.Hansung.Capston.dto.DietCreateDTO;
 import com.Hansung.Capston.dto.DietCreateWindowDTO;
-import com.Hansung.Capston.entity.FoodData;
-import com.Hansung.Capston.entity.ImageMealLog;
-import com.Hansung.Capston.entity.MealLog;
-import com.Hansung.Capston.entity.MealType;
-import com.Hansung.Capston.entity.NutritionLog;
-import com.Hansung.Capston.entity.SearchMealLog;
-import com.Hansung.Capston.entity.User;
+import com.Hansung.Capston.entity.*;
 import com.Hansung.Capston.repository.FoodDataRepository;
 import com.Hansung.Capston.repository.ImageMealLogRepository;
 import com.Hansung.Capston.repository.MealLogRepository;
@@ -19,6 +13,11 @@ import com.Hansung.Capston.repository.SearchMealLogRepository;
 import com.Hansung.Capston.repository.SupplementDataRepository;
 import com.Hansung.Capston.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -121,6 +120,7 @@ public class DietService {
     DietCreateWindowDTO dietCreateWindowDTO = new DietCreateWindowDTO();
     NutritionLog nutritionLog = nutritionLogRepository.findByDateAndUserId(date,user.getUserId());
 
+    // NutritionLog
     dietCreateWindowDTO.setUserId(user.getUserId());
     dietCreateWindowDTO.setCalories(nutritionLog.getCalories());
     dietCreateWindowDTO.setProtein(nutritionLog.getProtein());
@@ -145,6 +145,51 @@ public class DietService {
     dietCreateWindowDTO.setLArginine(nutritionLog.getLArginine());
     dietCreateWindowDTO.setOmega3(nutritionLog.getOmega3());
     dietCreateWindowDTO.setSelectDate(date);
+
+    // 식사 내역
+    List<MealLog> mealLogs = mealLogRepository.findMealLogsByUserIdAndDate(user.getUserId(), date);
+    mealLogs.sort(Comparator.comparing(MealLog::getDate));
+
+    List<Long> mealIds = new ArrayList<>();
+    List<String> mealLogImage = new ArrayList<>();
+    List<String> foodLogImage = new ArrayList<>();
+
+    for (MealLog mealLog : mealLogs) {
+      if(mealLog.getType() == MealType.IMAGE){
+        mealLogImage.add(imageMealLogRepository.
+                findByMealid(mealLog.getMealId()).getMealImage());
+      }
+      else if(mealLog.getType() == MealType.SEARCH) {
+        foodLogImage.add(searchMealLogRepository.findByMealid(mealLog.
+                        getMealId()).getFoodData().getFoodImage());
+      }
+      mealIds.add(mealLog.getMealId());
+    }
+
+    // 상세정보로 넘어가기위한 초석작업??
+    dietCreateWindowDTO.setMealIds(mealIds);
+    dietCreateWindowDTO.setMealLogImage(mealLogImage);
+    dietCreateWindowDTO.setFoodLogImage(foodLogImage);
+
+    // 선호 음식에 대한 사진
+    List<String> preferredFoodNames = preferredFoodRepository.findByUserId(user.getUserId())
+            .stream()
+            .map(preferredFood -> preferredFood.getFoodData().getFoodImage())
+            .collect(Collectors.toList());
+
+    dietCreateWindowDTO.setPreferredFoodImage(preferredFoodNames);
+
+    // 선호 영양제에 대한 사진
+    List<String> preferredSupplementNames = preferredSupplementRepository.findbyuserId(user.getUserId())
+            .stream()
+            .map(preferredSupplement -> preferredSupplement.getSupplementData().getSupplementImage())
+            .collect(Collectors.toList());
+
+    dietCreateWindowDTO.setPreferredSupplementImage(preferredSupplementNames);
+
+    // 서버에 저장된 음식 정보들(이거 대기)
+    List<FoodData> foodDataList = foodDataRepository.findAll();
+
 
 
 
