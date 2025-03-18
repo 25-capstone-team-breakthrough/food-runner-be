@@ -25,7 +25,7 @@ public class SearchMealLog {
   @JoinColumn(name = "user_id", nullable = false) // User 테이블과 관계 설정
   private User user;
 
-//  @ManyToOne
-//  @JoinColumn(name = "food_id", nullable = false)
-//  private Food food;
+  @ManyToOne
+  @JoinColumn(name = "food_id", nullable = false)
+  private FoodData foodData;
 }

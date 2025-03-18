@@ -246,6 +246,8 @@ CREATE TABLE Search_Meal_Log (
 CREATE TABLE Food_Data (
     food_id INT AUTO_INCREMENT PRIMARY KEY,
     food_image VARCHAR(255),
+    food_name VARCHAR(255) not null,
+    food_company VARCHAR(255),
     calories DECIMAL(10,2) DEFAULT 0,
     protein DECIMAL(10,2) DEFAULT 0,
     carbohydrate DECIMAL(10,2) DEFAULT 0,
@@ -328,6 +330,22 @@ CREATE TABLE Recommended_Nutrition (
     potassium DECIMAL(10,2) DEFAULT 0,
     l_arginine DECIMAL(10,2) DEFAULT 0,
     omega3 DECIMAL(10,2) DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
+
+CREATE TABLE Preferred_Food (
+    prefood_id INT AUTO_INCREMENT PRIMARY KEY,
+    food_id INT NOT NULL,
+    user_id VARCHAR(50) NOT NULL,
+    FOREIGN KEY (food_id) REFERENCES Food_Data(food_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
+
+CREATE TABLE Preferred_Supplement (
+    presupplement_id INT AUTO_INCREMENT PRIMARY KEY,
+    supplement_id INT NOT NULL,
+    user_id VARCHAR(50) NOT NULL,
+    FOREIGN KEY (supplement_id) REFERENCES Supplement_Data(supplement_id),
     FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
 
