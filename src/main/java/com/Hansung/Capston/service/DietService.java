@@ -116,6 +116,7 @@ public class DietService {
     return mealLog;
   }
 
+  // DietCreate 페이지에 필요한 데이터들 POST
   public DietCreateWindowDTO dietCreatePage(User user, LocalDateTime date) {
     DietCreateWindowDTO dietCreateWindowDTO = new DietCreateWindowDTO();
     NutritionLog nutritionLog = nutritionLogRepository.findByDateAndUserId(date,user.getUserId());
