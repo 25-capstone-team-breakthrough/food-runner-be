@@ -188,13 +188,13 @@ public class DietService {
 
     dietCreateWindowDTO.setPreferredSupplementImage(preferredSupplementNames);
 
-    // 서버에 저장된 음식 정보들(이거 대기)
-    List<FoodData> foodDataList = foodDataRepository.findAll();
-
-
 
 
     return dietCreateWindowDTO;
+  }
+
+  public List<FoodData> sendAllFoodData(){
+    return foodDataRepository.findAll();
   }
 
 

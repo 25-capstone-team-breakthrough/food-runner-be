@@ -45,14 +45,4 @@ public class DietCreateWindowDTO {
   private List<String> preferredFoodImage;
   // PreferredSupplement 테이블
   private List<String> preferredSupplementImage;
-  // FoodData 테이블
-  private List<String> foodDataImage;
-  private List<String> foodDataName;
-  private List<String> foodDataCompany;
-  private List<String> foodDataCalories;
-  // SupplementData 테이블
-  private List<String> supplementDataImage;
-  private List<String> supplementDataName;
-  private List<String> supplementDataCompany;
-  private List<String> baseStandard;
 }
