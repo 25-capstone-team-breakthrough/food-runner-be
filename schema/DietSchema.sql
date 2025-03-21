@@ -3,14 +3,15 @@ USE foodrunner;
 
 -- ✅ 사용자 테이블 최적화
 CREATE TABLE User (
-user_id   VARCHAR(15) NOT NULL,  -- 사용자 ID (기본 키)
-name      VARCHAR(15) NOT NULL,  -- 이름
-password  VARCHAR(15) NOT NULL,  -- 암호화된 비밀번호
-age       INT,                   -- 나이
-gender    VARCHAR(10),           -- 성별
-height    FLOAT,                 -- 키
-weight    FLOAT,                 -- 몸무게
-PRIMARY KEY (user_id)
+    user_id CHAR(36) NOT NULL DEFAULT (UUID()), -- UUID 자동 생성
+    id VARCHAR(15) NOT NULL,  -- 아이디
+    name VARCHAR(15) NOT NULL, -- 이름
+    password VARCHAR(255) NOT NULL, -- 암호화된 비밀번호
+    age INT, -- 나이
+    gender VARCHAR(10), -- 성별
+    height FLOAT, -- 키
+    weight FLOAT, -- 몸무게
+    PRIMARY KEY (user_id)
 );
 
 -- 인바디 테이블 Inbody
