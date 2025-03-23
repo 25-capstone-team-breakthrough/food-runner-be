@@ -2,8 +2,12 @@ package com.Hansung.Capston.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.util.UUID;
 import lombok.*;
 
 @Entity                     // JPA가 이 클래스가 데이터베이스 테이블과 매핑되는 엔티티임을 인식
@@ -16,6 +20,11 @@ public class User {
     @Id
     @Column(name = "user_id", length = 15, nullable = false)
     private String userId;
+
+    @Column(name = "id", length = 15, nullable = false)
+    private String id;
+
+
 
     @Column(name = "name", length = 15, nullable = false)
     private String name;
@@ -35,4 +44,10 @@ public class User {
     @Column(name = "weight")
     private float weight;
 
+    @PrePersist
+    public void generateId() {
+        if (this.userId == null) {
+            this.userId = UUID.randomUUID().toString();
+        }
+    }
 }

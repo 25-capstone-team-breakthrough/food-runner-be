@@ -20,12 +20,12 @@ public class UserService {
     public void registerUser(UserSignUpRequest request){
 
         // 아이디 중복 체크
-        if (userRepository.existsById(request.getUserId())) {
-            throw new UserAlreadyExistsException("User with ID " + request.getUserId() + " already exists.");
+        if (userRepository.existsById(request.getId())) {
+            throw new UserAlreadyExistsException("User with ID " + request.getId() + " already exists.");
         }
 
         User user = new User();
-        user.setUserId(request.getUserId());
+        user.setId(request.getId());
         user.setName(request.getName());
         user.setPassword(request.getPassword()); //Bcrypt 비밀 번호 암호화 만들기
 
@@ -35,7 +35,7 @@ public class UserService {
     //로그인
     public void loginUser(UserLoginRequest request){
         //ID조회
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(request.getId())
                 .orElseThrow(() -> new InvalidCredentialsException("User Not Found"));
         //비밀번호 비교
         if(!user.getPassword().equals(request.getPassword())){
@@ -61,7 +61,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
         return new UserInfoResponse(
-                user.getUserId(),
+                user.getId(),
                 user.getName(),
                 user.getAge(),
                 user.getGender(),

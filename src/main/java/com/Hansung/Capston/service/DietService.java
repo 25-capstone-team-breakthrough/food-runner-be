@@ -2,6 +2,8 @@ package com.Hansung.Capston.service;
 
 import com.Hansung.Capston.dto.DietCreateDTO;
 import com.Hansung.Capston.dto.DietCreateWindowDTO;
+import com.Hansung.Capston.dto.FoodDataResponse;
+import com.Hansung.Capston.dto.SupplementDataResponse;
 import com.Hansung.Capston.entity.*;
 import com.Hansung.Capston.repository.FoodDataRepository;
 import com.Hansung.Capston.repository.ImageMealLogRepository;
@@ -93,7 +95,7 @@ public class DietService {
     mealLog = mealLogRepository.save(mealLog);
 
     // type이 'image'이면 ImageMealLog 저장
-    if (dietCreateDTO.getType() == MealType.IMAGE) {
+    if (dietCreateDTO.getType() == MealType.image) {
       ImageMealLog imageMealLog = new ImageMealLog();
       imageMealLog.setMealLog(mealLog);
       imageMealLog.setUser(user);
@@ -103,7 +105,7 @@ public class DietService {
     }
 
 //     type이 'search'이면 SearchMealLog 저장
-    else if (dietCreateDTO.getType() == MealType.SEARCH) {
+    else if (dietCreateDTO.getType() == MealType.search) {
       FoodData food = foodDataRepository.findById(dietCreateDTO.getFoodId())
           .orElseThrow(() -> new IllegalArgumentException("음식을 찾을 수 없음"));
 
@@ -117,12 +119,40 @@ public class DietService {
   }
 
   // DietCreate 페이지에 필요한 데이터들 POST
-  public DietCreateWindowDTO dietCreatePage(User user, LocalDateTime date) {
+  public DietCreateWindowDTO dietCreatePage(String user, LocalDateTime date) {
     DietCreateWindowDTO dietCreateWindowDTO = new DietCreateWindowDTO();
-    NutritionLog nutritionLog = nutritionLogRepository.findByDateAndUserId(date,user.getUserId());
+    List<NutritionLog> nutritionLogs = nutritionLogRepository.findByDateAndUserId(date,user);
+
+
+    NutritionLog nutritionLog = new NutritionLog();
+
+    for (NutritionLog log : nutritionLogs) {
+      nutritionLog.setCalories(nutritionLog.getCalories() + log.getCalories());
+      nutritionLog.setProtein(nutritionLog.getProtein() + log.getProtein());
+      nutritionLog.setCarbohydrate(nutritionLog.getCarbohydrate() + log.getCarbohydrate());
+      nutritionLog.setFat(nutritionLog.getFat() + log.getFat());
+      nutritionLog.setSugar(nutritionLog.getSugar() + log.getSugar());
+      nutritionLog.setSodium(nutritionLog.getSodium() + log.getSodium());
+      nutritionLog.setDietaryFiber(nutritionLog.getDietaryFiber() + log.getDietaryFiber());
+      nutritionLog.setCalcium(nutritionLog.getCalcium() + log.getCalcium());
+      nutritionLog.setSaturatedFat(nutritionLog.getSaturatedFat() + log.getSaturatedFat());
+      nutritionLog.setTransFat(nutritionLog.getTransFat() + log.getTransFat());
+      nutritionLog.setCholesterol(nutritionLog.getCholesterol() + log.getCholesterol());
+      nutritionLog.setVitaminA(nutritionLog.getVitaminA() + log.getVitaminA());
+      nutritionLog.setVitaminB1(nutritionLog.getVitaminB1() + log.getVitaminB1());
+      nutritionLog.setVitaminC(nutritionLog.getVitaminC() + log.getVitaminC());
+      nutritionLog.setVitaminD(nutritionLog.getVitaminD() + log.getVitaminD());
+      nutritionLog.setVitaminE(nutritionLog.getVitaminE() + log.getVitaminE());
+      nutritionLog.setMagnesium(nutritionLog.getMagnesium() + log.getMagnesium());
+      nutritionLog.setZinc(nutritionLog.getZinc() + log.getZinc());
+      nutritionLog.setLactium(nutritionLog.getLactium() + log.getLactium());
+      nutritionLog.setPotassium(nutritionLog.getPotassium() + log.getPotassium());
+      nutritionLog.setLArginine(nutritionLog.getLArginine() + log.getLArginine());
+      nutritionLog.setOmega3(nutritionLog.getOmega3() + log.getOmega3());
+    }
+
 
     // NutritionLog
-    dietCreateWindowDTO.setUserId(user.getUserId());
     dietCreateWindowDTO.setCalories(nutritionLog.getCalories());
     dietCreateWindowDTO.setProtein(nutritionLog.getProtein());
     dietCreateWindowDTO.setCarbohydrate(nutritionLog.getCarbohydrate());
@@ -145,10 +175,11 @@ public class DietService {
     dietCreateWindowDTO.setPotassium(nutritionLog.getPotassium());
     dietCreateWindowDTO.setLArginine(nutritionLog.getLArginine());
     dietCreateWindowDTO.setOmega3(nutritionLog.getOmega3());
+
     dietCreateWindowDTO.setSelectDate(date);
 
     // 식사 내역
-    List<MealLog> mealLogs = mealLogRepository.findMealLogsByUserIdAndDate(user.getUserId(), date);
+    List<MealLog> mealLogs = mealLogRepository.findMealLogsByUserIdAndDate(user, date);
     mealLogs.sort(Comparator.comparing(MealLog::getDate));
 
     List<Long> mealIds = new ArrayList<>();
@@ -156,11 +187,11 @@ public class DietService {
     List<String> foodLogImage = new ArrayList<>();
 
     for (MealLog mealLog : mealLogs) {
-      if(mealLog.getType() == MealType.IMAGE){
+      if(mealLog.getType() == MealType.image){
         mealLogImage.add(imageMealLogRepository.
-                findByMealid(mealLog.getMealId()).getMealImage());
+            findByMealId(mealLog.getMealId()).getMealImage());
       }
-      else if(mealLog.getType() == MealType.SEARCH) {
+      else if(mealLog.getType() == MealType.search) {
         foodLogImage.add(searchMealLogRepository.findByMealid(mealLog.
                         getMealId()).getFoodData().getFoodImage());
       }
@@ -173,7 +204,7 @@ public class DietService {
     dietCreateWindowDTO.setFoodLogImage(foodLogImage);
 
     // 선호 음식에 대한 사진
-    List<String> preferredFoodNames = preferredFoodRepository.findByUserId(user.getUserId())
+    List<String> preferredFoodNames = preferredFoodRepository.findByUserId(user)
             .stream()
             .map(preferredFood -> preferredFood.getFoodData().getFoodImage())
             .collect(Collectors.toList());
@@ -181,21 +212,26 @@ public class DietService {
     dietCreateWindowDTO.setPreferredFoodImage(preferredFoodNames);
 
     // 선호 영양제에 대한 사진
-    List<String> preferredSupplementNames = preferredSupplementRepository.findbyuserId(user.getUserId())
+    List<String> preferredSupplementNames = preferredSupplementRepository.findByUserId(user)
             .stream()
             .map(preferredSupplement -> preferredSupplement.getSupplementData().getSupplementImage())
             .collect(Collectors.toList());
 
     dietCreateWindowDTO.setPreferredSupplementImage(preferredSupplementNames);
 
-
-
     return dietCreateWindowDTO;
   }
 
-  public List<FoodData> sendAllFoodData(){
-    return foodDataRepository.findAll();
+  public List<FoodDataResponse> sendAllFoodData(){
+    List<FoodData> foodData = foodDataRepository.findAll();
+    return foodData.stream().map(FoodDataResponse::fromEntity).
+        collect(Collectors.toList());
   }
 
+  public List<SupplementDataResponse> sendAllSupplementData(){
+    List<SupplementData> supplementData = supplementDataRepository.findAll();
+    return supplementData.stream().map(SupplementDataResponse::fromEntity).
+        collect(Collectors.toList());
+  }
 
 }
