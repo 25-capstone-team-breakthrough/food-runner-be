@@ -45,4 +45,42 @@ public class DietCreateWindowDTO {
   private List<String> preferredFoodImage;
   // PreferredSupplement 테이블
   private List<String> preferredSupplementImage;
+
+  public static DietCreateWindowDTO empty(String userId, LocalDateTime selectDate) {
+    DietCreateWindowDTO dto = new DietCreateWindowDTO();
+
+    dto.setUserId(userId);
+    dto.setCalories(0.0);
+    dto.setProtein(0.0);
+    dto.setCarbohydrate(0.0);
+    dto.setFat(0.0);
+    dto.setSugar(0.0);
+    dto.setSodium(0.0);
+    dto.setDietaryFiber(0.0);
+    dto.setCalcium(0.0);
+    dto.setSaturatedFat(0.0);
+    dto.setTransFat(0.0);
+    dto.setCholesterol(0.0);
+    dto.setVitaminA(0.0);
+    dto.setVitaminB1(0.0);
+    dto.setVitaminC(0.0);
+    dto.setVitaminD(0.0);
+    dto.setVitaminE(0.0);
+    dto.setMagnesium(0.0);
+    dto.setZinc(0.0);
+    dto.setLactium(0.0);
+    dto.setPotassium(0.0);
+    dto.setLArginine(0.0);
+    dto.setOmega3(0.0);
+    dto.setSelectDate(selectDate);
+
+    dto.setMealIds(List.of());
+    dto.setMealLogImage(List.of());
+    dto.setFoodLogImage(List.of());
+    dto.setPreferredFoodImage(List.of());
+    dto.setPreferredSupplementImage(List.of());
+
+    return dto;
+  }
+
 }
