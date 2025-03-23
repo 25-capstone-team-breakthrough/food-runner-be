@@ -112,6 +112,7 @@ public class DietService {
       SearchMealLog searchMealLog = new SearchMealLog();
       searchMealLog.setMealLog(mealLog);
       searchMealLog.setFoodData(food);
+      searchMealLog.setUser(user);
       searchMealLogRepository.save(searchMealLog);
     }
 
