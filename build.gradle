@@ -33,9 +33,18 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	//env
 	implementation 'io.github.cdimascio:dotenv-java:2.2.0'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	//security
+	implementation 'org.springframework.boot:spring-boot-starter-security:2.7.0' // Spring Security 의존성
+	//jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
 }
 
 tasks.named('test') {
