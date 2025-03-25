@@ -3,15 +3,22 @@ USE foodrunner;
 
 -- ✅ 사용자 테이블 최적화
 CREATE TABLE User (
-    user_id CHAR(36) NOT NULL DEFAULT (UUID()), -- UUID 자동 생성
+    user_id CHAR(36) NOT NULL, -- UUID 자동 생성
     id VARCHAR(15) NOT NULL,  -- 아이디
     name VARCHAR(15) NOT NULL, -- 이름
     password VARCHAR(255) NOT NULL, -- 암호화된 비밀번호
+    role VARCHAR(20) NOT NULL DEFAULT 'ROLE_USER',
+    PRIMARY KEY (user_id)
+);
+--BMI 테이블
+CREATE TABLE BMI (
+    user_id CHAR(36) NOT NULL, -- User 테이블과 연결
     age INT, -- 나이
     gender VARCHAR(10), -- 성별
     height FLOAT, -- 키
     weight FLOAT, -- 몸무게
-    PRIMARY KEY (user_id)
+    PRIMARY KEY (user_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
 );
 
 -- 인바디 테이블 Inbody
