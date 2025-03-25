@@ -134,7 +134,8 @@ CREATE TABLE Ingredient_Data (
     ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
     ingredient_name VARCHAR(255) NOT NULL,
     ingredient_nutrition TEXT NOT NULL,
-    ingredient_cal DECIMAL(10,2) NOT NULL
+    ingredient_cal DECIMAL(10,2) NOT NULL,
+    ingredient_image VARCHAR(255)
 );
 
 -- ✅ 선호 식재료 테이블
