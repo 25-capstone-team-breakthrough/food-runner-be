@@ -29,7 +29,7 @@ public class BMI {
     private String gender;
 
     @Column(name = "height")
-    private float height;  // 미터 단위로 저장한다고 가정
+    private float height;
 
     @Column(name = "weight")
     private float weight;
