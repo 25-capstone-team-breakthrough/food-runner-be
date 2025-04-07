@@ -38,7 +38,7 @@ public class DietCreateWindowDTO {
   // MealLog 테이블
   private List<Long> mealIds;
   // ImageMealLog 테이블
-  private List<String> mealLogImage;
+  private List<byte[]> mealLogImage;
   // SearchMealLog 테이블
   private List<String> foodLogImage;
   // PreferredFood 테이블

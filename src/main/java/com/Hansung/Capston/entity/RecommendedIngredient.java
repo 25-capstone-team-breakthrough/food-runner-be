@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Preferred_Ingredient")
+@Table(name = "Recommended_Ingredient")
 @Getter
 @Setter
-public class PreferredIngredient {
+public class RecommendedIngredient {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "preingredient_id")
+  @Column(name = "recommendation_ingredient_id")
   private Integer id;
 
   @ManyToOne(fetch = FetchType.LAZY)

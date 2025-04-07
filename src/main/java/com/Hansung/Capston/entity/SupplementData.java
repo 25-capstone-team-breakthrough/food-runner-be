@@ -24,7 +24,7 @@ public class SupplementData {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTO_INCREMENT 적용
   @Column(name = "supplement_id")
-  private Long supplementId;
+  private String supplementId;
 
   @Column(name = "company", nullable = false)
   private String company; // 제조업체

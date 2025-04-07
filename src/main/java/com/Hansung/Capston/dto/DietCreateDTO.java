@@ -34,7 +34,7 @@ public class DietCreateDTO {
   private LocalDateTime date;
 
   // 이미지 로그용
-  private String mealImage;
+  private byte[] mealImage = null;
   private String mealName;
 
   // 검색 로그용

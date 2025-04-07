@@ -4,60 +4,55 @@ import com.Hansung.Capston.dto.DietCreateDTO;
 import com.Hansung.Capston.dto.DietCreateWindowDTO;
 import com.Hansung.Capston.dto.FoodDataResponse;
 import com.Hansung.Capston.dto.SupplementDataResponse;
-import com.Hansung.Capston.entity.FoodData;
 import com.Hansung.Capston.entity.MealLog;
-import com.Hansung.Capston.entity.SupplementData;
-import com.Hansung.Capston.service.DietService;
+import com.Hansung.Capston.service.MealService;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/api/diet") // 공통 URL 경로를 지정함
 public class MealLogController {
-  private final DietService dietService;
+  private final MealService mealService;
 
   @Autowired
-  public MealLogController(DietService dietService) {
-    this.dietService = dietService;
+  public MealLogController(MealService mealService) {
+    this.mealService = mealService;
   }
 
-  @PostMapping("/loggingMeal")
-  public ResponseEntity<MealLog> saveMealLog( @RequestBody DietCreateDTO dietCreateDTO){
-    MealLog mealLog = dietService.save(dietCreateDTO);
+  @PostMapping("/save-meal") // 저장
+  public ResponseEntity<MealLog> saveMealLog( @RequestPart("dto") DietCreateDTO dietCreateDTO, @RequestPart(value = "file", required = false) MultipartFile file) {
+
+    byte[] data = null;
+    try {
+      data = file.getBytes();
+    } catch (IOException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    dietCreateDTO.setMealImage(data);
+    MealLog mealLog = mealService.save(dietCreateDTO); // image_meal_log나 search_meal_log는 서비스에서 자동으로 추가해줌
 
     return new ResponseEntity<>(mealLog, HttpStatus.OK);
   }
 
-  @GetMapping("/main")
+  @GetMapping("/main") // diet 메인화면
   public ResponseEntity<DietCreateWindowDTO> getGCreateWindow(@RequestParam String userId,
       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime){
-    DietCreateWindowDTO dietCreateWindowDTO = dietService.dietCreatePage(userId, dateTime);
+    DietCreateWindowDTO dietCreateWindowDTO = mealService.dietCreatePage(userId, dateTime);
 
     return new ResponseEntity<>(dietCreateWindowDTO, HttpStatus.OK);
-  }
-
-  @GetMapping("/foods")
-  public ResponseEntity<List<FoodDataResponse>> getAllFoodData() {
-    List<FoodDataResponse> data = dietService.sendAllFoodData();
-    return ResponseEntity.ok(data);
-  }
-
-  @GetMapping("/supplements")
-  public ResponseEntity<List<SupplementDataResponse>> getAllSupplementData() {
-    List<SupplementDataResponse> data = dietService.sendAllSupplementData();
-    return ResponseEntity.ok(data);
   }
 }
