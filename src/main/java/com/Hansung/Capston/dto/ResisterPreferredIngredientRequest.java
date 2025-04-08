@@ -1,6 +1,6 @@
 package com.Hansung.Capston.dto;
 
-public class PreferredIngredientRequest {
+public class ResisterPreferredIngredientRequest {
   private String userId;
   private String ingredientId;
 }

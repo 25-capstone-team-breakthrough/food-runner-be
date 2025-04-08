@@ -1,6 +1,7 @@
 package com.Hansung.Capston.dto;
 
 import com.Hansung.Capston.entity.SupplementData;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Data
@@ -10,16 +11,25 @@ import lombok.*;
 @Getter
 @Setter
 public class SupplementDataResponse {
-  private Long supplementId;
+  @JsonProperty("PRDLST_REPORT_NO")
+  private String supplementId;
+  @JsonProperty("BSSH_NM")
   private String company;
+  @JsonProperty("PRDLST_NM")
   private String supplementName;
-  private String supplementImage;
-  private String distributionPeriod;
+  @JsonProperty("NTK_MTHD")
   private String usageMethod;
+  @JsonProperty("POG_DAYCNT")
   private String preservationPeriod;
+  @JsonProperty("CSTDY_MTHD")
   private String intakeInformation;
+  @JsonProperty("PRIMARY_FNCLTY")
   private String mainFunction;
+  @JsonProperty("INDIV_RAWMTRL_NM")
   private String baseStandard;
+  @Builder.Default
+  private String supplementImage = "";
+
 
   public static SupplementDataResponse fromEntity(SupplementData entity) {
     return SupplementDataResponse.builder()
@@ -27,7 +37,6 @@ public class SupplementDataResponse {
         .company(entity.getCompany())
         .supplementName(entity.getSupplementName())
         .supplementImage(entity.getSupplementImage())
-        .distributionPeriod(entity.getDistributionPeriod())
         .usageMethod(entity.getUsageMethod())
         .preservationPeriod(entity.getPreservationPeriod())
         .intakeInformation(entity.getIntakeInformation())
