@@ -2,8 +2,6 @@ package com.Hansung.Capston.service;
 
 import com.Hansung.Capston.dto.DietCreateDTO;
 import com.Hansung.Capston.dto.DietCreateWindowDTO;
-import com.Hansung.Capston.dto.FoodDataResponse;
-import com.Hansung.Capston.dto.SupplementDataResponse;
 import com.Hansung.Capston.entity.*;
 import com.Hansung.Capston.repository.FoodDataRepository;
 import com.Hansung.Capston.repository.ImageMealLogRepository;
@@ -220,7 +218,7 @@ public class MealService {
     dietCreateWindowDTO.setFoodLogImage(foodLogImage);
 
     // 선호 음식에 대한 사진
-    List<String> preferredFoodNames = preferredFoodRepository.findByUserId(user)
+    List<String> preferredFoodNames = preferredFoodRepository.findByUserUserId(user)
             .stream()
             .map(preferredFood -> preferredFood.getFoodData().getFoodImage())
             .collect(Collectors.toList());
@@ -228,7 +226,7 @@ public class MealService {
     dietCreateWindowDTO.setPreferredFoodImage(preferredFoodNames);
 
     // 선호 영양제에 대한 사진
-    List<String> preferredSupplementNames = preferredSupplementRepository.findByUserId(user)
+    List<String> preferredSupplementNames = preferredSupplementRepository.findByUserUserId(user)
             .stream()
             .map(preferredSupplement -> preferredSupplement.getSupplementData().getSupplementImage())
             .collect(Collectors.toList());

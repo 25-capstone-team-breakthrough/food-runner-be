@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PreferredSupplementRepository extends JpaRepository<PreferredSupplement, Long> {
-    List<PreferredSupplement> findByUserId(String userId);
+    List<PreferredSupplement> findByUserUserId(String userId);
 }
