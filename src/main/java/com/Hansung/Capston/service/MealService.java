@@ -1,7 +1,8 @@
 package com.Hansung.Capston.service;
 
-import com.Hansung.Capston.dto.DietCreateDTO;
 import com.Hansung.Capston.dto.DietCreateWindowDTO;
+import com.Hansung.Capston.dto.ImageDietCreateDTO;
+import com.Hansung.Capston.dto.SearchDietCreateDTO;
 import com.Hansung.Capston.entity.*;
 import com.Hansung.Capston.repository.FoodDataRepository;
 import com.Hansung.Capston.repository.ImageMealLogRepository;
@@ -55,68 +56,104 @@ public class MealService {
     this.preferredSupplementRepository = preferredSupplementRepository;
   }
 
-  // MealLog 저장
+  // 이미지 MealLog 저장
   @Transactional
-  public MealLog save(DietCreateDTO dietCreateDTO) {
-    User user = userRepository.findById(dietCreateDTO.getUserId()) // user_id 외래키 참조용
+  public MealLog imageSave(ImageDietCreateDTO imageDietCreateDTO) {
+    User user = userRepository.findById(imageDietCreateDTO.getUserId()) // user_id 외래키 참조용
         .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
 
     // MealLog 저장
     MealLog mealLog = MealLog.builder()
         .user(user)
-        .type(dietCreateDTO.getType())
-        .calories(dietCreateDTO.getCalories())
-        .protein(dietCreateDTO.getProtein())
-        .carbohydrate(dietCreateDTO.getCarbohydrate())
-        .fat(dietCreateDTO.getFat())
-        .sugar(dietCreateDTO.getSugar())
-        .sodium(dietCreateDTO.getSodium())
-        .dietaryFiber(dietCreateDTO.getDietaryFiber())
-        .calcium(dietCreateDTO.getCalcium())
-        .saturatedFat(dietCreateDTO.getSaturatedFat())
-        .transFat(dietCreateDTO.getTransFat())
-        .cholesterol(dietCreateDTO.getCholesterol())
-        .vitaminA(dietCreateDTO.getVitaminA())
-        .vitaminB1(dietCreateDTO.getVitaminB1())
-        .vitaminC(dietCreateDTO.getVitaminC())
-        .vitaminD(dietCreateDTO.getVitaminD())
-        .vitaminE(dietCreateDTO.getVitaminE())
-        .magnesium(dietCreateDTO.getMagnesium())
-        .zinc(dietCreateDTO.getZinc())
-        .lactium(dietCreateDTO.getLactium())
-        .potassium(dietCreateDTO.getPotassium())
-        .lArginine(dietCreateDTO.getLArginine())
-        .omega3(dietCreateDTO.getOmega3())
-        .date(dietCreateDTO.getDate())
+        .type(imageDietCreateDTO.getType())
+        .calories(imageDietCreateDTO.getCalories())
+        .protein(imageDietCreateDTO.getProtein())
+        .carbohydrate(imageDietCreateDTO.getCarbohydrate())
+        .fat(imageDietCreateDTO.getFat())
+        .sugar(imageDietCreateDTO.getSugar())
+        .sodium(imageDietCreateDTO.getSodium())
+        .dietaryFiber(imageDietCreateDTO.getDietaryFiber())
+        .calcium(imageDietCreateDTO.getCalcium())
+        .saturatedFat(imageDietCreateDTO.getSaturatedFat())
+        .transFat(imageDietCreateDTO.getTransFat())
+        .cholesterol(imageDietCreateDTO.getCholesterol())
+        .vitaminA(imageDietCreateDTO.getVitaminA())
+        .vitaminB1(imageDietCreateDTO.getVitaminB1())
+        .vitaminC(imageDietCreateDTO.getVitaminC())
+        .vitaminD(imageDietCreateDTO.getVitaminD())
+        .vitaminE(imageDietCreateDTO.getVitaminE())
+        .magnesium(imageDietCreateDTO.getMagnesium())
+        .zinc(imageDietCreateDTO.getZinc())
+        .lactium(imageDietCreateDTO.getLactium())
+        .potassium(imageDietCreateDTO.getPotassium())
+        .lArginine(imageDietCreateDTO.getLArginine())
+        .omega3(imageDietCreateDTO.getOmega3())
+        .date(imageDietCreateDTO.getDate())
         .build();
 
     mealLog = mealLogRepository.save(mealLog);
 
-    // type이 'image'이면 ImageMealLog 저장
-    if (dietCreateDTO.getType() == MealType.image) {
       ImageMealLog imageMealLog = new ImageMealLog();
       imageMealLog.setMealLog(mealLog);
       imageMealLog.setUser(user);
-      imageMealLog.setMealName(dietCreateDTO.getMealName());
-      imageMealLog.setMealImage(dietCreateDTO.getMealImage());
+      imageMealLog.setMealName(imageDietCreateDTO.getMealName());
+      imageMealLog.setMealImage(imageDietCreateDTO.getMealImage());
       imageMealLogRepository.save(imageMealLog);
-    }
 
-//     type이 'search'이면 SearchMealLog 저장
-    else if (dietCreateDTO.getType() == MealType.search) {
-      FoodData food = foodDataRepository.findById(dietCreateDTO.getFoodId())
-          .orElseThrow(() -> new IllegalArgumentException("음식을 찾을 수 없음"));
 
-      SearchMealLog searchMealLog = new SearchMealLog();
-      searchMealLog.setMealLog(mealLog);
-      searchMealLog.setFoodData(food);
-      searchMealLog.setUser(user);
-      searchMealLogRepository.save(searchMealLog);
-    }
 
     return mealLog;
   }
-  
+
+  // 검색 Meallog 저장
+
+  @Transactional
+  public MealLog searchSave(String userId,SearchDietCreateDTO searchDietCreateDTO) {
+    User user = userRepository.findById(userId) // user_id 외래키 참조용
+        .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
+
+    // MealLog 저장
+    MealLog mealLog = MealLog.builder()
+        .user(user)
+        .type(searchDietCreateDTO.getType())
+        .calories(searchDietCreateDTO.getCalories())
+        .protein(searchDietCreateDTO.getProtein())
+        .carbohydrate(searchDietCreateDTO.getCarbohydrate())
+        .fat(searchDietCreateDTO.getFat())
+        .sugar(searchDietCreateDTO.getSugar())
+        .sodium(searchDietCreateDTO.getSodium())
+        .dietaryFiber(searchDietCreateDTO.getDietaryFiber())
+        .calcium(searchDietCreateDTO.getCalcium())
+        .saturatedFat(searchDietCreateDTO.getSaturatedFat())
+        .transFat(searchDietCreateDTO.getTransFat())
+        .cholesterol(searchDietCreateDTO.getCholesterol())
+        .vitaminA(searchDietCreateDTO.getVitaminA())
+        .vitaminB1(searchDietCreateDTO.getVitaminB1())
+        .vitaminC(searchDietCreateDTO.getVitaminC())
+        .vitaminD(searchDietCreateDTO.getVitaminD())
+        .vitaminE(searchDietCreateDTO.getVitaminE())
+        .magnesium(searchDietCreateDTO.getMagnesium())
+        .zinc(searchDietCreateDTO.getZinc())
+        .lactium(searchDietCreateDTO.getLactium())
+        .potassium(searchDietCreateDTO.getPotassium())
+        .lArginine(searchDietCreateDTO.getLArginine())
+        .omega3(searchDietCreateDTO.getOmega3())
+        .date(searchDietCreateDTO.getDate())
+        .build();
+
+    FoodData food = foodDataRepository.findById(searchDietCreateDTO.getFoodId())
+        .orElseThrow(() -> new IllegalArgumentException("음식을 찾을 수 없음"));
+
+    SearchMealLog searchMealLog = new SearchMealLog();
+    searchMealLog.setMealLog(mealLog);
+    searchMealLog.setFoodData(food);
+    searchMealLog.setUser(user);
+    searchMealLogRepository.save(searchMealLog);
+
+
+
+    return mealLog;
+  }
 //  식사 기록 삭제
   @Transactional
   public void delete(MealLog mealLog) {
