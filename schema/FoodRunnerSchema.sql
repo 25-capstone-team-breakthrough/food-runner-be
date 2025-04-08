@@ -63,17 +63,7 @@ CREATE TABLE Exercise_save(
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
 );
 
--- 운동 기록 테이블  Exercise_Log**
-CREATE TABLE Exercise_Log (
-    exercise_log_id INT AUTO_INCREMENT NOT NULL,        -- 운동 기록 고유 ID (PK)
-    user_id         VARCHAR(15)       NOT NULL,         -- 사용자 ID (User 테이블 FK)
-    exercise_id     INT               NOT NULL,         -- 운동 ID (Exercise_Data 테이블 FK)
-    cal_burned      DECIMAL(10,1)     NOT NULL,                               -- 소모 칼로리
-    created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (exercise_log_id),
-    FOREIGN KEY (user_id)     REFERENCES User(user_id),
-    FOREIGN KEY (exercise_id) REFERENCES Exercise_Data(exercise_id)
-);
+
 
 
 -- ✅ 영양제 데이터 테이블
