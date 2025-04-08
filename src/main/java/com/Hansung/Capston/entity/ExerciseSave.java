@@ -10,9 +10,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Exercise_save {
+public class ExerciseSave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "exercise_save", nullable = false)
     private Integer exSaveId; // 즐겨찾기 고유 ID (PK)
 
     @Column(name = "user_id", nullable = false)
