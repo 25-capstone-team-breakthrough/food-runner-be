@@ -51,23 +51,16 @@ FOREIGN KEY (inbody_id) REFERENCES Inbody(inbody_id),
 FOREIGN KEY (user_id)   REFERENCES User(user_id)
 );
 
--- 운동정보 테이블 Exercise_Data
-CREATE TABLE Exercise_Data (
-exercise_id INT PRIMARY KEY AUTO_INCREMENT,  -- 운동정보 고유 ID
-exercise_name VARCHAR(250) NOT NULL,         -- 운동 이름
-description TEXT NOT NULL,                   -- 운동 설명
-type ENUM('car', 'str') NOT NULL             -- 운동 종류(근력, 유산소)
-);
 
--- 운동 즐겨찾기 테이블 Preferred_Exercise
 
-CREATE TABLE Preferred_Exercise (
-    preferred_exercise_id INT AUTO_INCREMENT NOT NULL,  -- 즐겨찾기 고유 ID (PK)
-    user_id               VARCHAR(15)       NOT NULL,   -- 사용자 ID (User 테이블 FK)
-    exercise_id           INT               NOT NULL,   -- 운동 ID (Exercise_Data 테이블 FK)
-    PRIMARY KEY (preferred_exercise_id),
-    FOREIGN KEY (user_id)     REFERENCES User(user_id),
-    FOREIGN KEY (exercise_id) REFERENCES Exercise_Data(exercise_id)
+-- 운동 즐겨찾기 테이블 Exercise_save
+CREATE TABLE Exercise_save(
+    exercise_save INT AUTO_INCREMENT NOT NULL,  -- 즐겨찾기 고유 ID (PK)
+    user_id               VARCHAR(36)       NOT NULL,   -- 사용자 ID (User 테이블 FK)
+    exercise_id           INT               NOT NULL,   -- 운동 ID ()
+	PRIMARY KEY (exercise_save),
+    UNIQUE KEY user_exercise_unique (user_id, exercise_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
 );
 
 -- 운동 기록 테이블  Exercise_Log**
@@ -82,27 +75,6 @@ CREATE TABLE Exercise_Log (
     FOREIGN KEY (exercise_id) REFERENCES Exercise_Data(exercise_id)
 );
 
--- 유산소 운동 기록 테이블
-CREATE TABLE Cardio_Exercise_Log (
-    cardio_log_id    INT AUTO_INCREMENT NOT NULL,  -- 유산소 운동 기록 PK
-    exercise_log_id  INT               NOT NULL,   -- 상위 Exercise_Log FK
-    distance         FLOAT,                        -- 거리 (예: km)
-    time             INT,                          -- 운동 시간 (예: 분)
-    pace             FLOAT,                        -- 페이스 (예: 분/km)
-    PRIMARY KEY (cardio_log_id),
-    FOREIGN KEY (exercise_log_id) REFERENCES Exercise_Log(exercise_log_id)
-);
-
--- 근력 운동 기록 테이블
-CREATE TABLE Strength_Exercise_Log (
-    strength_log_id  INT AUTO_INCREMENT NOT NULL,  -- 근력 운동 기록 PK
-    exercise_log_id  INT               NOT NULL,   -- 상위 Exercise_Log FK
-    sets             INT,                          -- 세트 수
-    reps             INT,                          -- 반복 수
-    weight           FLOAT,                        -- 중량
-    PRIMARY KEY (strength_log_id),
-    FOREIGN KEY (exercise_log_id) REFERENCES Exercise_Log(exercise_log_id)
-);
 
 -- ✅ 영양제 데이터 테이블
 CREATE TABLE Supplement_Data (
