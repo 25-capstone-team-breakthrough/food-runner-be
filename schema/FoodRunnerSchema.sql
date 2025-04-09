@@ -10,7 +10,7 @@ CREATE TABLE User (
     role VARCHAR(20) NOT NULL DEFAULT 'ROLE_USER',
     PRIMARY KEY (user_id)
 );
---BMI 테이블
+-- BMI 테이블
 CREATE TABLE BMI (
     user_id CHAR(36) NOT NULL, -- User 테이블과 연결
     age INT, -- 나이
@@ -68,15 +68,15 @@ CREATE TABLE Exercise_save(
 
 -- ✅ 영양제 데이터 테이블
 CREATE TABLE Supplement_Data (
-    supplement_id INT AUTO_INCREMENT PRIMARY KEY,
-    company VARCHAR(255) NOT NULL,
-    supplement_name VARCHAR(255) NOT NULL,
-    distribution_period VARCHAR(50) NOT NULL,
+    supplement_id INT KEY,
+    company VARCHAR(255),
+    supplement_name VARCHAR(255),
     usage_method TEXT NOT NULL,
-    preservation_period VARCHAR(50) NOT NULL,
-    intake_information TEXT NOT NULL,
-    main_function TEXT NOT NULL,
-    base_standard TEXT NOT NULL
+    preservation_period VARCHAR(50),
+    intake_information TEXT,
+    main_function TEXT,
+    base_standard TEXT,
+    supplement_image TEXT
 );
 
 -- ✅ 영양제 기록 테이블

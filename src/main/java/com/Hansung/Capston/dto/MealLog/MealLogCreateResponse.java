@@ -1,4 +1,4 @@
-package com.Hansung.Capston.dto;
+package com.Hansung.Capston.dto.MealLog;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DietCreateWindowDTO {
+public class MealLogCreateResponse {
   // Users 테이블
   private String userId;  // 사용자 ID
   // NutritionLog 테이블
@@ -46,8 +46,8 @@ public class DietCreateWindowDTO {
   // PreferredSupplement 테이블
   private List<String> preferredSupplementImage;
 
-  public static DietCreateWindowDTO empty(String userId, LocalDateTime selectDate) {
-    DietCreateWindowDTO dto = new DietCreateWindowDTO();
+  public static MealLogCreateResponse empty(String userId, LocalDateTime selectDate) {
+    MealLogCreateResponse dto = new MealLogCreateResponse();
 
     dto.setUserId(userId);
     dto.setCalories(0.0);

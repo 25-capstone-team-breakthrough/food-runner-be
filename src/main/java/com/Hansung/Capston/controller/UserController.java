@@ -5,9 +5,9 @@ import com.Hansung.Capston.dto.SignIn.SignInResponse;
 import com.Hansung.Capston.dto.SignUp.SignUpRequest;
 import com.Hansung.Capston.dto.SignUp.SignUpResponse;
 import com.Hansung.Capston.service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController              // 해당 클래스가 RESTful API의 컨트롤러임을 명시 (응답을 JSON 등으로 자동 변환)
@@ -34,5 +34,4 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-
 }

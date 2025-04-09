@@ -1,4 +1,4 @@
-package com.Hansung.Capston.dto;
+package com.Hansung.Capston.dto.SupplmentApi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

@@ -22,9 +22,8 @@ import lombok.Setter;
 public class SupplementData {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTO_INCREMENT 적용
-  @Column(name = "supplement_id")
-  private String supplementId;
+  @Column(name = "supplement_id", unique = true, nullable = false)
+  private Long supplementId;
 
   @Column(name = "company", nullable = false)
   private String company; // 제조업체
@@ -34,9 +33,6 @@ public class SupplementData {
 
   @Column(name = "supplement_image")
   private String supplementImage;
-
-  @Column(name = "distribution_period", nullable = false)
-  private String distributionPeriod; // 유통기한
 
   @Column(name = "usage_method", nullable = false, columnDefinition = "TEXT")
   private String usageMethod; // 사용 방법
@@ -51,5 +47,6 @@ public class SupplementData {
   private String mainFunction; // 주요 기능
 
   @Column(name = "base_standard", nullable = false, columnDefinition = "TEXT")
-  private String baseStandard; // 기준 정보
+  private String baseStandard = "기본 기준 정보 없음";  // 기본 값 설정
+
 }

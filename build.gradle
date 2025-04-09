@@ -34,7 +34,7 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	//env
 	implementation 'io.github.cdimascio:dotenv-java:2.2.0'
-
+	implementation "io.netty:netty-resolver-dns-native-macos:4.1.118.Final:osx-aarch_64"
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

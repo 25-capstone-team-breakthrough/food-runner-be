@@ -1,14 +1,13 @@
-package com.Hansung.Capston.dto;
-
+package com.Hansung.Capston.dto.MealLog;
 import com.Hansung.Capston.entity.MealType;
 import java.time.LocalDateTime;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-public class SearchDietCreateDTO {
-  private MealType type = MealType.search;
+public class ImageMealLogCreateRequest {
+  private String userId = null;  // 사용자 ID
+  private MealType type = MealType.image;  // ENUM ('search', 'image')
   private Double calories = 0.0;
   private Double protein = 0.0;
   private Double carbohydrate = 0.0;
@@ -33,6 +32,7 @@ public class SearchDietCreateDTO {
   private Double omega3 = 0.0;
   private LocalDateTime date;
 
-
-  private Long foodId;
+  // 이미지 로그용
+  private byte[] mealImage = null;
+  private String mealName;
 }
