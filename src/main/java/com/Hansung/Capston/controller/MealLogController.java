@@ -5,14 +5,18 @@ import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
 import com.Hansung.Capston.entity.MealLog;
 import com.Hansung.Capston.service.MealService;
+import com.Hansung.Capston.service.OpenAiApiService;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,18 +26,21 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/api/diet") // 공통 URL 경로를 지정함
 public class MealLogController {
   private final MealService mealService;
+  private final OpenAiApiService openAiApiService;
 
   @Autowired
-  public MealLogController(MealService mealService) {
+  public MealLogController(MealService mealService, OpenAiApiService openAiApiService) {
     this.mealService = mealService;
+    this.openAiApiService = openAiApiService;
   }
 
   @PostMapping("/save-image-meal") // 저장
-  public ResponseEntity<MealLog> saveImageMealLog(@RequestPart("dto") ImageMealLogCreateRequest imageMealLogCreateRequest, @RequestPart(value = "file", required = false) MultipartFile file) {
+  public ResponseEntity<Map<MealLog, String>> saveImageMealLog(@RequestPart("dto") ImageMealLogCreateRequest imageMealLogCreateRequest, @RequestPart(value = "file", required = false) MultipartFile file) {
     // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
@@ -50,9 +57,14 @@ public class MealLogController {
 
     imageMealLogCreateRequest.setUserId(userId);
     imageMealLogCreateRequest.setMealImage(data);
-    MealLog mealLog = mealService.imageSave(imageMealLogCreateRequest); // image_meal_log나 search_meal_log는 서비스에서 자동으로 추가해줌
 
-    return new ResponseEntity<>(mealLog, HttpStatus.OK);
+    Map<MealLog,String> response = new HashMap<>();
+
+    MealLog mealLog = mealService.imageSave(imageMealLogCreateRequest); // image_meal_log나 search_meal_log는 서비스에서 자동으로 추가해줌
+    String openAiResponse = openAiApiService.mealImageAnalysis(imageMealLogCreateRequest);
+
+    response.put(mealLog, openAiResponse);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @PostMapping("/save-search-meal") // 저장
@@ -65,6 +77,7 @@ public class MealLogController {
     String userId = (String) auth.getPrincipal();
 
     MealLog mealLog = mealService.searchSave(userId, searchMealLogCreateRequest); // image_meal_log나 search_meal_log는 서비스에서 자동으로 추가해줌
+    // 저장뿐만 아니라 영양소도 추가해야 함
 
     return new ResponseEntity<>(mealLog, HttpStatus.OK);
   }

@@ -3,6 +3,7 @@ import com.Hansung.Capston.entity.MealType;
 import java.time.LocalDateTime;
 import lombok.*;
 
+@Data
 @Getter
 @Setter
 public class ImageMealLogCreateRequest {

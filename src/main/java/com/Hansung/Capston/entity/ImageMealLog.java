@@ -29,6 +29,6 @@ public class ImageMealLog {
   private String mealName;
 
   @Lob
-  @Column(name = "meal_image", nullable = false)
+  @Column(name = "meal_image", nullable = false, columnDefinition = "LONGBLOB")
   private byte[] mealImage;
 }
