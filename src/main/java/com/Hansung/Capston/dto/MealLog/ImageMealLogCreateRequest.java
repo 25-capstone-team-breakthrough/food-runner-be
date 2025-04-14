@@ -34,6 +34,6 @@ public class ImageMealLogCreateRequest {
   private LocalDateTime date;
 
   // 이미지 로그용
-  private byte[] mealImage = null;
+  private String mealImage;
   private String mealName;
 }

@@ -12,9 +12,9 @@ import lombok.Value;
 public class ImageContent extends Content {
   private ImageUrl image_url;
 
-  public ImageContent(String base64Image) {
+  public ImageContent(String imageLink) {
     super("image_url");
-    this.image_url = new ImageUrl("data:image/jpeg;base64," + base64Image);
+    this.image_url = new ImageUrl(imageLink);
   }
 
   @Data

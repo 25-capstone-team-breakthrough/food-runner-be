@@ -40,7 +40,7 @@ public class MealLogController {
   }
 
   @PostMapping("/save-image-meal") // 저장
-  public ResponseEntity<Map<MealLog, String>> saveImageMealLog(@RequestPart("dto") ImageMealLogCreateRequest imageMealLogCreateRequest, @RequestPart(value = "file", required = false) MultipartFile file) {
+  public ResponseEntity<Map<MealLog, String>> saveImageMealLog(@RequestBody ImageMealLogCreateRequest imageMealLogCreateRequest) {
     // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
@@ -48,15 +48,8 @@ public class MealLogController {
     }
     String userId = (String) auth.getPrincipal();
 
-    byte[] data = null;
-    try {
-      data = file.getBytes();
-    } catch (IOException e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
 
     imageMealLogCreateRequest.setUserId(userId);
-    imageMealLogCreateRequest.setMealImage(data);
 
     Map<MealLog,String> response = new HashMap<>();
 

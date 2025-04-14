@@ -234,7 +234,7 @@ public class MealService {
     mealLogs.sort(Comparator.comparing(MealLog::getDate));
 
     List<Long> mealIds = new ArrayList<>();
-    List<byte[]> mealLogImage = new ArrayList<>();
+    List<String> mealLogImage = new ArrayList<>();
     List<String> foodLogImage = new ArrayList<>();
 
     for (MealLog mealLog : mealLogs) {
