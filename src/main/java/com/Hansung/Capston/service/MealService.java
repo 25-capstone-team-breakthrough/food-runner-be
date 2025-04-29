@@ -1,5 +1,6 @@
 package com.Hansung.Capston.service;
 
+import com.Hansung.Capston.dto.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
 import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
@@ -58,52 +59,54 @@ public class MealService {
 
   // 이미지 MealLog 저장
   @Transactional
-  public MealLog imageSave(ImageMealLogCreateRequest imageMealLogCreateRequest) {
-    User user = userRepository.findById(imageMealLogCreateRequest.getUserId()) // user_id 외래키 참조용
+  public MealLog imageSave(ImageMealLogCreateRequest imageMealLogCreateRequest, FoodDataDTO foodData) {
+    // 사용자 정보 조회
+    User user = userRepository.findById(imageMealLogCreateRequest.getUserId())
         .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
 
-    // MealLog 저장
+    // MealLog 저장 (영양소 데이터 추가)
     MealLog mealLog = MealLog.builder()
         .user(user)
         .type(imageMealLogCreateRequest.getType())
-        .calories(imageMealLogCreateRequest.getCalories())
-        .protein(imageMealLogCreateRequest.getProtein())
-        .carbohydrate(imageMealLogCreateRequest.getCarbohydrate())
-        .fat(imageMealLogCreateRequest.getFat())
-        .sugar(imageMealLogCreateRequest.getSugar())
-        .sodium(imageMealLogCreateRequest.getSodium())
-        .dietaryFiber(imageMealLogCreateRequest.getDietaryFiber())
-        .calcium(imageMealLogCreateRequest.getCalcium())
-        .saturatedFat(imageMealLogCreateRequest.getSaturatedFat())
-        .transFat(imageMealLogCreateRequest.getTransFat())
-        .cholesterol(imageMealLogCreateRequest.getCholesterol())
-        .vitaminA(imageMealLogCreateRequest.getVitaminA())
-        .vitaminB1(imageMealLogCreateRequest.getVitaminB1())
-        .vitaminC(imageMealLogCreateRequest.getVitaminC())
-        .vitaminD(imageMealLogCreateRequest.getVitaminD())
-        .vitaminE(imageMealLogCreateRequest.getVitaminE())
-        .magnesium(imageMealLogCreateRequest.getMagnesium())
-        .zinc(imageMealLogCreateRequest.getZinc())
-        .lactium(imageMealLogCreateRequest.getLactium())
-        .potassium(imageMealLogCreateRequest.getPotassium())
-        .lArginine(imageMealLogCreateRequest.getLArginine())
-        .omega3(imageMealLogCreateRequest.getOmega3())
         .date(imageMealLogCreateRequest.getDate())
+        .fat(foodData.getFat())
+        .calories(foodData.getCalories())
+        .protein(foodData.getProtein())
+        .carbohydrate(foodData.getCarbohydrate())
+        .sugar(foodData.getSugar())
+        .sodium(foodData.getSodium())
+        .dietaryFiber(foodData.getDietaryFiber())
+        .calcium(foodData.getCalcium())
+        .saturatedFat(foodData.getSaturatedFat())
+        .transFat(foodData.getTransFat())
+        .cholesterol(foodData.getCholesterol())
+        .vitaminA(foodData.getVitaminA())
+        .vitaminB1(foodData.getVitaminB1())
+        .vitaminC(foodData.getVitaminC())
+        .vitaminD(foodData.getVitaminD())
+        .vitaminE(foodData.getVitaminE())
+        .magnesium(foodData.getMagnesium())
+        .zinc(foodData.getZinc())
+        .lactium(foodData.getLactium())
+        .potassium(foodData.getPotassium())
+        .lArginine(foodData.getLArginine())
+        .omega3(foodData.getOmega3())
         .build();
 
+    // mealLog 객체를 저장
     mealLog = mealLogRepository.save(mealLog);
 
-      ImageMealLog imageMealLog = new ImageMealLog();
-      imageMealLog.setMealLog(mealLog);
-      imageMealLog.setUser(user);
-      imageMealLog.setMealName(imageMealLogCreateRequest.getMealName());
-      imageMealLog.setMealImage(imageMealLogCreateRequest.getMealImage());
-      imageMealLogRepository.save(imageMealLog);
-
-
+    // ImageMealLog 객체 설정
+    ImageMealLog imageMealLog = new ImageMealLog();
+    imageMealLog.setMealLog(mealLog);
+    imageMealLog.setUser(user);
+    imageMealLog.setMealImage(imageMealLogCreateRequest.getMealImage());
+    imageMealLog.setMealName(foodData.getFoodName());
+    imageMealLogRepository.save(imageMealLog);
 
     return mealLog;
   }
+
 
   // 검색 Meallog 저장
 

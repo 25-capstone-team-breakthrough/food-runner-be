@@ -197,7 +197,7 @@ CREATE TABLE Image_Meal_Log (
     user_id VARCHAR(50) NOT NULL,
     meal_id INT NOT NULL,
     meal_name VARCHAR(255) NOT NULL,
-    meal_image VARCHAR(255) NOT NULL,
+    meal_image TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES User(user_id),
     FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id)
 );
