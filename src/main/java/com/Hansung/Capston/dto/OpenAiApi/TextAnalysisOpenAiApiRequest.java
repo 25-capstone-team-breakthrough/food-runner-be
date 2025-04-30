@@ -9,14 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TextAnalysisOpenAiApiRequest {
-  private String model;
-  private TextContent prompt;
 
-  @Data
-  @AllArgsConstructor
-  public static class Message {
-    private String role;
-    private List<Content> content;
-  }
+  private String model;
+  private List<Message> messages;  // messages는 List<Message>로 설정해야 합니다.
 
 }

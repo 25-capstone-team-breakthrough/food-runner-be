@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,12 +158,16 @@ public class MealService {
 
     return mealLog;
   }
-//  식사 기록 삭제
+  //  식사 기록 삭제
   @Transactional
-  public void delete(MealLog mealLog) {
-    if(mealLog.getType() == MealType.image) {
+  public void delete(Long mealLogId) {
+
+    MealLog mealLog = mealLogRepository.findById(mealLogId)
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 식사 기록이 없습니다: " + mealLogId));
+
+    if (mealLog.getType() == MealType.image) {
       imageMealLogRepository.delete(imageMealLogRepository.findByMealId(mealLog.getMealId()));
-    } else if(mealLog.getType() == MealType.search) {
+    } else if (mealLog.getType() == MealType.search) {
       searchMealLogRepository.delete(searchMealLogRepository.findByMealid(mealLog.getMealId()));
     }
 

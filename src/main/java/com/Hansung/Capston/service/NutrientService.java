@@ -18,7 +18,7 @@ public class NutrientService {
   }
 
 
-  public List<FoodDataDTO> checkNutrientData(String[] foods, OpenAiApiService openAiApiService) {
+  public List<FoodDataDTO> checkNutrientData(List<String> foods, OpenAiApiService openAiApiService) {
     List<FoodDataDTO> foodDataDTOS = new ArrayList<>();
 
     for (String food : foods) {
@@ -26,6 +26,7 @@ public class NutrientService {
 
      if(foodDataList.isEmpty()) {
        FoodDataDTO nutrientInfo = openAiApiService.getNutrientInfo(food);
+       nutrientInfo.setFoodImage("");
        foodDataRepository.save(nutrientInfo.toEntity());
        foodDataDTOS.add(nutrientInfo);
      } else{

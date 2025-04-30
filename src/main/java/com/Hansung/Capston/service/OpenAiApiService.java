@@ -5,11 +5,14 @@ import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.OpenAiApi.Content;
 import com.Hansung.Capston.dto.OpenAiApi.ImageAnalysisOpenAiApiRequest;
 import com.Hansung.Capston.dto.OpenAiApi.ImageContent;
+import com.Hansung.Capston.dto.OpenAiApi.Message;
 import com.Hansung.Capston.dto.OpenAiApi.OpenAiApiResponse;
 import com.Hansung.Capston.dto.OpenAiApi.TextAnalysisOpenAiApiRequest;
 import com.Hansung.Capston.dto.OpenAiApi.TextContent;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +21,8 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class OpenAiApiService {
+  private static final Logger logger = LoggerFactory.getLogger(OpenAiApiService.class);
+
   @Autowired
   @Qualifier("openAiTemplate")
   private final RestTemplate restTemplate;
@@ -32,16 +37,18 @@ public class OpenAiApiService {
     this.restTemplate = restTemplate;
   }
 
-  public String[] mealImageAnalysis(ImageMealLogCreateRequest request){
+  public List<String> mealImageAnalysis(ImageMealLogCreateRequest request){
 
     ImageContent imageContent = new ImageContent(request.getMealImage());
     TextContent textContent = new TextContent("너는 오로지 음식이 뭔지만 판단하는 음식이미지 분석 ai 모델이야. "
-        + "이미지를 보고 어떤 음식이 있는지 우리한테 알려줘야해(재료는 제외). 사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 마. 모르는 거 있으면 대답에 포함하지말고. 3초 이내에");
+        + "이미지를 보고 어떤 음식이 있는지 우리한테 알려줘야해(재료는 제외). 사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 말되 그렇다고 모르는 거 있으면 대답에 포함하지말고. 3초 이내에");
 
 
     List<Content> list = new ArrayList<>();
     list.add(textContent);
     list.add(imageContent);
+
+
 
     ImageAnalysisOpenAiApiRequest input = new ImageAnalysisOpenAiApiRequest(model,list);
     OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input,
@@ -50,22 +57,24 @@ public class OpenAiApiService {
     String response = openAiApiResponse.getChoices().get(0).getMessage().getContent();
     String trim = response.trim();
 
-    String[] foodArray = trim.split(",\\s*");
-
+    List<String> foodArray = List.of(trim.split(",\\s*"));
+    logger.info("Food Array: {}", foodArray);  // 로그 출력
     return foodArray;
   }
 
   public FoodDataDTO getNutrientInfo(String food) {
     // 텍스트 기반 요청 내용
-    String prompt = food + "에 대한 영양 정보를 추정하여 아래와 같은 형식으로 반환해주세요. 각 항목은 `key=value` 형태로 출력하고, 각 항목은 쉼표(,)로 구분해주세요.\n"
+    String prompt = food + "에 대한 영양 정보를 1인분 기준으로 추정하여 아래와 같은 형식으로 반환해주세요. 각 항목은 `key=value` 형태로 출력하고, 각 항목은 쉼표(,)로 구분해주세요.\n"
         + "예시 형식:\n"
         + "foodName=짜장면, calories=800, protein=20, carbohydrate=130, fat=15, sugar=12, sodium=2000, dietaryFiber=5, calcium=40, saturatedFat=3, transFat=0, cholesterol=50, vitaminA=50, vitaminB1=0.5, vitaminC=2, vitaminD=null, vitaminE=null, magnesium=30, zinc=0.8, lactium=null, potassium=300, lArginine=null, omega3=null";
 
     // TextContent 객체 생성
-    TextContent textContent = new TextContent(prompt);
+    List<Message> messages = new ArrayList<>();
+    messages.add(new Message("user", prompt));
+
 
     // TextAnalysisOpenAiApiRequest 객체 생성
-    TextAnalysisOpenAiApiRequest input = new TextAnalysisOpenAiApiRequest(model, textContent);
+    TextAnalysisOpenAiApiRequest input = new TextAnalysisOpenAiApiRequest(model, messages);
 
     // OpenAI API 호출
     OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input, OpenAiApiResponse.class);
