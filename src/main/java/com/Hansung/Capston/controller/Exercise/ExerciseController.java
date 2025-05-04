@@ -1,6 +1,6 @@
 package com.Hansung.Capston.controller;
 
-import com.Hansung.Capston.dto.ExersiceSave.ExerciseSaveDto;
+import com.Hansung.Capston.dto.Exersice.ExerciseSaveDto;
 import com.Hansung.Capston.entity.ExerciseSave;
 import com.Hansung.Capston.service.ExerciseService;
 import org.springframework.http.ResponseEntity;

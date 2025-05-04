@@ -1,4 +1,4 @@
-package com.Hansung.Capston.entity;
+package com.Hansung.Capston.entity.Exercise;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,6 +19,12 @@ public class ExerciseSave {
     @Column(name = "user_id", nullable = false)
     private String userId; // JWT에서 추출한 사용자 ID
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;  // User 엔티티와는 N:1 관계만 매핑
+
     @Column(name = "exercise_id", nullable = false)
     private Integer exerciseId; // 클라이언트 로컬에 있는 운동의 고유 ID
+
+
 }

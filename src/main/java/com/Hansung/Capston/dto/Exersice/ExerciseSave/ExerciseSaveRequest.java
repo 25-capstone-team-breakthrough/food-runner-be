@@ -1,4 +1,4 @@
-package com.Hansung.Capston.dto.ExersiceSave;
+package com.Hansung.Capston.dto.Exersice;
 
 import lombok.Data;
 
