@@ -3,7 +3,10 @@ package com.Hansung.Capston.service;
 import com.Hansung.Capston.dto.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
 import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
+import com.Hansung.Capston.dto.MealLog.PreferredMealAndSupDTO;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
+import com.Hansung.Capston.dto.MealLog.SelectDateMealLogDTO;
+import com.Hansung.Capston.dto.MealLog.SelectDateNutritionDTO;
 import com.Hansung.Capston.entity.*;
 import com.Hansung.Capston.repository.FoodDataRepository;
 import com.Hansung.Capston.repository.ImageMealLogRepository;
@@ -18,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,8 @@ public class MealService {
   private final PreferredFoodRepository preferredFoodRepository;
   private final PreferredSupplementRepository preferredSupplementRepository;
 
+  private final BMIService bmiService;
+
   @Autowired
   public MealService(MealLogRepository mealLogRepository,
       ImageMealLogRepository imageMealLogRepository,
@@ -46,7 +50,7 @@ public class MealService {
       FoodDataRepository foodDataRepository, SupplementDataRepository supplementDataRepository,
       NutritionLogRepository nutritionLogRepository,
       PreferredFoodRepository preferredFoodRepository,
-      PreferredSupplementRepository preferredSupplementRepository) {
+      PreferredSupplementRepository preferredSupplementRepository, BMIService bmiService) {
     this.mealLogRepository = mealLogRepository;
     this.imageMealLogRepository = imageMealLogRepository;
     this.searchMealLogRepository = searchMealLogRepository;
@@ -56,6 +60,11 @@ public class MealService {
     this.nutritionLogRepository = nutritionLogRepository;
     this.preferredFoodRepository = preferredFoodRepository;
     this.preferredSupplementRepository = preferredSupplementRepository;
+    this.bmiService = bmiService;
+  }
+
+  public Long getLastMealLogId() {
+    return mealLogRepository.count();
   }
 
   // 이미지 MealLog 저장
@@ -177,6 +186,9 @@ public class MealService {
   // DietCreate 페이지에 필요한 데이터들 GET
   public MealLogCreateResponse dietCreatePage(String user, LocalDateTime date) {
     MealLogCreateResponse mealLogCreateResponse = new MealLogCreateResponse();
+    SelectDateMealLogDTO selectDateMealLogDTO = new SelectDateMealLogDTO();
+    SelectDateNutritionDTO selectDateNutritionDTO = new SelectDateNutritionDTO();
+
     List<NutritionLog> nutritionLogs = nutritionLogRepository.findByDateAndUserId(date,user);
     if(nutritionLogs.isEmpty()){
       return MealLogCreateResponse.empty(user,date);
@@ -212,28 +224,28 @@ public class MealService {
 
 
     // NutritionLog
-    mealLogCreateResponse.setCalories(nutritionLog.getCalories());
-    mealLogCreateResponse.setProtein(nutritionLog.getProtein());
-    mealLogCreateResponse.setCarbohydrate(nutritionLog.getCarbohydrate());
-    mealLogCreateResponse.setFat(nutritionLog.getFat());
-    mealLogCreateResponse.setSugar(nutritionLog.getSugar());
-    mealLogCreateResponse.setSodium(nutritionLog.getSodium());
-    mealLogCreateResponse.setDietaryFiber(nutritionLog.getDietaryFiber());
-    mealLogCreateResponse.setCalcium(nutritionLog.getCalcium());
-    mealLogCreateResponse.setSaturatedFat(nutritionLog.getSaturatedFat());
-    mealLogCreateResponse.setTransFat(nutritionLog.getTransFat());
-    mealLogCreateResponse.setCholesterol(nutritionLog.getCholesterol());
-    mealLogCreateResponse.setVitaminA(nutritionLog.getVitaminA());
-    mealLogCreateResponse.setVitaminB1(nutritionLog.getVitaminB1());
-    mealLogCreateResponse.setVitaminC(nutritionLog.getVitaminC());
-    mealLogCreateResponse.setVitaminD(nutritionLog.getVitaminD());
-    mealLogCreateResponse.setVitaminE(nutritionLog.getVitaminE());
-    mealLogCreateResponse.setMagnesium(nutritionLog.getMagnesium());
-    mealLogCreateResponse.setZinc(nutritionLog.getZinc());
-    mealLogCreateResponse.setLactium(nutritionLog.getLactium());
-    mealLogCreateResponse.setPotassium(nutritionLog.getPotassium());
-    mealLogCreateResponse.setLArginine(nutritionLog.getLArginine());
-    mealLogCreateResponse.setOmega3(nutritionLog.getOmega3());
+    selectDateNutritionDTO.setCalories(nutritionLog.getCalories());
+    selectDateNutritionDTO.setProtein(nutritionLog.getProtein());
+    selectDateNutritionDTO.setCarbohydrate(nutritionLog.getCarbohydrate());
+    selectDateNutritionDTO.setFat(nutritionLog.getFat());
+    selectDateNutritionDTO.setSugar(nutritionLog.getSugar());
+    selectDateNutritionDTO.setSodium(nutritionLog.getSodium());
+    selectDateNutritionDTO.setDietaryFiber(nutritionLog.getDietaryFiber());
+    selectDateNutritionDTO.setCalcium(nutritionLog.getCalcium());
+    selectDateNutritionDTO.setSaturatedFat(nutritionLog.getSaturatedFat());
+    selectDateNutritionDTO.setTransFat(nutritionLog.getTransFat());
+    selectDateNutritionDTO.setCholesterol(nutritionLog.getCholesterol());
+    selectDateNutritionDTO.setVitaminA(nutritionLog.getVitaminA());
+    selectDateNutritionDTO.setVitaminB1(nutritionLog.getVitaminB1());
+    selectDateNutritionDTO.setVitaminC(nutritionLog.getVitaminC());
+    selectDateNutritionDTO.setVitaminD(nutritionLog.getVitaminD());
+    selectDateNutritionDTO.setVitaminE(nutritionLog.getVitaminE());
+    selectDateNutritionDTO.setMagnesium(nutritionLog.getMagnesium());
+    selectDateNutritionDTO.setZinc(nutritionLog.getZinc());
+    selectDateNutritionDTO.setLactium(nutritionLog.getLactium());
+    selectDateNutritionDTO.setPotassium(nutritionLog.getPotassium());
+    selectDateNutritionDTO.setLArginine(nutritionLog.getLArginine());
+    selectDateNutritionDTO.setOmega3(nutritionLog.getOmega3());
 
     mealLogCreateResponse.setSelectDate(date);
 
@@ -258,27 +270,59 @@ public class MealService {
     }
 
     // 상세정보로 넘어가기위한 초석작업??
-    mealLogCreateResponse.setMealIds(mealIds);
-    mealLogCreateResponse.setMealLogImage(mealLogImage);
-    mealLogCreateResponse.setFoodLogImage(foodLogImage);
+    selectDateMealLogDTO.setMealIds(mealIds);
+    selectDateMealLogDTO.setMealLogImage(mealLogImage);
+    selectDateMealLogDTO.setFoodLogImage(foodLogImage);
 
-    // 선호 음식에 대한 사진
-    List<String> preferredFoodNames = preferredFoodRepository.findByUserUserId(user)
-            .stream()
-            .map(preferredFood -> preferredFood.getFoodData().getFoodImage())
-            .collect(Collectors.toList());
+    BMI bmiInfo = bmiService.getBMI(user);
+    double bmi = 0;
 
-    mealLogCreateResponse.setPreferredFoodImage(preferredFoodNames);
+    if(bmiInfo.getGender().equals("male")){
+      bmi = 88.362 + (13.397 * bmiInfo.getWeight()) + (4.799 * bmiInfo.getHeight()) - (5.677 * bmiInfo.getAge());
+    } else if(bmiInfo.getGender().equals("female")){
+      bmi = 447.593 + (9.247 * bmiInfo.getWeight()) + (3.098 * bmiInfo.getHeight()) - (4.330 * bmiInfo.getAge());
+    }
 
-    // 선호 영양제에 대한 사진
-    List<String> preferredSupplementNames = preferredSupplementRepository.findByUserUserId(user)
-            .stream()
-            .map(preferredSupplement -> preferredSupplement.getSupplementData().getSupplementImage())
-            .collect(Collectors.toList());
+    bmi = bmi*1.375;
+    bmi = Math.round(bmi*10) / 10.0;
 
-    mealLogCreateResponse.setPreferredSupplementImage(preferredSupplementNames);
+    // 만약에 그거 사용하면 또 만들어야 함.
+
+    mealLogCreateResponse.setSelectDateMealLog(selectDateMealLogDTO);
+    mealLogCreateResponse.setSelectDateNutrition(selectDateNutritionDTO);
+    mealLogCreateResponse.setUserId(user);
+    mealLogCreateResponse.setSelectDate(date);
+    mealLogCreateResponse.setRecommendationCalories(bmi);
 
     return mealLogCreateResponse;
   }
 
+  public PreferredMealAndSupDTO getPreferredMealAndSupDTO(String user) {
+    PreferredMealAndSupDTO mealAndSupDTO = new PreferredMealAndSupDTO();
+    // 선호 음식에 대한 사진
+    List<String> preferredFoodNames = preferredFoodRepository.findByUserUserId(user)
+        .stream()
+        .map(preferredFood -> preferredFood.getFoodData().getFoodImage())
+        .collect(Collectors.toList());
+
+    mealAndSupDTO.setPreferredFoodImage(preferredFoodNames);
+
+    // 선호 영양제에 대한 사진
+    List<String> preferredSupplementNames = preferredSupplementRepository.findByUserUserId(user)
+        .stream()
+        .map(preferredSupplement -> preferredSupplement.getSupplementData().getSupplementImage())
+        .collect(Collectors.toList());
+
+    mealAndSupDTO.setPreferredSupplementImage(preferredSupplementNames);
+
+    return mealAndSupDTO;
+  }
+
+  public MealLog getMealLog(Long mealLogId) {
+    return mealLogRepository.findById(mealLogId).get();
+  }
+
+  public ImageMealLog getImageMealLog(Long mealLogId) {
+    return imageMealLogRepository.findByMealId(mealLogId);
+  }
 }

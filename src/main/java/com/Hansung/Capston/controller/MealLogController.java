@@ -3,14 +3,20 @@ package com.Hansung.Capston.controller;
 import com.Hansung.Capston.dto.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
+import com.Hansung.Capston.dto.MealLog.PreferredMealAndSupDTO;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.SelectedMealLogRequest;
+import com.Hansung.Capston.entity.ImageMealLog;
 import com.Hansung.Capston.entity.MealLog;
+import com.Hansung.Capston.entity.MealType;
 import com.Hansung.Capston.repository.MealLogRepository;
+import com.Hansung.Capston.service.AwsS3Service;
 import com.Hansung.Capston.service.MealService;
 import com.Hansung.Capston.service.NutrientService;
 import com.Hansung.Capston.service.OpenAiApiService;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.function.Function;
 
 @CrossOrigin
 @RestController
@@ -39,13 +46,46 @@ public class MealLogController {
   private final MealService mealService;
   private final OpenAiApiService openAiApiService;
   private final NutrientService nutrientService;
+  private final AwsS3Service s3Service;
 
   @Autowired
   public MealLogController(MealService mealService, OpenAiApiService openAiApiService,
-      NutrientService nutrientService) {
+      NutrientService nutrientService, AwsS3Service s3Service) {
     this.mealService = mealService;
     this.openAiApiService = openAiApiService;
     this.nutrientService = nutrientService;
+    this.s3Service = s3Service;
+  }
+
+// 클라이언트 요청 예시: /getS3URL?fileName=example.jpg&contentType=image/jpeg
+
+  @GetMapping("/getS3URL")
+  public ResponseEntity<String> getS3URL(@RequestParam("fileName") String fileName, @RequestParam("contentType") String contentType) {
+    // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || auth.getPrincipal() == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);  // 401 Unauthorized
+    }
+
+    // 람다 표현식으로 파일 이름 해시화
+    Function<String, String> hashFileName = (inputFileName) -> {
+      try {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hashBytes = digest.digest(inputFileName.getBytes());
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hashBytes) {
+          hexString.append(String.format("%02x", b));
+        }
+        return hexString.toString();
+      } catch (NoSuchAlgorithmException e) {
+        throw new RuntimeException("Hashing algorithm not found", e);
+      }
+    };
+
+    // 파일 이름 해시화
+    String hashedFileName = hashFileName.apply(fileName + String.valueOf(mealService.getLastMealLogId()));
+
+    return ResponseEntity.ok(s3Service.generatePreSignedUrl(hashedFileName, contentType));
   }
 
   @PostMapping("/save-image-meal") // 저장
@@ -163,8 +203,12 @@ public static class ConfirmMealRequest {
       return ResponseEntity.status(401).build();
     }
     String userId = (String) auth.getPrincipal();
+    MealLog selectedMealLog = mealService.getMealLog(selectedMealLogRequest.getMealLogId());
 
-    mealService.delete(selectedMealLogRequest.getMealLogId());
+    if(selectedMealLog.getType()== MealType.image){
+      s3Service.deleteImageFromS3(mealService.getImageMealLog(selectedMealLogRequest.getMealLogId()).getMealImage());
+    }
+    mealService.delete(selectedMealLog.getMealId());
 
     return new ResponseEntity<>(selectedMealLogRequest, HttpStatus.OK);
   }
@@ -175,5 +219,12 @@ public static class ConfirmMealRequest {
     MealLogCreateResponse mealLogCreateResponse = mealService.dietCreatePage(userId, dateTime);
 
     return new ResponseEntity<>(mealLogCreateResponse, HttpStatus.OK);
+  }
+
+  @GetMapping("/preferred")
+  public ResponseEntity<PreferredMealAndSupDTO> getPreferredMealAndSup(@RequestParam String userId) {
+    PreferredMealAndSupDTO preferredMealAndSupDTO = mealService.getPreferredMealAndSupDTO(userId);
+
+    return new ResponseEntity<>(preferredMealAndSupDTO, HttpStatus.OK);
   }
 }

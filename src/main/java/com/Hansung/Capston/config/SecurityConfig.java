@@ -31,7 +31,6 @@ public class SecurityConfig {
                 // JWT 필터를 UsernamePasswordAuthenticationFilter 이전에 추가
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
-
     }
 
     // JWT 필터 빈 등록
