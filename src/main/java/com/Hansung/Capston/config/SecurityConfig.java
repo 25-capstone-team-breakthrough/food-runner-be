@@ -1,5 +1,7 @@
 package com.Hansung.Capston.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import com.Hansung.Capston.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Bean;
@@ -19,20 +21,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(CsrfConfigurer<HttpSecurity>::disable)
+        http
+            .cors(withDefaults()) // Spring Security 기본 CORS 설정 사용
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/users/login", "/users/signup").permitAll()
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-                .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/", "/users/login", "/users/signup").permitAll()	// requestMatchers의 인자로 전달된 url은 모두에게 허용
-                            .anyRequest().authenticated()	// 그 외의 모든 요청은 인증 필요
-                )
-                // 세션을 사용하지 않으므로 STATELESS 설정
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // JWT 필터를 UsernamePasswordAuthenticationFilter 이전에 추가
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .build();
-
+        return http.build();
     }
+
 
     // JWT 필터 빈 등록
     @Bean
