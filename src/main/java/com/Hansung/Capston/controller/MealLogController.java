@@ -97,7 +97,7 @@ public class MealLogController {
     }
     String userId = (String) auth.getPrincipal();
     imageMealLogCreateRequest.setUserId(userId);
-
+    LocalDateTime date = imageMealLogCreateRequest.getDate();
     String response = "";
 
     // 이미지 분석 결과로 음식 이름 배열 받기
@@ -109,6 +109,8 @@ public class MealLogController {
       // 음식 데이터를 처리하고 MealLog 저장
       for (FoodDataDTO foodDataDTO : foodDataDTOS) {
         MealLog mealLog = mealService.imageSave(imageMealLogCreateRequest, foodDataDTO);
+        // 식사 기록 추가할 때는 meallog 먼저 추가한 후에 해야함
+        nutrientService.setNutrientLog(userId,date,true);
         response="success"; // mealId를 키로 응답에 추가
       }
 
@@ -191,8 +193,8 @@ public static class ConfirmMealRequest {
     String userId = (String) auth.getPrincipal();
 
     MealLog mealLog = mealService.searchSave(userId, searchMealLogCreateRequest); // image_meal_log나 search_meal_log는 서비스에서 자동으로 추가해줌
-    // 저장뿐만 아니라 영양소도 추가해야 함
-
+    // 식사 기록 추가할 때는 meallog 먼저 추가한 후에 해야함
+    nutrientService.setNutrientLog(userId,searchMealLogCreateRequest.getDate(),true);
     return new ResponseEntity<>(mealLog, HttpStatus.OK);
   }
 
@@ -204,6 +206,8 @@ public static class ConfirmMealRequest {
     }
     String userId = (String) auth.getPrincipal();
     MealLog selectedMealLog = mealService.getMealLog(selectedMealLogRequest.getMealLogId());
+    // 식사 기록 삭제할 때는 meallog 삭제 전에 해야함
+    nutrientService.setNutrientLog(userId, selectedMealLog.getDate(), false);
 
     if(selectedMealLog.getType()== MealType.image){
       s3Service.deleteImageFromS3(mealService.getImageMealLog(selectedMealLogRequest.getMealLogId()).getMealImage());

@@ -41,6 +41,7 @@ public class MealService {
   private final PreferredSupplementRepository preferredSupplementRepository;
 
   private final BMIService bmiService;
+  private final NutrientService nutrientService;
 
   @Autowired
   public MealService(MealLogRepository mealLogRepository,
@@ -50,7 +51,8 @@ public class MealService {
       FoodDataRepository foodDataRepository, SupplementDataRepository supplementDataRepository,
       NutritionLogRepository nutritionLogRepository,
       PreferredFoodRepository preferredFoodRepository,
-      PreferredSupplementRepository preferredSupplementRepository, BMIService bmiService) {
+      PreferredSupplementRepository preferredSupplementRepository, BMIService bmiService,
+      NutrientService nutrientService) {
     this.mealLogRepository = mealLogRepository;
     this.imageMealLogRepository = imageMealLogRepository;
     this.searchMealLogRepository = searchMealLogRepository;
@@ -61,6 +63,7 @@ public class MealService {
     this.preferredFoodRepository = preferredFoodRepository;
     this.preferredSupplementRepository = preferredSupplementRepository;
     this.bmiService = bmiService;
+    this.nutrientService = nutrientService;
   }
 
   public Long getLastMealLogId() {
@@ -187,65 +190,6 @@ public class MealService {
   public MealLogCreateResponse dietCreatePage(String user, LocalDateTime date) {
     MealLogCreateResponse mealLogCreateResponse = new MealLogCreateResponse();
     SelectDateMealLogDTO selectDateMealLogDTO = new SelectDateMealLogDTO();
-    SelectDateNutritionDTO selectDateNutritionDTO = new SelectDateNutritionDTO();
-
-    List<NutritionLog> nutritionLogs = nutritionLogRepository.findByDateAndUserId(date,user);
-    if(nutritionLogs.isEmpty()){
-      return MealLogCreateResponse.empty(user,date);
-    }
-
-
-    NutritionLog nutritionLog = new NutritionLog();
-
-    for (NutritionLog log : nutritionLogs) {
-      nutritionLog.setCalories(nutritionLog.getCalories() + log.getCalories());
-      nutritionLog.setProtein(nutritionLog.getProtein() + log.getProtein());
-      nutritionLog.setCarbohydrate(nutritionLog.getCarbohydrate() + log.getCarbohydrate());
-      nutritionLog.setFat(nutritionLog.getFat() + log.getFat());
-      nutritionLog.setSugar(nutritionLog.getSugar() + log.getSugar());
-      nutritionLog.setSodium(nutritionLog.getSodium() + log.getSodium());
-      nutritionLog.setDietaryFiber(nutritionLog.getDietaryFiber() + log.getDietaryFiber());
-      nutritionLog.setCalcium(nutritionLog.getCalcium() + log.getCalcium());
-      nutritionLog.setSaturatedFat(nutritionLog.getSaturatedFat() + log.getSaturatedFat());
-      nutritionLog.setTransFat(nutritionLog.getTransFat() + log.getTransFat());
-      nutritionLog.setCholesterol(nutritionLog.getCholesterol() + log.getCholesterol());
-      nutritionLog.setVitaminA(nutritionLog.getVitaminA() + log.getVitaminA());
-      nutritionLog.setVitaminB1(nutritionLog.getVitaminB1() + log.getVitaminB1());
-      nutritionLog.setVitaminC(nutritionLog.getVitaminC() + log.getVitaminC());
-      nutritionLog.setVitaminD(nutritionLog.getVitaminD() + log.getVitaminD());
-      nutritionLog.setVitaminE(nutritionLog.getVitaminE() + log.getVitaminE());
-      nutritionLog.setMagnesium(nutritionLog.getMagnesium() + log.getMagnesium());
-      nutritionLog.setZinc(nutritionLog.getZinc() + log.getZinc());
-      nutritionLog.setLactium(nutritionLog.getLactium() + log.getLactium());
-      nutritionLog.setPotassium(nutritionLog.getPotassium() + log.getPotassium());
-      nutritionLog.setLArginine(nutritionLog.getLArginine() + log.getLArginine());
-      nutritionLog.setOmega3(nutritionLog.getOmega3() + log.getOmega3());
-    }
-
-
-    // NutritionLog
-    selectDateNutritionDTO.setCalories(nutritionLog.getCalories());
-    selectDateNutritionDTO.setProtein(nutritionLog.getProtein());
-    selectDateNutritionDTO.setCarbohydrate(nutritionLog.getCarbohydrate());
-    selectDateNutritionDTO.setFat(nutritionLog.getFat());
-    selectDateNutritionDTO.setSugar(nutritionLog.getSugar());
-    selectDateNutritionDTO.setSodium(nutritionLog.getSodium());
-    selectDateNutritionDTO.setDietaryFiber(nutritionLog.getDietaryFiber());
-    selectDateNutritionDTO.setCalcium(nutritionLog.getCalcium());
-    selectDateNutritionDTO.setSaturatedFat(nutritionLog.getSaturatedFat());
-    selectDateNutritionDTO.setTransFat(nutritionLog.getTransFat());
-    selectDateNutritionDTO.setCholesterol(nutritionLog.getCholesterol());
-    selectDateNutritionDTO.setVitaminA(nutritionLog.getVitaminA());
-    selectDateNutritionDTO.setVitaminB1(nutritionLog.getVitaminB1());
-    selectDateNutritionDTO.setVitaminC(nutritionLog.getVitaminC());
-    selectDateNutritionDTO.setVitaminD(nutritionLog.getVitaminD());
-    selectDateNutritionDTO.setVitaminE(nutritionLog.getVitaminE());
-    selectDateNutritionDTO.setMagnesium(nutritionLog.getMagnesium());
-    selectDateNutritionDTO.setZinc(nutritionLog.getZinc());
-    selectDateNutritionDTO.setLactium(nutritionLog.getLactium());
-    selectDateNutritionDTO.setPotassium(nutritionLog.getPotassium());
-    selectDateNutritionDTO.setLArginine(nutritionLog.getLArginine());
-    selectDateNutritionDTO.setOmega3(nutritionLog.getOmega3());
 
     mealLogCreateResponse.setSelectDate(date);
 
@@ -289,7 +233,7 @@ public class MealService {
     // 만약에 그거 사용하면 또 만들어야 함.
 
     mealLogCreateResponse.setSelectDateMealLog(selectDateMealLogDTO);
-    mealLogCreateResponse.setSelectDateNutrition(selectDateNutritionDTO);
+    mealLogCreateResponse.setSelectDateNutrition(nutrientService.getSelectDateNutrition(user,date));
     mealLogCreateResponse.setUserId(user);
     mealLogCreateResponse.setSelectDate(date);
     mealLogCreateResponse.setRecommendationCalories(bmi);
