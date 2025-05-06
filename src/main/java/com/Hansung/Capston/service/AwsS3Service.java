@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import java.net.MalformedURLException;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +19,13 @@ import java.util.UUID;
 @Service
 public class AwsS3Service {
   private final AmazonS3 amazonS3Client;
-  private final Logger logger;
-
+  private static final Logger logger = LoggerFactory.getLogger(AwsS3Service.class);
   @Value("${aws.s3.bucket}")
   private String bucketName;
 
-  public AwsS3Service(AmazonS3 amazonS3Client, Logger logger) {
+  @Autowired
+  public AwsS3Service(AmazonS3 amazonS3Client) {
     this.amazonS3Client = amazonS3Client;
-    this.logger = logger;
   }
 
   public String generatePreSignedUrl(String fileName, String contentType) {

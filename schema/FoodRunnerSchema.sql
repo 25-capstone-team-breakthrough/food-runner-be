@@ -23,32 +23,32 @@ CREATE TABLE BMI (
 
 -- 인바디 테이블 Inbody
 CREATE TABLE Inbody (
-inbody_id               INT AUTO_INCREMENT NOT NULL,  -- 인바디 고유 ID (기본 키)
-user_id                 VARCHAR(15)       NOT NULL,   -- 사용자 ID (User 테이블의 FK)
-body_water              FLOAT            NOT NULL,    -- 체수분
-protein                 FLOAT            NOT NULL,    -- 단백질
-minerals                FLOAT            NOT NULL,    -- 무기질
-body_fat_amount         FLOAT            NOT NULL,    -- 체지방량
-skeletal_muscle_mass    FLOAT            NOT NULL,    -- 골격근량
-BMI                     FLOAT            NOT NULL,    -- BMI
-body_fat_percentage     FLOAT            NOT NULL,    -- 체지방률
-segmental_lean_analysis FLOAT            NOT NULL,    -- 부위별 근육 분석(실제로는 별도 테이블 고려 가능)
-segmental_fat_analysis  FLOAT            NOT NULL,    -- 부위별 체지방 분획(실제로는 별도 테이블 고려 가능)
-created_at              DATETIME         NOT NULL,    -- 데이터 생성 시간
-PRIMARY KEY (inbody_id),
-FOREIGN KEY (user_id) REFERENCES User(user_id)
+    inbody_id               INT AUTO_INCREMENT NOT NULL,  -- 인바디 고유 ID (기본 키)
+    user_id                 VARCHAR(15)       NOT NULL,   -- 사용자 ID (User 테이블의 FK)
+    body_water              FLOAT            NOT NULL,    -- 체수분
+    protein                 FLOAT            NOT NULL,    -- 단백질
+    minerals                FLOAT            NOT NULL,    -- 무기질
+    body_fat_amount         FLOAT            NOT NULL,    -- 체지방량
+    skeletal_muscle_mass    FLOAT            NOT NULL,    -- 골격근량
+    BMI                     FLOAT            NOT NULL,    -- BMI
+    body_fat_percentage     FLOAT            NOT NULL,    -- 체지방률
+    segmental_lean_analysis FLOAT            NOT NULL,    -- 부위별 근육 분석(실제로는 별도 테이블 고려 가능)
+    segmental_fat_analysis  FLOAT            NOT NULL,    -- 부위별 체지방 분획(실제로는 별도 테이블 고려 가능)
+    created_at              DATETIME         NOT NULL,    -- 데이터 생성 시간
+    PRIMARY KEY (inbody_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
 
 -- 인바디 이미지 테이블 Inbody_Image
 CREATE TABLE Inbody_Image (
-picture_id  INT AUTO_INCREMENT NOT NULL, -- 인바디 사진 고유 ID (기본 키)
-inbody_id   INT               NOT NULL,  -- 인바디 고유 ID (Inbody 테이블의 FK)
-user_id     VARCHAR(15)       NOT NULL,  -- 사용자 ID (User 테이블의 FK)
-file_path   VARCHAR(255)      NOT NULL,  -- 사진 파일 경로
-created_at  DATETIME          NOT NULL,  -- 사진 업로드 시간
-PRIMARY KEY (picture_id),
-FOREIGN KEY (inbody_id) REFERENCES Inbody(inbody_id),
-FOREIGN KEY (user_id)   REFERENCES User(user_id)
+    picture_id  INT AUTO_INCREMENT NOT NULL, -- 인바디 사진 고유 ID (기본 키)
+    inbody_id   INT               NOT NULL,  -- 인바디 고유 ID (Inbody 테이블의 FK)
+    user_id     VARCHAR(15)       NOT NULL,  -- 사용자 ID (User 테이블의 FK)
+    file_path   VARCHAR(255)      NOT NULL,  -- 사진 파일 경로
+    created_at  DATETIME          NOT NULL,  -- 사진 업로드 시간
+    PRIMARY KEY (picture_id),
+    FOREIGN KEY (inbody_id) REFERENCES Inbody(inbody_id),
+    FOREIGN KEY (user_id)   REFERENCES User(user_id)
 );
 
 
@@ -68,7 +68,7 @@ CREATE TABLE Exercise_save(
 
 -- ✅ 영양제 데이터 테이블
 CREATE TABLE Supplement_Data (
-    supplement_id INT KEY,
+    supplement_id INT PRIMARY KEY,
     company VARCHAR(255),
     supplement_name VARCHAR(255),
     usage_method TEXT NOT NULL,
@@ -101,8 +101,22 @@ CREATE TABLE Supplement_Log (
 CREATE TABLE Ingredient_Data (
     ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
     ingredient_name VARCHAR(255) NOT NULL,
-    ingredient_nutrition TEXT NOT NULL,
-    ingredient_cal DECIMAL(10,2) NOT NULL,
+    calories DECIMAL(10,2) DEFAULT 0,
+    protein DECIMAL(10,2) DEFAULT 0,
+    carbohydrate DECIMAL(10,2) DEFAULT 0,
+    fat DECIMAL(10,2) DEFAULT 0,
+    sugar DECIMAL(10,2) DEFAULT 0,
+    sodium DECIMAL(10,2) DEFAULT 0,
+    dietary_fiber DECIMAL(10,2) DEFAULT 0,
+    calcium DECIMAL(10,2) DEFAULT 0,
+    saturated_fat DECIMAL(10,2) DEFAULT 0,
+    trans_fat DECIMAL(10,2)DEFAULT 0,
+    cholesterol DECIMAL(10,2) DEFAULT 0,
+    vitamin_a DECIMAL(10,2) DEFAULT 0,
+    vitamin_b1 DECIMAL(10,2) DEFAULT 0,
+    vitamin_c DECIMAL(10,2) DEFAULT 0,
+    vitamin_d DECIMAL(10,2) DEFAULT 0,
+    ash DECIMAL(10, 2) DEFAULT 0,
     ingredient_image VARCHAR(255)
 );
 
@@ -205,44 +219,44 @@ CREATE TABLE Image_Meal_Log (
 
 -- ✅ 요리 데이터 테이블
 CREATE TABLE Food_Data (
-                           food_id INT AUTO_INCREMENT PRIMARY KEY,
-                           food_image VARCHAR(255),
-                           food_name VARCHAR(255) not null,
-                           food_company VARCHAR(255),
-                           calories DECIMAL(10,2) DEFAULT 0,
-                           protein DECIMAL(10,2) DEFAULT 0,
-                           carbohydrate DECIMAL(10,2) DEFAULT 0,
-                           fat DECIMAL(10,2) DEFAULT 0,
-                           sugar DECIMAL(10,2) DEFAULT 0,
-                           sodium DECIMAL(10,2) DEFAULT 0,
-                           dietary_fiber DECIMAL(10,2) DEFAULT 0,
-                           calcium DECIMAL(10,2) DEFAULT 0,
-                           saturated_fat DECIMAL(10,2) DEFAULT 0,
-                           trans_fat DECIMAL(10,2)DEFAULT 0,
-                           cholesterol DECIMAL(10,2) DEFAULT 0,
-                           vitamin_a DECIMAL(10,2) DEFAULT 0,
-                           vitamin_b1 DECIMAL(10,2) DEFAULT 0,
-                           vitamin_c DECIMAL(10,2) DEFAULT 0,
-                           vitamin_d DECIMAL(10,2) DEFAULT 0,
-                           vitamin_e DECIMAL(10,2) DEFAULT 0,
-                           magnesium DECIMAL(10,2) DEFAULT 0,
-                           zinc DECIMAL(10,2) DEFAULT 0,
-                           lactium DECIMAL(10,2) DEFAULT 0,
-                           potassium DECIMAL(10,2) DEFAULT 0,
-                           l_arginine DECIMAL(10,2) DEFAULT 0,
-                           omega3 DECIMAL(10,2) DEFAULT 0
+   food_id INT AUTO_INCREMENT PRIMARY KEY,
+   food_image VARCHAR(255),
+   food_name VARCHAR(255) not null,
+   food_company VARCHAR(255),
+   calories DECIMAL(10,2) DEFAULT 0,
+   protein DECIMAL(10,2) DEFAULT 0,
+   carbohydrate DECIMAL(10,2) DEFAULT 0,
+   fat DECIMAL(10,2) DEFAULT 0,
+   sugar DECIMAL(10,2) DEFAULT 0,
+   sodium DECIMAL(10,2) DEFAULT 0,
+   dietary_fiber DECIMAL(10,2) DEFAULT 0,
+   calcium DECIMAL(10,2) DEFAULT 0,
+   saturated_fat DECIMAL(10,2) DEFAULT 0,
+   trans_fat DECIMAL(10,2)DEFAULT 0,
+   cholesterol DECIMAL(10,2) DEFAULT 0,
+   vitamin_a DECIMAL(10,2) DEFAULT 0,
+   vitamin_b1 DECIMAL(10,2) DEFAULT 0,
+   vitamin_c DECIMAL(10,2) DEFAULT 0,
+   vitamin_d DECIMAL(10,2) DEFAULT 0,
+   vitamin_e DECIMAL(10,2) DEFAULT 0,
+   magnesium DECIMAL(10,2) DEFAULT 0,
+   zinc DECIMAL(10,2) DEFAULT 0,
+   lactium DECIMAL(10,2) DEFAULT 0,
+   potassium DECIMAL(10,2) DEFAULT 0,
+   l_arginine DECIMAL(10,2) DEFAULT 0,
+   omega3 DECIMAL(10,2) DEFAULT 0
 );
 
 
 -- ✅ 검색 식사 기록 테이블
 CREATE TABLE Search_Meal_Log (
     search_meal_log_id INT AUTO_INCREMENT PRIMARY KEY,
-	user_id VARCHAR(50) NOT NULL,
+    user_id VARCHAR(50) NOT NULL,
     meal_id INT NOT NULL,
     food_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES User(user_id),
     FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id),
-	FOREIGN KEY (food_id) REFERENCES Food_Data(food_id)
+    FOREIGN KEY (food_id) REFERENCES Food_Data(food_id)
 );
 
 -- ✅ 영양소 기록 테이블
@@ -281,7 +295,7 @@ CREATE TABLE Recommended_Nutrition (
     recommended_nutrition_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(50) NOT NULL,
     inbody_info BOOLEAN DEFAULT FALSE,
-        calories DECIMAL(10,2) DEFAULT 0,
+    calories DECIMAL(10,2) DEFAULT 0,
     protein DECIMAL(10,2) DEFAULT 0,
     carbohydrate DECIMAL(10,2) DEFAULT 0,
     fat DECIMAL(10,2) DEFAULT 0,
