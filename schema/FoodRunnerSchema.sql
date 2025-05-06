@@ -292,33 +292,37 @@ CREATE TABLE Nutrition_Log (
 
 -- ✅ 권장 영양소 테이블
 CREATE TABLE Recommended_Nutrition (
-    recommended_nutrition_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id VARCHAR(50) NOT NULL,
-    inbody_info BOOLEAN DEFAULT FALSE,
-    calories DECIMAL(10,2) DEFAULT 0,
-    protein DECIMAL(10,2) DEFAULT 0,
-    carbohydrate DECIMAL(10,2) DEFAULT 0,
-    fat DECIMAL(10,2) DEFAULT 0,
-    sugar DECIMAL(10,2) DEFAULT 0,
-    sodium DECIMAL(10,2) DEFAULT 0,
-    dietary_fiber DECIMAL(10,2) DEFAULT 0,
-    calcium DECIMAL(10,2) DEFAULT 0,
-    saturated_fat DECIMAL(10,2) DEFAULT 0,
-    trans_fat DECIMAL(10,2)DEFAULT 0,
-    cholesterol DECIMAL(10,2) DEFAULT 0,
-    vitamin_a DECIMAL(10,2) DEFAULT 0,
-    vitamin_b1 DECIMAL(10,2) DEFAULT 0,
-    vitamin_c DECIMAL(10,2) DEFAULT 0,
-    vitamin_d DECIMAL(10,2) DEFAULT 0,
-    vitamin_e DECIMAL(10,2) DEFAULT 0,
-    magnesium DECIMAL(10,2) DEFAULT 0,
-    zinc DECIMAL(10,2) DEFAULT 0,
-    lactium DECIMAL(10,2) DEFAULT 0,
-    potassium DECIMAL(10,2) DEFAULT 0,
-    l_arginine DECIMAL(10,2) DEFAULT 0,
-    omega3 DECIMAL(10,2) DEFAULT 0,
+   recommended_nutrition_id INT AUTO_INCREMENT PRIMARY KEY,
+   user_id VARCHAR(50) NOT NULL,
+   nutrition_type VARCHAR(20) NOT NULL,  -- ← enum NutritionType 저장 (MIN, MAX)
+
+   inbody_info BOOLEAN DEFAULT FALSE,
+   calories DECIMAL(10,2) DEFAULT 0,
+   protein DECIMAL(10,2) DEFAULT 0,
+   carbohydrate DECIMAL(10,2) DEFAULT 0,
+   fat DECIMAL(10,2) DEFAULT 0,
+   sugar DECIMAL(10,2) DEFAULT 0,
+   saturated_fat DECIMAL(10,2) DEFAULT 0,
+   trans_fat DECIMAL(10,2) DEFAULT 0,
+   cholesterol DECIMAL(10,2) DEFAULT 0,
+   sodium DECIMAL(10,2) DEFAULT 0,
+   dietary_fiber DECIMAL(10,2) DEFAULT 0,
+   calcium DECIMAL(10,2) DEFAULT 0,
+   vitamin_a DECIMAL(10,2) DEFAULT 0,
+   vitamin_b1 DECIMAL(10,2) DEFAULT 0,
+   vitamin_c DECIMAL(10,2) DEFAULT 0,
+   vitamin_d DECIMAL(10,2) DEFAULT 0,
+   vitamin_e DECIMAL(10,2) DEFAULT 0,
+   magnesium DECIMAL(10,2) DEFAULT 0,
+   zinc DECIMAL(10,2) DEFAULT 0,
+   potassium DECIMAL(10,2) DEFAULT 0,
+   l_arginine DECIMAL(10,2) DEFAULT 0,
+   omega3 DECIMAL(10,2) DEFAULT 0,
+   lactium DECIMAL(10,2) DEFAULT 0,
+
     FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
+
 
 CREATE TABLE Preferred_Food (
     prefood_id INT AUTO_INCREMENT PRIMARY KEY,

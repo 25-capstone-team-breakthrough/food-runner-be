@@ -6,6 +6,7 @@ import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
 import com.Hansung.Capston.dto.MealLog.PreferredMealAndSupDTO;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.SelectedMealLogRequest;
+import com.Hansung.Capston.dto.UserAndDateRequest;
 import com.Hansung.Capston.entity.ImageMealLog;
 import com.Hansung.Capston.entity.MealLog;
 import com.Hansung.Capston.entity.MealType;
@@ -218,9 +219,8 @@ public static class ConfirmMealRequest {
   }
 
   @GetMapping("/main") // diet 메인화면
-  public ResponseEntity<MealLogCreateResponse> getGCreateWindow(@RequestParam String userId,
-                                                                @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime dateTime){
-    MealLogCreateResponse mealLogCreateResponse = mealService.dietCreatePage(userId, dateTime);
+  public ResponseEntity<MealLogCreateResponse> getGCreateWindow(@RequestBody UserAndDateRequest userAndDateRequest) {
+    MealLogCreateResponse mealLogCreateResponse = mealService.dietCreatePage(userAndDateRequest);
 
     return new ResponseEntity<>(mealLogCreateResponse, HttpStatus.OK);
   }

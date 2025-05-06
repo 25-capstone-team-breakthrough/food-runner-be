@@ -39,7 +39,24 @@ public class BMIService {
     }
 
     //bmi 계산
-    public float calculateBMI(float weight, float height) {
+    public float calculateBMR(float weight, float height) {
         return weight / height;
+    }
+
+    public double calculateBMR(String user) {
+        BMI bmiInfo = getBMI(user);
+
+        double bmi = 0;
+
+        if(bmiInfo.getGender().equals("male")){
+            bmi = 88.362 + (13.397 * bmiInfo.getWeight()) + (4.799 * bmiInfo.getHeight()) - (5.677 * bmiInfo.getAge());
+        } else if(bmiInfo.getGender().equals("female")){
+            bmi = 447.593 + (9.247 * bmiInfo.getWeight()) + (3.098 * bmiInfo.getHeight()) - (4.330 * bmiInfo.getAge());
+        }
+
+        bmi = bmi*1.375;
+        bmi = Math.round(bmi*10) / 10.0;
+
+        return bmi;
     }
 }

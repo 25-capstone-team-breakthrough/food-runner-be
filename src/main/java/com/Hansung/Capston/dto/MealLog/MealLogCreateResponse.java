@@ -1,5 +1,8 @@
 package com.Hansung.Capston.dto.MealLog;
 
+import com.Hansung.Capston.dto.NutritionStatusDTO;
+import com.Hansung.Capston.dto.RecommendedNutrientDTO;
+import com.Hansung.Capston.entity.RecommendedNutrient;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +16,8 @@ public class MealLogCreateResponse {
   private SelectDateMealLogDTO selectDateMealLog;
   private SelectDateNutritionDTO selectDateNutrition;
   private double recommendationCalories;
+  private NutritionStatusDTO nutritionStatus;
+  private RecommendedNutrientDTO recommendedNutrientDTO;
 
 
   public static MealLogCreateResponse empty(String userId, LocalDateTime selectDate) {

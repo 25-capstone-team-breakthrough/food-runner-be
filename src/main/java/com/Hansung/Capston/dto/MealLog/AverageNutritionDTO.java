@@ -1,16 +1,18 @@
 package com.Hansung.Capston.dto.MealLog;
 
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AverageNutritionDTO {
-  private String userId;  // 사용자 ID
-
   private Double calories;
   private Double protein;
   private Double carbohydrate;

@@ -6,7 +6,8 @@ import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.PreferredMealAndSupDTO;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.SelectDateMealLogDTO;
-import com.Hansung.Capston.dto.MealLog.SelectDateNutritionDTO;
+import com.Hansung.Capston.dto.RecommendedNutrientDTO;
+import com.Hansung.Capston.dto.UserAndDateRequest;
 import com.Hansung.Capston.entity.*;
 import com.Hansung.Capston.repository.FoodDataRepository;
 import com.Hansung.Capston.repository.ImageMealLogRepository;
@@ -187,9 +188,12 @@ public class MealService {
   }
 
   // DietCreate 페이지에 필요한 데이터들 GET
-  public MealLogCreateResponse dietCreatePage(String user, LocalDateTime date) {
+  public MealLogCreateResponse dietCreatePage(UserAndDateRequest userAndDateRequest) {
     MealLogCreateResponse mealLogCreateResponse = new MealLogCreateResponse();
     SelectDateMealLogDTO selectDateMealLogDTO = new SelectDateMealLogDTO();
+
+    String user = userAndDateRequest.getUserId();
+    LocalDateTime date = userAndDateRequest.getDateTime();
 
     mealLogCreateResponse.setSelectDate(date);
 
@@ -218,25 +222,17 @@ public class MealService {
     selectDateMealLogDTO.setMealLogImage(mealLogImage);
     selectDateMealLogDTO.setFoodLogImage(foodLogImage);
 
-    BMI bmiInfo = bmiService.getBMI(user);
-    double bmi = 0;
+    RecommendedNutrientDTO recommendedNutrientDTO = new RecommendedNutrientDTO(nutrientService.getRecommendedNutrientByType(user,NutritionType.MAX),
+        nutrientService.getRecommendedNutrientByType(user,NutritionType.MIN));
 
-    if(bmiInfo.getGender().equals("male")){
-      bmi = 88.362 + (13.397 * bmiInfo.getWeight()) + (4.799 * bmiInfo.getHeight()) - (5.677 * bmiInfo.getAge());
-    } else if(bmiInfo.getGender().equals("female")){
-      bmi = 447.593 + (9.247 * bmiInfo.getWeight()) + (3.098 * bmiInfo.getHeight()) - (4.330 * bmiInfo.getAge());
-    }
-
-    bmi = bmi*1.375;
-    bmi = Math.round(bmi*10) / 10.0;
-
-    // 만약에 그거 사용하면 또 만들어야 함.
 
     mealLogCreateResponse.setSelectDateMealLog(selectDateMealLogDTO);
     mealLogCreateResponse.setSelectDateNutrition(nutrientService.getSelectDateNutrition(user,date));
     mealLogCreateResponse.setUserId(user);
     mealLogCreateResponse.setSelectDate(date);
-    mealLogCreateResponse.setRecommendationCalories(bmi);
+    mealLogCreateResponse.setRecommendationCalories(bmiService.calculateBMR(user));
+    mealLogCreateResponse.setNutritionStatus(nutrientService.getNutritionStatusForDate(user,date));
+    mealLogCreateResponse.setRecommendedNutrientDTO(recommendedNutrientDTO);
 
     return mealLogCreateResponse;
   }

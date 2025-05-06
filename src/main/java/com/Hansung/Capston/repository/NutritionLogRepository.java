@@ -1,5 +1,6 @@
 package com.Hansung.Capston.repository;
 
+import com.Hansung.Capston.dto.MealLog.AverageNutritionDTO;
 import com.Hansung.Capston.entity.NutritionLog;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,33 +16,35 @@ public interface NutritionLogRepository extends JpaRepository<NutritionLog, Long
   List<NutritionLog> findByDateAndUserId(@Param("date") LocalDateTime date, @Param("userId") String userId);
 
   @Query("""
-        SELECT 
-            AVG(n.calories),
-            AVG(n.protein),
-            AVG(n.carbohydrate),
-            AVG(n.fat),
-            AVG(n.sugar),
-            AVG(n.sodium),
-            AVG(n.dietaryFiber),
-            AVG(n.calcium),
-            AVG(n.saturatedFat),
-            AVG(n.transFat),
-            AVG(n.cholesterol),
-            AVG(n.vitaminA),
-            AVG(n.vitaminB1),
-            AVG(n.vitaminC),
-            AVG(n.vitaminD),
-            AVG(n.vitaminE),
-            AVG(n.magnesium),
-            AVG(n.zinc),
-            AVG(n.lactium),
-            AVG(n.potassium),
-            AVG(n.lArginine),
-            AVG(n.omega3)
-        FROM NutritionLog n
-        WHERE n.user.userId = :userId
-        AND n.date >= date  = :date - 30
-    """)
-  NutritionLog findAverageNutritionForLast30Days(@Param("userId") String userId, @Param("date") LocalDateTime date);
+    SELECT 
+        AVG(n.calories),
+        AVG(n.protein),
+        AVG(n.carbohydrate),
+        AVG(n.fat),
+        AVG(n.sugar),
+        AVG(n.sodium),
+        AVG(n.dietaryFiber),
+        AVG(n.calcium),
+        AVG(n.saturatedFat),
+        AVG(n.transFat),
+        AVG(n.cholesterol),
+        AVG(n.vitaminA),
+        AVG(n.vitaminB1),
+        AVG(n.vitaminC),
+        AVG(n.vitaminD),
+        AVG(n.vitaminE),
+        AVG(n.magnesium),
+        AVG(n.zinc),
+        AVG(n.lactium),
+        AVG(n.potassium),
+        AVG(n.lArginine),
+        AVG(n.omega3)
+    FROM NutritionLog n
+    WHERE n.user.userId = :userId
+    AND n.date >= CURRENT_TIMESTAMP - 30
+""")
+  AverageNutritionDTO findAverageNutritionForLast30Days(@Param("userId") String userId);
+
+
 }
 

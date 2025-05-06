@@ -1,10 +1,5 @@
 package com.Hansung.Capston.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,9 +15,13 @@ public class RecommendedNutrient {
   @Column(name = "recommended_nutrition_id")
   private Integer id;
 
-  @OneToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "nutrition_type", nullable = false)
+  private NutritionType type; // MIN, RECOMMENDED, MAX
 
   @Column(name = "inbody_info")
   private Boolean inbodyInfo = false;
@@ -42,15 +41,6 @@ public class RecommendedNutrient {
   @Column(name = "sugar")
   private Double sugar = 0.0;
 
-  @Column(name = "sodium")
-  private Double sodium = 0.0;
-
-  @Column(name = "dietary_fiber")
-  private Double dietaryFiber = 0.0;
-
-  @Column(name = "calcium")
-  private Double calcium = 0.0;
-
   @Column(name = "saturated_fat")
   private Double saturatedFat = 0.0;
 
@@ -59,6 +49,15 @@ public class RecommendedNutrient {
 
   @Column(name = "cholesterol")
   private Double cholesterol = 0.0;
+
+  @Column(name = "sodium")
+  private Double sodium = 0.0;
+
+  @Column(name = "dietary_fiber")
+  private Double dietaryFiber = 0.0;
+
+  @Column(name = "calcium")
+  private Double calcium = 0.0;
 
   @Column(name = "vitamin_a")
   private Double vitaminA = 0.0;
@@ -81,9 +80,6 @@ public class RecommendedNutrient {
   @Column(name = "zinc")
   private Double zinc = 0.0;
 
-  @Column(name = "lactium")
-  private Double lactium = 0.0;
-
   @Column(name = "potassium")
   private Double potassium = 0.0;
 
@@ -93,5 +89,6 @@ public class RecommendedNutrient {
   @Column(name = "omega3")
   private Double omega3 = 0.0;
 
+  @Column(name = "lactium")
+  private Double lactium = 0.0;
 }
-
