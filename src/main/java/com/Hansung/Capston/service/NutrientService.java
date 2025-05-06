@@ -155,7 +155,7 @@ public class NutrientService {
   public AverageNutritionDTO getAverageNutrition(String userId, LocalDateTime date){
     AverageNutritionDTO averageNutritionDTO = new AverageNutritionDTO();
 
-    List<NutritionLog> nutritionLogs = new ArrayList<>();
+    nutritionLogRepository.findAverageNutritionForLast30Days(userId);
 
 
     return averageNutritionDTO;
