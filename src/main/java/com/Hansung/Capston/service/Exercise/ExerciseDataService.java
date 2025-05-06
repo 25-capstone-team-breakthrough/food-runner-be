@@ -1,14 +1,12 @@
-package com.Hansung.Capston.service;
+package com.Hansung.Capston.service.Exercise;
 
 
-import com.Hansung.Capston.entity.ExerciseData;
-import com.Hansung.Capston.repository.ExerciseDataRepository;
+import com.Hansung.Capston.entity.Exercise.ExerciseData;
+import com.Hansung.Capston.repository.Exercise.ExerciseDataRepository;
 import com.opencsv.bean.CsvToBeanBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;

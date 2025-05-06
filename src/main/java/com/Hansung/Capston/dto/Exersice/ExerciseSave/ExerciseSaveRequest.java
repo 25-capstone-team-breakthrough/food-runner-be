@@ -1,8 +1,8 @@
-package com.Hansung.Capston.dto.Exersice;
+package com.Hansung.Capston.dto.Exersice.ExerciseSave;
 
 import lombok.Data;
 
 @Data
-public class ExerciseSaveDto {
+public class ExerciseSaveRequest {
     private Integer exerciseId;
 }

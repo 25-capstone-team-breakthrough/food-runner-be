@@ -1,4 +1,4 @@
-package com.Hansung.Capston.entity;
+package com.Hansung.Capston.entity.Exercise;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -12,9 +12,10 @@ public class CardioExerciseLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cardio_log_id")
     private Integer cardioLogId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "exercise_log_id", nullable = false)
     private ExerciseLog exerciseLog;
 

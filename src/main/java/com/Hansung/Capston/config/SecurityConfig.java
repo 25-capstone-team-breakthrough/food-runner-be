@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer<HttpSecurity>::disable)
 
                 .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/", "/users/login", "/users/signup").permitAll()	// requestMatchers의 인자로 전달된 url은 모두에게 허용
+                            .requestMatchers("/", "/users/login", "/users/signup", "/exerciseData/upload-csv","/videos/exercises", "/test").permitAll()	// requestMatchers의 인자로 전달된 url은 모두에게 허용
                             .anyRequest().authenticated()	// 그 외의 모든 요청은 인증 필요
                 )
                 // 세션을 사용하지 않으므로 STATELESS 설정

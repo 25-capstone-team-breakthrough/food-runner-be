@@ -1,6 +1,6 @@
-package com.Hansung.Capston.controller;
+package com.Hansung.Capston.controller.Exercise;
 
-import com.Hansung.Capston.service.ExerciseDataService;
+import com.Hansung.Capston.service.Exercise.ExerciseDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/exercise")
+@RequestMapping("/exerciseData")
 public class ExerciseDataController {
 
 

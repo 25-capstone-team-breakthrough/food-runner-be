@@ -1,12 +1,15 @@
 package com.Hansung.Capston.service.Exercise;
 
 import com.Hansung.Capston.common.ExerciseType;
-import com.Hansung.Capston.dto.Exersice.ExerciseLogDto;
+import com.Hansung.Capston.dto.Exersice.ExerciseLog.ExerciseLogDto;
+import com.Hansung.Capston.dto.Exersice.ExerciseLog.StrengthSetLogDto;
 import com.Hansung.Capston.dto.Exersice.ExerciseSave.ExerciseSaveRequest;
 import com.Hansung.Capston.entity.Exercise.*;
-import com.Hansung.Capston.entity.User;
+import com.Hansung.Capston.entity.UserInfo.User;
 import com.Hansung.Capston.repository.Exercise.*;
-import com.Hansung.Capston.repository.UserRepository;
+import com.Hansung.Capston.repository.UserInfo.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,26 +62,26 @@ public class ExerciseService {
             cardioLog.setPace(dto.getPace());
             cardioExerciseLogRepository.save(cardioLog);
         } else if (exerciseLog.getExerciseType() == ExerciseType.STRENGTH) {
-            StrengthExerciseLog strengthLog = new StrengthExerciseLog();
-            strengthLog.setExerciseLog(exerciseLog);
-            strengthLog.setSets(dto.getSets());
-            strengthLog.setReps(dto.getReps());
-            strengthLog.setWeight(dto.getWeight());
-            strengthExerciseLogRepository.save(strengthLog);
+            for (StrengthSetLogDto setDto : dto.getStrengthSets()) {
+                StrengthExerciseLog strengthLog = new StrengthExerciseLog();
+                strengthLog.setExerciseLog(exerciseLog);
+                strengthLog.setSets(setDto.getSets());  // 세트 번호
+                strengthLog.setReps(setDto.getReps());
+                strengthLog.setWeight(setDto.getWeight());
+                strengthExerciseLogRepository.save(strengthLog);
+            }
         }
         return exerciseLog;
     }
     //운동 기록 조회
     public List<ExerciseLogDto> searchExerciseLog(String userId) {
-        List<ExerciseLog> logs = exerciseLogRepository.serachUserlog(userId);
+        List<ExerciseLog> logs = exerciseLogRepository.findAllByUser_UserIdOrderByCreatedAtDesc(userId);
 
         return logs.stream()
                 .map(log -> {
-                    ExerciseLogResponseDto dto = new ExerciseLogResponseDto();
+                    ExerciseLogDto dto = new ExerciseLogDto();
                     dto.setLogId(log.getLogId());
-                    dto.setExerciseId(log.getExerciseData().getId());
-                    dto.setExerciseName(log.getExerciseData().getName());
-                    dto.setExerciseType(log.getExerciseType());
+                    dto.setExerciseId(log.getExerciseData().getExerciseId());
                     dto.setCreatedAt(log.getCreatedAt());
 
                     if (log.getExerciseType() == ExerciseType.CARDIO) {
@@ -91,21 +94,41 @@ public class ExerciseService {
                             dto.setPace(cardio.getPace());
                         }
                     } else {
-                        StrengthExerciseLog strength = strengthExerciseLogRepository
-                                .findByExerciseLog_LogId(log.getLogId())
-                                .orElse(null);
-                        if (strength != null) {
-                            dto.setSets(strength.getSets());
-                            dto.setReps(strength.getReps());
-                            dto.setWeight(strength.getWeight());
-                        }
+                        List<StrengthExerciseLog> sets = strengthExerciseLogRepository
+                                .findAllByExerciseLog_LogId(log.getLogId());
+
+                        List<StrengthSetLogDto> setDtos = sets.stream()
+                                .map(s -> new StrengthSetLogDto(
+                                        s.getSets(),
+                                        s.getReps(),
+                                        s.getWeight()
+                                ))
+                                .collect(Collectors.toList());
+
+                        dto.setStrengthSets(setDtos);
                     }
                     return dto;
                 })
                 .collect(Collectors.toList());
-    }
+
     }
 
+    //운동 기록 삭제
+    @Transactional
+    public void deleteExerciseLog(String userId, Integer logId) {
+
+        ExerciseLog log = exerciseLogRepository.findByLogIdAndUser_UserId(logId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("삭제할 기록을 찾을 수 없거나, 권한이 없습니다."));
+
+        if (log.getExerciseType() == ExerciseType.CARDIO) {
+            cardioExerciseLogRepository.deleteByExerciseLog_LogId(logId);
+        } else {
+            strengthExerciseLogRepository.deleteByExerciseLog_LogId(logId);
+        }
+
+
+        exerciseLogRepository.delete(log);
+    }
 
     /*즐겨찾기 관련*/
     //즐겨찾기 추가

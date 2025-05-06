@@ -50,6 +50,19 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'mysql:mysql-connector-java:8.0.33'
+
+	//csv 파일
+	implementation 'com.opencsv:opencsv:5.5.2'
+
+	//youtube API
+	implementation 'com.google.api-client:google-api-client:1.33.0'
+	implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+	implementation 'com.google.apis:google-api-services-youtube:v3-rev20230816-2.0.0'
+	implementation 'com.google.http-client:google-http-client-jackson2:1.39.2'
+
+	// Google Cloud Vision API
+	implementation 'com.google.cloud:google-cloud-vision:3.34.0'
+	implementation 'com.google.protobuf:protobuf-java:3.24.1'
 }
 
 tasks.named('test') {

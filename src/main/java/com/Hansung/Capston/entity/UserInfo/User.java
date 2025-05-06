@@ -1,12 +1,9 @@
-package com.Hansung.Capston.entity;
+package com.Hansung.Capston.entity.UserInfo;
 
 import com.Hansung.Capston.common.MemberType;
-import com.Hansung.Capston.entity.Exercise.ExerciseSave;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity                     // JPA가 이 클래스가 데이터베이스 테이블과 매핑되는 엔티티임을 인식

@@ -1,4 +1,4 @@
-package com.Hansung.Capston.dto.Exersice;
+package com.Hansung.Capston.dto.Exersice.ExerciseLog;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,8 +24,6 @@ public class ExerciseLogDto {
     private Integer time;
     private Double pace;
 
-    //근력
-    private Integer sets;
-    private Integer reps;
-    private Double weight;
+    // 근력 기록: 여러 세트를 담을 리스트
+    private List<StrengthSetLogDto> strengthSets;
 }

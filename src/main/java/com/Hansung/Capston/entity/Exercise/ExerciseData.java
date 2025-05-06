@@ -1,4 +1,4 @@
-package com.Hansung.Capston.entity;
+package com.Hansung.Capston.entity.Exercise;
 
 import com.opencsv.bean.CsvBindByName;
 import jakarta.persistence.*;
@@ -17,11 +17,15 @@ public class ExerciseData {
     @CsvBindByName(column = "exerciseName")
     private String exerciseName;
 
+
     @CsvBindByName(column = "exerciseDescription")
     private String exerciseDescription;
 
     @CsvBindByName(column = "energyConsumptionPerKg") // CSV 열 이름과 매핑
     private Double energyConsumptionPerKg;
 
-    // 기본 생성자, getter, setter
+    @CsvBindByName(column = "exerciseType")
+    private String exerciseType;
+
+
 }
