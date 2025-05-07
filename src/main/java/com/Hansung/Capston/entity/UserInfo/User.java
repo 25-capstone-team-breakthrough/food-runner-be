@@ -1,8 +1,9 @@
-package com.Hansung.Capston.entity;
+package com.Hansung.Capston.entity.UserInfo;
 
 import com.Hansung.Capston.common.MemberType;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.UUID;
 
 @Entity                     // JPA가 이 클래스가 데이터베이스 테이블과 매핑되는 엔티티임을 인식
@@ -29,7 +30,8 @@ public class User {
     @Column(name = "role")
     private MemberType role; //유저인지 관리자인지
 
-
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<ExerciseSave> favorites = new ArrayList<>();
 
     // user_id를 자동 생성하도록 설정
     @PrePersist

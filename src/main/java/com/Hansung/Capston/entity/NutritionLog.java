@@ -1,5 +1,6 @@
 package com.Hansung.Capston.entity;
 
+import com.Hansung.Capston.entity.UserInfo.User;
 import jakarta.persistence.*;
 import lombok.*;
 

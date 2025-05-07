@@ -1,10 +1,10 @@
-package com.Hansung.Capston.service;
+package com.Hansung.Capston.service.UserInfo;
 
 import com.Hansung.Capston.dto.BMI.BMIRequset;
-import com.Hansung.Capston.entity.BMI;
-import com.Hansung.Capston.entity.User;
-import com.Hansung.Capston.repository.BMIRepository;
-import com.Hansung.Capston.repository.UserRepository;
+import com.Hansung.Capston.entity.UserInfo.BMI;
+import com.Hansung.Capston.entity.UserInfo.User;
+import com.Hansung.Capston.repository.UserInfo.BMIRepository;
+import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

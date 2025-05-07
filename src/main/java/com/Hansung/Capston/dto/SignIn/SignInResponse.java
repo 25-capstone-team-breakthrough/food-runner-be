@@ -1,6 +1,6 @@
 package com.Hansung.Capston.dto.SignIn;
 
-import com.Hansung.Capston.entity.User;
+import com.Hansung.Capston.entity.UserInfo.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

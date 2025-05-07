@@ -1,16 +1,13 @@
-package com.Hansung.Capston.controller;
+package com.Hansung.Capston.controller.UserInfo;
 
 import com.Hansung.Capston.dto.BMI.BMIRequset;
 import com.Hansung.Capston.dto.BMI.BMIResponse;
-import com.Hansung.Capston.entity.BMI;
-import com.Hansung.Capston.service.BMIService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.Hansung.Capston.entity.UserInfo.BMI;
+import com.Hansung.Capston.service.UserInfo.BMIService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
