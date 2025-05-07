@@ -2,10 +2,8 @@ package com.Hansung.Capston.repository;
 
 import com.Hansung.Capston.dto.MealLog.AverageNutritionDTO;
 import com.Hansung.Capston.entity.NutritionLog;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +14,7 @@ public interface NutritionLogRepository extends JpaRepository<NutritionLog, Long
   List<NutritionLog> findByDateAndUserId(@Param("date") LocalDateTime date, @Param("userId") String userId);
 
   @Query("""
-    SELECT 
+    SELECT new com.Hansung.Capston.dto.MealLog.AverageNutritionDTO(
         AVG(n.calories),
         AVG(n.protein),
         AVG(n.carbohydrate),
@@ -39,11 +37,14 @@ public interface NutritionLogRepository extends JpaRepository<NutritionLog, Long
         AVG(n.potassium),
         AVG(n.lArginine),
         AVG(n.omega3)
+    )
     FROM NutritionLog n
     WHERE n.user.userId = :userId
-    AND n.date >= CURRENT_TIMESTAMP - 30
+    AND n.date >= :startDate
 """)
-  AverageNutritionDTO findAverageNutritionForLast30Days(@Param("userId") String userId);
+  AverageNutritionDTO findAverageNutritionForLast30Days(@Param("userId") String userId,
+      @Param("startDate") LocalDateTime startDate);
+
 
 
 }

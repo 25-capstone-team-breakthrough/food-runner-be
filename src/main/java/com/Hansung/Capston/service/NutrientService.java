@@ -14,7 +14,8 @@ import com.Hansung.Capston.repository.FoodDataRepository;
 import com.Hansung.Capston.repository.MealLogRepository;
 import com.Hansung.Capston.repository.NutritionLogRepository;
 import com.Hansung.Capston.repository.RecommendedNutrientRepository;
-import com.Hansung.Capston.repository.UserRepository;
+import com.Hansung.Capston.repository.UserInfo.UserRepository;
+import com.Hansung.Capston.service.UserInfo.BMIService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -158,9 +159,11 @@ public class NutrientService {
   }
 
   public AverageNutritionDTO getAverageNutrition(String userId, LocalDateTime date){
-    AverageNutritionDTO averageNutritionDTO = nutritionLogRepository.findAverageNutritionForLast30Days(userId);
+    LocalDateTime startDate = LocalDateTime.now().minusDays(30);
+    AverageNutritionDTO dto = nutritionLogRepository.findAverageNutritionForLast30Days(userId, startDate);
 
-    return averageNutritionDTO;
+
+    return dto;
   }
 
   public void setRecommendedNutrition(String userId, NutritionType type) {

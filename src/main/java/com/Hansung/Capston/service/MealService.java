@@ -19,6 +19,7 @@ import com.Hansung.Capston.repository.PreferredSupplementRepository;
 import com.Hansung.Capston.repository.SearchMealLogRepository;
 import com.Hansung.Capston.repository.SupplementDataRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
+import com.Hansung.Capston.service.UserInfo.BMIService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
