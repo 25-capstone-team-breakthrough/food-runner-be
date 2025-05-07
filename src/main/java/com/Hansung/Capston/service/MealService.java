@@ -1,6 +1,5 @@
 package com.Hansung.Capston.service;
 
-import com.Hansung.Capston.dto.*;
 import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
