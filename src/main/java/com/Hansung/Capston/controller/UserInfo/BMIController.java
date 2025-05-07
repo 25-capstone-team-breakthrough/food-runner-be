@@ -2,8 +2,11 @@ package com.Hansung.Capston.controller.UserInfo;
 
 import com.Hansung.Capston.dto.BMI.BMIRequset;
 import com.Hansung.Capston.dto.BMI.BMIResponse;
+import com.Hansung.Capston.entity.NutritionType;
 import com.Hansung.Capston.entity.UserInfo.BMI;
+import com.Hansung.Capston.service.NutrientService;
 import com.Hansung.Capston.service.UserInfo.BMIService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,9 +18,12 @@ import org.springframework.web.bind.annotation.*;
 public class BMIController {
 
     private final BMIService bmiService;
+    private final NutrientService nutrientService;
 
-    public BMIController(BMIService bmiService) {
+    @Autowired
+    public BMIController(BMIService bmiService, NutrientService nutrientService) {
         this.bmiService = bmiService;
+      this.nutrientService = nutrientService;
     }
     // BMI 정보 저장 또는 업데이트 (JWT 토큰을 통해 본인의 userId 사용)
     @PostMapping("/update")
@@ -30,6 +36,8 @@ public class BMIController {
         String userId = (String) auth.getPrincipal();
         // BMIService를 호출하여 해당 userId의 BMI 데이터를 저장 또는 업데이트
         bmiService.saveOrUpdateBMI(userId, request);
+        nutrientService.setRecommendedNutrition(userId, NutritionType.MAX);
+        nutrientService.setRecommendedNutrition(userId, NutritionType.MIN);
 
         return new ResponseEntity<>("bmi 업데이트 성공",HttpStatus.CREATED);
     }

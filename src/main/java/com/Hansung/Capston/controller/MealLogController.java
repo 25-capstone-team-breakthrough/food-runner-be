@@ -7,11 +7,13 @@ import com.Hansung.Capston.dto.MealLog.PreferredMealAndSupDTO;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.SelectDateNutritionDTO;
 import com.Hansung.Capston.dto.MealLog.SelectedMealLogRequest;
+import com.Hansung.Capston.dto.RecommendedNutrientDTO;
 import com.Hansung.Capston.dto.UserAndDateRequest;
 import com.Hansung.Capston.entity.ImageMealLog;
 import com.Hansung.Capston.entity.MealLog;
 import com.Hansung.Capston.entity.MealType;
 import com.Hansung.Capston.entity.NutritionLog;
+import com.Hansung.Capston.entity.NutritionType;
 import com.Hansung.Capston.repository.MealLogRepository;
 import com.Hansung.Capston.service.AwsS3Service;
 import com.Hansung.Capston.service.MealService;
@@ -236,6 +238,23 @@ public static class ConfirmMealRequest {
     String userId = (String) auth.getPrincipal();
 
     return ResponseEntity.ok(nutrientService.getSelectDateNutrition(userId, date));
+  }
+
+  @GetMapping("/recommendedNutrient")
+  public ResponseEntity<RecommendedNutrientDTO> recommendedNutrient() {
+    RecommendedNutrientDTO recommendedNutrientDTO = new RecommendedNutrientDTO();
+
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || auth.getPrincipal() == null) {
+      return ResponseEntity.status(401).build();
+    }
+    String userId = (String) auth.getPrincipal();
+
+
+    recommendedNutrientDTO.setMaxNutrient(nutrientService.getRecommendedNutrientByType(userId, NutritionType.MAX));
+    recommendedNutrientDTO.setMinNutrient(nutrientService.getRecommendedNutrientByType(userId, NutritionType.MIN));
+
+    return ResponseEntity.ok(recommendedNutrientDTO); // test
   }
 
   @GetMapping("/preferred")
