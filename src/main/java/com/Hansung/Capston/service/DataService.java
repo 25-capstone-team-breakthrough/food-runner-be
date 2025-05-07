@@ -106,7 +106,7 @@ public class DataService {
     // DB에 저장
     foodDataRepository.saveAll(foodDataList);
 
-    return "데이터 갯수 : " + foodCSVList.size();
+    return "데이터 갯수 : " + foodDataList.size();
   }
 
 }
