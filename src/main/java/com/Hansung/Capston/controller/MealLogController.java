@@ -5,11 +5,13 @@ import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
 import com.Hansung.Capston.dto.MealLog.PreferredMealAndSupDTO;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
+import com.Hansung.Capston.dto.MealLog.SelectDateNutritionDTO;
 import com.Hansung.Capston.dto.MealLog.SelectedMealLogRequest;
 import com.Hansung.Capston.dto.UserAndDateRequest;
 import com.Hansung.Capston.entity.ImageMealLog;
 import com.Hansung.Capston.entity.MealLog;
 import com.Hansung.Capston.entity.MealType;
+import com.Hansung.Capston.entity.NutritionLog;
 import com.Hansung.Capston.repository.MealLogRepository;
 import com.Hansung.Capston.service.AwsS3Service;
 import com.Hansung.Capston.service.MealService;
@@ -223,6 +225,17 @@ public static class ConfirmMealRequest {
     MealLogCreateResponse mealLogCreateResponse = mealService.dietCreatePage(userAndDateRequest);
 
     return new ResponseEntity<>(mealLogCreateResponse, HttpStatus.OK);
+  }
+
+  @GetMapping("/getNutrient") // 오늘 필요한 칼로리
+  public ResponseEntity<SelectDateNutritionDTO> todayCalories(LocalDateTime date) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || auth.getPrincipal() == null) {
+      return ResponseEntity.status(401).build();
+    }
+    String userId = (String) auth.getPrincipal();
+
+    return ResponseEntity.ok(nutrientService.getSelectDateNutrition(userId, date));
   }
 
   @GetMapping("/preferred")

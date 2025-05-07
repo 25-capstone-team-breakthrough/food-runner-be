@@ -149,6 +149,4 @@ public class IngredientService {
       default -> Double.MAX_VALUE; // 대부분은 제한 없음
     };
   }
-
-
 }
