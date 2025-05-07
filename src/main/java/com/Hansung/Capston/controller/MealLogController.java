@@ -220,14 +220,14 @@ public static class ConfirmMealRequest {
   }
 
   @GetMapping("/getNutrient") // 오늘 필요한 칼로리
-  public ResponseEntity<SelectDateNutritionDTO> todayCalories(@RequestParam LocalDateTime date) {
+  public ResponseEntity<SelectDateNutritionDTO> todayCalories() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
     }
     String userId = (String) auth.getPrincipal();
 
-    return ResponseEntity.ok(nutrientService.getSelectDateNutrition(userId, date));
+    return ResponseEntity.ok(nutrientService.getSelectDateNutrition(userId, LocalDateTime.now()));
   }
 
   @GetMapping("/recommendedNutrient")
