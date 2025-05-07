@@ -69,12 +69,23 @@ public class NutrientService {
   }
 
   public void setNutrientLog(String userId, LocalDateTime date, boolean addOrDel) {
+    // 해당 날짜에 존재하는 NutritionLog 찾기
+    List<NutritionLog> logs = nutritionLogRepository.findByDateAndUserId(date, userId);
+    NutritionLog nutrientLog;
 
-    NutritionLog nutrientLog = nutritionLogRepository.findByDateAndUserId(date,userId).get(0);
+    if (logs.isEmpty()) {
+      // NutritionLog가 없으면 새로 생성
+      nutrientLog = new NutritionLog();
+      nutrientLog.setUser(userRepository.findById(userId).get());
+      nutrientLog.setDate(date); // 날짜 필드가 있다면 꼭 지정
+      // 기본값 0.0은 이미 필드에 설정되어 있으므로 건드릴 필요 없음
+    } else {
+      nutrientLog = logs.get(0);
+    }
 
-    // 마지막 meal 로그를 추가 혹은 삭제
-    MealLog mealLog = mealLogRepository.findMealLogsByUserIdAndDate
-        (userId,date).getLast();
+    // 마지막 MealLog 불러오기
+    MealLog mealLog = mealLogRepository.findMealLogsByUserIdAndDate(userId, date).getLast();
+
     if (addOrDel) {
       nutrientLog.setCalories(nutrientLog.getCalories() + mealLog.getCalories());
       nutrientLog.setProtein(nutrientLog.getProtein() + mealLog.getProtein());
