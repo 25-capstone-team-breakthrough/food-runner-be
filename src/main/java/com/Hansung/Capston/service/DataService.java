@@ -1,6 +1,6 @@
 package com.Hansung.Capston.service;
 
-import com.Hansung.Capston.dto.FoodDataResponse;
+import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.SupplmentApi.SupplementDataFromOpenApi;
 import com.Hansung.Capston.entity.FoodData;
 import com.Hansung.Capston.entity.SupplementData;
@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,9 +26,9 @@ public class DataService {
   }
 
 
-  public List<FoodDataResponse> sendAllFoodData(){
+  public List<FoodDataDTO> sendAllFoodData(){
     List<FoodData> foodData = foodDataRepository.findAll();
-    return foodData.stream().map(FoodDataResponse::fromEntity).
+    return foodData.stream().map(FoodDataDTO::fromEntity).
         collect(Collectors.toList());
   }
 

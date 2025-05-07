@@ -1,8 +1,7 @@
 package com.Hansung.Capston.controller;
 
-import com.Hansung.Capston.dto.FoodDataResponse;
+import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.SupplmentApi.SupplementDataFromOpenApi;
-import com.Hansung.Capston.dto.SupplmentApi.SupplementDataRequest;
 import com.Hansung.Capston.service.DataService;
 import com.Hansung.Capston.service.OpenApiService;
 import java.util.List;
@@ -26,8 +25,8 @@ public class DataController {
   }
 
   @GetMapping("/foods") // 음식 데이터
-  public ResponseEntity<List<FoodDataResponse>> getAllFoodData() {
-    List<FoodDataResponse> data = dataService.sendAllFoodData();
+  public ResponseEntity<List<FoodDataDTO>> getAllFoodData() {
+    List<FoodDataDTO> data = dataService.sendAllFoodData();
     return ResponseEntity.ok(data);
   }
 
