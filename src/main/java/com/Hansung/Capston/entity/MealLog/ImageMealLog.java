@@ -1,22 +1,22 @@
-package com.Hansung.Capston.entity;
+package com.Hansung.Capston.entity.MealLog;
 
 import com.Hansung.Capston.entity.UserInfo.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "Search_Meal_Log")
+@Table(name = "Image_Meal_Log")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SearchMealLog {
+public class ImageMealLog {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL AUTO_INCREMENT 적용
-  @Column(name = "search_meal_log_id", nullable = false)
-  private Long searchMealLogId;
+  @Column(name = "image_meal_log_id", nullable = false)
+  private Long imageMealLogId;
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "meal_id", nullable = false)
@@ -26,7 +26,10 @@ public class SearchMealLog {
   @JoinColumn(name = "user_id", nullable = false) // User 테이블과 관계 설정
   private User user;
 
-  @ManyToOne
-  @JoinColumn(name = "food_id", nullable = false)
-  private FoodData foodData;
+  @Column(name = "meal_name", nullable = false)
+  private String mealName;
+
+  @Lob
+  @Column(name = "meal_image", nullable = false, columnDefinition = "TEXT")
+  private String mealImage;
 }

@@ -1,5 +1,6 @@
-package com.Hansung.Capston.entity;
+package com.Hansung.Capston.entity.MealLog;
 
+import com.Hansung.Capston.entity.DataSet.MealType;
 import com.Hansung.Capston.entity.UserInfo.User;
 import jakarta.persistence.*;
 import lombok.*;

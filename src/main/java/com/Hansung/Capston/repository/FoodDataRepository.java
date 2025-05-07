@@ -1,7 +1,6 @@
 package com.Hansung.Capston.repository;
 
-import com.Hansung.Capston.entity.FoodData;
-import com.Hansung.Capston.entity.SupplementData;
+import com.Hansung.Capston.entity.DataSet.FoodData;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

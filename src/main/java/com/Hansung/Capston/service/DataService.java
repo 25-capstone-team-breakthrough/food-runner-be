@@ -2,7 +2,7 @@ package com.Hansung.Capston.service;
 
 import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.SupplmentApi.SupplementDataFromOpenApi;
-import com.Hansung.Capston.entity.FoodData;
+import com.Hansung.Capston.entity.DataSet.FoodData;
 import com.Hansung.Capston.entity.SupplementData;
 import com.Hansung.Capston.repository.FoodDataRepository;
 import com.Hansung.Capston.repository.SupplementDataRepository;

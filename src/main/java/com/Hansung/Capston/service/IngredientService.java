@@ -1,7 +1,7 @@
 package com.Hansung.Capston.service;
 
 import com.Hansung.Capston.dto.Nutrition.NutritionStatusDTO;
-import com.Hansung.Capston.entity.IngredientData;
+import com.Hansung.Capston.entity.DataSet.IngredientData;
 import com.Hansung.Capston.entity.NutritionStatus;
 import com.Hansung.Capston.entity.PreferredIngredient;
 import com.Hansung.Capston.repository.IngredientDataRepository;

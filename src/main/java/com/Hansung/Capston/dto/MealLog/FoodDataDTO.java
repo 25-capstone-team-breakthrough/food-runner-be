@@ -1,6 +1,6 @@
 package com.Hansung.Capston.dto.MealLog;
 
-import com.Hansung.Capston.entity.FoodData;
+import com.Hansung.Capston.entity.DataSet.FoodData;
 
 import lombok.*;
 

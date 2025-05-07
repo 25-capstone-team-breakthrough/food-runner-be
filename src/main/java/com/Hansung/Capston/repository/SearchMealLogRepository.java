@@ -1,6 +1,6 @@
 package com.Hansung.Capston.repository;
 
-import com.Hansung.Capston.entity.SearchMealLog;
+import com.Hansung.Capston.entity.MealLog.SearchMealLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

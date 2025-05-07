@@ -1,4 +1,4 @@
-package com.Hansung.Capston.entity;
+package com.Hansung.Capston.entity.DataSet;
 
 
 import jakarta.persistence.Column;

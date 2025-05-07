@@ -1,5 +1,5 @@
 package com.Hansung.Capston.dto.MealLog;
-import com.Hansung.Capston.entity.MealType;
+import com.Hansung.Capston.entity.DataSet.MealType;
 import java.time.LocalDateTime;
 import lombok.*;
 

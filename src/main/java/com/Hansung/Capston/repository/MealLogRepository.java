@@ -1,8 +1,7 @@
 package com.Hansung.Capston.repository;
 
-import com.Hansung.Capston.entity.ImageMealLog;
-import com.Hansung.Capston.entity.MealLog;
-import com.Hansung.Capston.entity.SearchMealLog;
+import ImageMealLog;
+import com.Hansung.Capston.entity.MealLog.MealLog;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
