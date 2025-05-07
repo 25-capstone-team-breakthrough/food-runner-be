@@ -13,6 +13,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
@@ -60,19 +61,44 @@ public class DataService {
         .build()
         .parse();
 
-    List<FoodData> foodDataList = foodCSVList.stream().map(
-        csv -> {
-          FoodData data = new FoodData();
-          data.setVitaminE(0.0);
-          data.setMagnesium(0.0);
-          data.setZinc(0.0);
-          data.setLactium(0.0);
-          data.setLArginine(0.0);
-          data.setOmega3(0.0);
+    List<FoodData> foodDataList = foodCSVList.stream()
+        .filter(csv -> csv.getFoodName() != null && !csv.getFoodName().isBlank()) // 필수값 체크
+        .map(csv -> {
+          return FoodData.builder()
+              .foodName(csv.getFoodName())
+              .foodCompany(csv.getFoodCompany())
+              .foodImage(csv.getFoodImage())
 
-          return data;
-        }
-    ).collect(Collectors.toList());
+              .calories(Optional.ofNullable(csv.getCalories()).orElse(0.0))
+              .protein(Optional.ofNullable(csv.getProtein()).orElse(0.0))
+              .fat(Optional.ofNullable(csv.getFat()).orElse(0.0))
+              .carbohydrate(Optional.ofNullable(csv.getCarbohydrate()).orElse(0.0))
+              .sugar(Optional.ofNullable(csv.getSugar()).orElse(0.0))
+              .dietaryFiber(Optional.ofNullable(csv.getDietaryFiber()).orElse(0.0))
+              .calcium(Optional.ofNullable(csv.getCalcium()).orElse(0.0))
+              .potassium(Optional.ofNullable(csv.getPotassium()).orElse(0.0))
+              .sodium(Optional.ofNullable(csv.getSodium()).orElse(0.0))
+
+              .vitaminA(Optional.ofNullable(csv.getVitaminA()).orElse(0.0))
+              .vitaminB1(Optional.ofNullable(csv.getVitaminB1()).orElse(0.0))
+              .vitaminC(Optional.ofNullable(csv.getVitaminC()).orElse(0.0))
+              .vitaminD(Optional.ofNullable(csv.getVitaminD()).orElse(0.0))
+              .cholesterol(Optional.ofNullable(csv.getCholesterol()).orElse(0.0))
+              .saturatedFat(Optional.ofNullable(csv.getSaturatedFat()).orElse(0.0))
+              .transFat(Optional.ofNullable(csv.getTransFat()).orElse(0.0))
+
+              // CSV에는 없지만 엔티티에 존재하는 필드
+              .vitaminE(0.0)
+              .magnesium(0.0)
+              .zinc(0.0)
+              .lactium(0.0)
+              .lArginine(0.0)
+              .omega3(0.0)
+
+              .build();
+        })
+        .toList();
+
 
     // DB에 저장
     foodDataRepository.saveAll(foodDataList);
