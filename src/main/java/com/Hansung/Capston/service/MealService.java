@@ -1,13 +1,13 @@
 package com.Hansung.Capston.service;
 
-import com.Hansung.Capston.dto.FoodDataDTO;
+import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
 import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.PreferredMealAndSupDTO;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.SelectDateMealLogDTO;
-import com.Hansung.Capston.dto.RecommendedNutrientDTO;
-import com.Hansung.Capston.dto.UserAndDateRequest;
+import com.Hansung.Capston.dto.Nutrition.RecommendedNutrientDTO;
+import com.Hansung.Capston.dto.SignIn.UserAndDateRequest;
 import com.Hansung.Capston.entity.*;
 import com.Hansung.Capston.entity.UserInfo.User;
 import com.Hansung.Capston.repository.FoodDataRepository;

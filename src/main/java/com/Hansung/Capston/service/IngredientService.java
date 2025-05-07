@@ -1,6 +1,6 @@
 package com.Hansung.Capston.service;
 
-import com.Hansung.Capston.dto.NutritionStatusDTO;
+import com.Hansung.Capston.dto.Nutrition.NutritionStatusDTO;
 import com.Hansung.Capston.entity.IngredientData;
 import com.Hansung.Capston.entity.NutritionStatus;
 import com.Hansung.Capston.entity.PreferredIngredient;
@@ -9,13 +9,10 @@ import com.Hansung.Capston.repository.PreferredIngredientRepository;
 import com.Hansung.Capston.repository.RecommendedIngredientRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

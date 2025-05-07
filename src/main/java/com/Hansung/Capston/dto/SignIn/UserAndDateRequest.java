@@ -1,4 +1,4 @@
-package com.Hansung.Capston.dto;
+package com.Hansung.Capston.dto.SignIn;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.Hansung.Capston.dto;
+package com.Hansung.Capston.dto.Ingredient;
 
 public class ResisterPreferredIngredientRequest {
   private String userId;

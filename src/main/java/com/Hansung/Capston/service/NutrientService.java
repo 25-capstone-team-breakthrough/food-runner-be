@@ -1,9 +1,9 @@
 package com.Hansung.Capston.service;
 
-import com.Hansung.Capston.dto.FoodDataDTO;
+import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.AverageNutritionDTO;
 import com.Hansung.Capston.dto.MealLog.SelectDateNutritionDTO;
-import com.Hansung.Capston.dto.NutritionStatusDTO;
+import com.Hansung.Capston.dto.Nutrition.NutritionStatusDTO;
 import com.Hansung.Capston.entity.FoodData;
 import com.Hansung.Capston.entity.MealLog;
 import com.Hansung.Capston.entity.NutritionLog;

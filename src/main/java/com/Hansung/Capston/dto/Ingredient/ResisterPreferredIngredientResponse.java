@@ -1,4 +1,4 @@
-package com.Hansung.Capston.dto;
+package com.Hansung.Capston.dto.Ingredient;
 
 import java.util.List;
 

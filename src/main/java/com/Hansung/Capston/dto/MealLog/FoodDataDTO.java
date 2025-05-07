@@ -1,4 +1,4 @@
-package com.Hansung.Capston.dto;
+package com.Hansung.Capston.dto.MealLog;
 
 import com.Hansung.Capston.entity.FoodData;
 

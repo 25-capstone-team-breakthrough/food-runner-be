@@ -1,8 +1,7 @@
 package com.Hansung.Capston.dto.MealLog;
 
-import com.Hansung.Capston.dto.NutritionStatusDTO;
-import com.Hansung.Capston.dto.RecommendedNutrientDTO;
-import com.Hansung.Capston.entity.RecommendedNutrient;
+import com.Hansung.Capston.dto.Nutrition.NutritionStatusDTO;
+import com.Hansung.Capston.dto.Nutrition.RecommendedNutrientDTO;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,34 +1,26 @@
 package com.Hansung.Capston.controller;
 
-import com.Hansung.Capston.dto.FoodDataDTO;
+import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
 import com.Hansung.Capston.dto.MealLog.PreferredMealAndSupDTO;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.SelectDateNutritionDTO;
 import com.Hansung.Capston.dto.MealLog.SelectedMealLogRequest;
-import com.Hansung.Capston.dto.RecommendedNutrientDTO;
-import com.Hansung.Capston.dto.UserAndDateRequest;
-import com.Hansung.Capston.entity.ImageMealLog;
+import com.Hansung.Capston.dto.Nutrition.RecommendedNutrientDTO;
+import com.Hansung.Capston.dto.SignIn.UserAndDateRequest;
 import com.Hansung.Capston.entity.MealLog;
 import com.Hansung.Capston.entity.MealType;
-import com.Hansung.Capston.entity.NutritionLog;
 import com.Hansung.Capston.entity.NutritionType;
-import com.Hansung.Capston.repository.MealLogRepository;
 import com.Hansung.Capston.service.AwsS3Service;
 import com.Hansung.Capston.service.MealService;
 import com.Hansung.Capston.service.NutrientService;
 import com.Hansung.Capston.service.OpenAiApiService;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -39,9 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import java.util.function.Function;
 
 @CrossOrigin
@@ -230,7 +220,7 @@ public static class ConfirmMealRequest {
   }
 
   @GetMapping("/getNutrient") // 오늘 필요한 칼로리
-  public ResponseEntity<SelectDateNutritionDTO> todayCalories(LocalDateTime date) {
+  public ResponseEntity<SelectDateNutritionDTO> todayCalories(@RequestParam LocalDateTime date) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
