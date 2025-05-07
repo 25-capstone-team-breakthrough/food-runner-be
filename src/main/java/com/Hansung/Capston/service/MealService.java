@@ -131,37 +131,38 @@ public class MealService {
     User user = userRepository.findById(userId) // user_id 외래키 참조용
         .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
 
+    FoodData food = foodDataRepository.findById(searchMealLogCreateRequest.getFoodId())
+        .orElseThrow(() -> new IllegalArgumentException("음식을 찾을 수 없음"));
+
     // MealLog 저장
     MealLog mealLog = MealLog.builder()
         .user(user)
         .type(searchMealLogCreateRequest.getType())
-        .calories(searchMealLogCreateRequest.getCalories())
-        .protein(searchMealLogCreateRequest.getProtein())
-        .carbohydrate(searchMealLogCreateRequest.getCarbohydrate())
-        .fat(searchMealLogCreateRequest.getFat())
-        .sugar(searchMealLogCreateRequest.getSugar())
-        .sodium(searchMealLogCreateRequest.getSodium())
-        .dietaryFiber(searchMealLogCreateRequest.getDietaryFiber())
-        .calcium(searchMealLogCreateRequest.getCalcium())
-        .saturatedFat(searchMealLogCreateRequest.getSaturatedFat())
-        .transFat(searchMealLogCreateRequest.getTransFat())
-        .cholesterol(searchMealLogCreateRequest.getCholesterol())
-        .vitaminA(searchMealLogCreateRequest.getVitaminA())
-        .vitaminB1(searchMealLogCreateRequest.getVitaminB1())
-        .vitaminC(searchMealLogCreateRequest.getVitaminC())
-        .vitaminD(searchMealLogCreateRequest.getVitaminD())
-        .vitaminE(searchMealLogCreateRequest.getVitaminE())
-        .magnesium(searchMealLogCreateRequest.getMagnesium())
-        .zinc(searchMealLogCreateRequest.getZinc())
-        .lactium(searchMealLogCreateRequest.getLactium())
-        .potassium(searchMealLogCreateRequest.getPotassium())
-        .lArginine(searchMealLogCreateRequest.getLArginine())
-        .omega3(searchMealLogCreateRequest.getOmega3())
+        .calories(food.getCalories())
+        .protein(food.getProtein())
+        .carbohydrate(food.getCarbohydrate())
+        .fat(food.getFat())
+        .sugar(food.getSugar())
+        .sodium(food.getSodium())
+        .dietaryFiber(food.getDietaryFiber())
+        .calcium(food.getCalcium())
+        .saturatedFat(food.getSaturatedFat())
+        .transFat(food.getTransFat())
+        .cholesterol(food.getCholesterol())
+        .vitaminA(food.getVitaminA())
+        .vitaminB1(food.getVitaminB1())
+        .vitaminC(food.getVitaminC())
+        .vitaminD(food.getVitaminD())
+        .vitaminE(food.getVitaminE())
+        .magnesium(food.getMagnesium())
+        .zinc(food.getZinc())
+        .lactium(food.getLactium())
+        .potassium(food.getPotassium())
+        .lArginine(food.getLArginine())
+        .omega3(food.getOmega3())
         .date(searchMealLogCreateRequest.getDate())
         .build();
 
-    FoodData food = foodDataRepository.findById(searchMealLogCreateRequest.getFoodId())
-        .orElseThrow(() -> new IllegalArgumentException("음식을 찾을 수 없음"));
 
     SearchMealLog searchMealLog = new SearchMealLog();
     searchMealLog.setMealLog(mealLog);

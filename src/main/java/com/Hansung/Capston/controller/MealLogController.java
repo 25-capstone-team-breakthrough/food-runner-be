@@ -179,7 +179,7 @@ public static class ConfirmMealRequest {
 
 
   @PostMapping("/save-search-meal") // 저장
-  public ResponseEntity<MealLog> saveSearchMealLog( @RequestBody SearchMealLogCreateRequest searchMealLogCreateRequest) {
+  public ResponseEntity<MealLog> saveSearchMealLog( @RequestBody SearchMealLogCreateRequest searchMealLogCreateRequest, @RequestParam int foodId) {
     // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
@@ -193,7 +193,7 @@ public static class ConfirmMealRequest {
     return new ResponseEntity<>(mealLog, HttpStatus.OK);
   }
 
-  @PostMapping("delete-meal")
+  @PostMapping("/delete-meal")
   public ResponseEntity<SelectedMealLogRequest> deleteMealLog(@RequestBody SelectedMealLogRequest selectedMealLogRequest) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
@@ -212,14 +212,14 @@ public static class ConfirmMealRequest {
     return new ResponseEntity<>(selectedMealLogRequest, HttpStatus.OK);
   }
 
-  @GetMapping("/main") // diet 메인화면
+  @GetMapping("/main") // diet 처음 화면에서 불러오는 것
   public ResponseEntity<MealLogCreateResponse> getGCreateWindow(@RequestBody UserAndDateRequest userAndDateRequest) {
     MealLogCreateResponse mealLogCreateResponse = mealService.dietCreatePage(userAndDateRequest);
 
     return new ResponseEntity<>(mealLogCreateResponse, HttpStatus.OK);
   }
 
-  @GetMapping("/getNutrient") // 오늘 필요한 칼로리
+  @GetMapping("/getNutrient") // 오늘 섭취한 칼로리
   public ResponseEntity<SelectDateNutritionDTO> todayCalories() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
