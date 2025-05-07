@@ -1,6 +1,5 @@
 package com.Hansung.Capston.repository;
 
-import ImageMealLog;
 import com.Hansung.Capston.entity.MealLog.MealLog;
 import java.time.LocalDateTime;
 import java.util.List;
