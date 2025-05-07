@@ -213,8 +213,14 @@ public static class ConfirmMealRequest {
   }
 
   @GetMapping("/main") // diet 처음 화면에서 불러오는 것
-  public ResponseEntity<MealLogCreateResponse> getGCreateWindow(@RequestBody UserAndDateRequest userAndDateRequest) {
-    MealLogCreateResponse mealLogCreateResponse = mealService.dietCreatePage(userAndDateRequest);
+  public ResponseEntity<MealLogCreateResponse> getGCreateWindow(@RequestParam LocalDateTime dateTime) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || auth.getPrincipal() == null) {
+      return ResponseEntity.status(401).build();
+    }
+    String userId = (String) auth.getPrincipal();
+
+    MealLogCreateResponse mealLogCreateResponse = mealService.dietCreatePage();
 
     return new ResponseEntity<>(mealLogCreateResponse, HttpStatus.OK);
   }

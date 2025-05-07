@@ -189,12 +189,9 @@ public class MealService {
   }
 
   // DietCreate 페이지에 필요한 데이터들 GET
-  public MealLogCreateResponse dietCreatePage(UserAndDateRequest userAndDateRequest) {
+  public MealLogCreateResponse dietCreatePage(String user, LocalDateTime date) {
     MealLogCreateResponse mealLogCreateResponse = new MealLogCreateResponse();
     SelectDateMealLogDTO selectDateMealLogDTO = new SelectDateMealLogDTO();
-
-    String user = userAndDateRequest.getUserId();
-    LocalDateTime date = userAndDateRequest.getDateTime();
 
     mealLogCreateResponse.setSelectDate(date);
 

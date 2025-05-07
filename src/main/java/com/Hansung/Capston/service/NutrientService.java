@@ -140,13 +140,18 @@ public class NutrientService {
 
   public SelectDateNutritionDTO getSelectDateNutrition(String userId, LocalDateTime date) {
     SelectDateNutritionDTO selectDateNutritionDTO = new SelectDateNutritionDTO();
-    NutritionLog nutritionLog = nutritionLogRepository.findByDateAndUserId(date,userId).get(0);
-    if(nutritionLog==null) {
+    List<NutritionLog> logs = nutritionLogRepository.findByDateAndUserId(date, userId);
+    NutritionLog nutritionLog;
+
+    if (logs.isEmpty()) {
       nutritionLog = new NutritionLog();
-      nutritionLog.setUser(userRepository.findById(userId).get());
-      nutritionLog.setDate(date); // 날짜 필드가 있다면 꼭 지정
+      nutritionLog.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
+      nutritionLog.setDate(date);
       nutritionLogRepository.save(nutritionLog);
+    } else {
+      nutritionLog = logs.get(0);
     }
+
     selectDateNutritionDTO.setSelectDate(date);
 
     // NutritionLog
