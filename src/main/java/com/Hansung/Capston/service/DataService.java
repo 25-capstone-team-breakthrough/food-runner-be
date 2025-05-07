@@ -50,7 +50,7 @@ public class DataService {
 
   // 업로드된 CSV 파일을 처리하여 DB에 저장
   @Transactional
-  public void processFoodCsvFile(MultipartFile file) throws IOException {
+  public String processFoodCsvFile(MultipartFile file) throws IOException {
     System.out.println("파일 이름: " + file.getOriginalFilename());
     System.out.println("파일 크기: " + file.getSize());
     // MultipartFile을 읽기 위한 InputStreamReader로 변환
@@ -61,6 +61,8 @@ public class DataService {
         .withType(FoodCSV.class)
         .build()
         .parse();
+
+
 
     List<FoodData> foodDataList = foodCSVList.stream()
         .filter(csv -> csv.getFoodName() != null && !csv.getFoodName().isBlank()) // 필수값 체크
@@ -103,6 +105,8 @@ public class DataService {
 
     // DB에 저장
     foodDataRepository.saveAll(foodDataList);
+
+    return "데이터 갯수 : " + foodCSVList.size();
   }
 
 }
