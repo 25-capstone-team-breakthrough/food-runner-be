@@ -196,7 +196,7 @@ public class MealService {
     mealLogCreateResponse.setSelectDate(date);
 
     // 식사 내역
-    List<MealLog> mealLogs = mealLogRepository.findMealLogsByUserIdAndDate(user, date);
+    List<MealLog> mealLogs = mealLogRepository.findByUserIdAndDateOnly(user, date.toLocalDate());
     mealLogs.sort(Comparator.comparing(MealLog::getDate));
 
     List<Long> mealIds = new ArrayList<>();

@@ -220,7 +220,7 @@ public static class ConfirmMealRequest {
     }
     String userId = (String) auth.getPrincipal();
 
-    MealLogCreateResponse mealLogCreateResponse = mealService.dietCreatePage();
+    MealLogCreateResponse mealLogCreateResponse = mealService.dietCreatePage(userId, dateTime);
 
     return new ResponseEntity<>(mealLogCreateResponse, HttpStatus.OK);
   }

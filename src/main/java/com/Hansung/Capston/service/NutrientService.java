@@ -16,6 +16,7 @@ import com.Hansung.Capston.repository.NutritionLogRepository;
 import com.Hansung.Capston.repository.RecommendedNutrientRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import com.Hansung.Capston.service.UserInfo.BMIService;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +71,8 @@ public class NutrientService {
 
   public void setNutrientLog(String userId, LocalDateTime date, boolean addOrDel) {
     // 해당 날짜에 존재하는 NutritionLog 찾기
-    List<NutritionLog> logs = nutritionLogRepository.findByDateAndUserId(date, userId);
+    LocalDate onlyDate = date.toLocalDate();
+    List<NutritionLog> logs = nutritionLogRepository.findByDateOnly(userId, onlyDate);
     NutritionLog nutrientLog;
 
     if (logs.isEmpty()) {
@@ -85,7 +87,7 @@ public class NutrientService {
     }
 
     // 마지막 MealLog 불러오기
-    MealLog mealLog = mealLogRepository.findMealLogsByUserIdAndDate(userId, date).getLast();
+    MealLog mealLog = mealLogRepository.findByUserIdAndDateOnly(userId, date.toLocalDate()).getLast();
 
     if (addOrDel) {
       nutrientLog.setCalories(nutrientLog.getCalories() + mealLog.getCalories());
@@ -140,7 +142,7 @@ public class NutrientService {
 
   public SelectDateNutritionDTO getSelectDateNutrition(String userId, LocalDateTime date) {
     SelectDateNutritionDTO selectDateNutritionDTO = new SelectDateNutritionDTO();
-    List<NutritionLog> logs = nutritionLogRepository.findByDateAndUserId(date, userId);
+    List<NutritionLog> logs = nutritionLogRepository.findByDateOnly(userId, date.toLocalDate());
     NutritionLog nutritionLog;
 
     if (logs.isEmpty()) {
@@ -265,7 +267,7 @@ public class NutrientService {
   }
 
   public NutritionStatusDTO getNutritionStatusForDate(String userId, LocalDateTime date) {
-    NutritionLog log = nutritionLogRepository.findByDateAndUserId(date, userId).get(0);
+    NutritionLog log = nutritionLogRepository.findByDateOnly(userId, date.toLocalDate()).get(0);
     RecommendedNutrient min = recommendedNutrientRepository.findByUserUserIdAndType(userId, NutritionType.MIN);
     RecommendedNutrient max = recommendedNutrientRepository.findByUserUserIdAndType(userId, NutritionType.MAX);
 
