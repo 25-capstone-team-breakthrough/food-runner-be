@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class FoodDataResponse {
+public class FoodDataDTO {
   private Long foodId;
   private String foodImage;
   private String foodName;
@@ -38,8 +38,8 @@ public class FoodDataResponse {
   private Double lArginine;
   private Double omega3;
 
-  public static FoodDataResponse fromEntity(FoodData entity) {
-    return FoodDataResponse.builder()
+  public static FoodDataDTO fromEntity(FoodData entity) {
+    return FoodDataDTO.builder()
         .foodId(entity.getFoodId())
         .foodImage(entity.getFoodImage())
         .foodName(entity.getFoodName())
@@ -66,6 +66,34 @@ public class FoodDataResponse {
         .potassium(entity.getPotassium())
         .lArginine(entity.getLArginine())
         .omega3(entity.getOmega3())
+        .build();
+  }
+
+  public FoodData toEntity() {
+    return FoodData.builder()
+        .foodName(this.foodName)
+        .calories(this.calories)
+        .protein(this.protein)
+        .carbohydrate(this.carbohydrate)
+        .fat(this.fat)
+        .sugar(this.sugar)
+        .sodium(this.sodium)
+        .dietaryFiber(this.dietaryFiber)
+        .calcium(this.calcium)
+        .saturatedFat(this.saturatedFat)
+        .transFat(this.transFat)
+        .cholesterol(this.cholesterol)
+        .vitaminA(this.vitaminA)
+        .vitaminB1(this.vitaminB1)
+        .vitaminC(this.vitaminC)
+        .vitaminD(this.vitaminD)
+        .vitaminE(this.vitaminE)
+        .magnesium(this.magnesium)
+        .zinc(this.zinc)
+        .lactium(this.lactium)
+        .potassium(this.potassium)
+        .lArginine(this.lArginine)
+        .omega3(this.omega3)
         .build();
   }
 }

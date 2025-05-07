@@ -30,6 +30,6 @@ public class ImageMealLog {
   private String mealName;
 
   @Lob
-  @Column(name = "meal_image", nullable = false, columnDefinition = "LONGBLOB")
-  private byte[] mealImage;
+  @Column(name = "meal_image", nullable = false, columnDefinition = "TEXT")
+  private String mealImage;
 }

@@ -4,3 +4,4 @@ public enum MealType {
     search, image;
 
 }
+

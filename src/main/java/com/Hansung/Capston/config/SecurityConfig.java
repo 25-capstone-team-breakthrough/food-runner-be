@@ -34,7 +34,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     // JWT 필터 빈 등록
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {

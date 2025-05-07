@@ -14,24 +14,68 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Ingredient_Data")
+@Table(name = "ingredient_data")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class IngredientData {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "ingredient_id", nullable = false)
-  Long ingredientId;
+  private Long ingredientId;
 
-  @Column(name = "ingredient_name", nullable = false)
-  String ingredientName;
+  @Column(nullable = false)
+  private String ingredientName;
 
-  @Column(name = "ingredient_nutrition", nullable = false)
-  String ingredientNutrition = "";
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double calories;
 
-  @Column(name = "ingredient_cal", nullable = false)
-  Double ingredientCal = 0.0;
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double protein;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double carbohydrate;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double fat;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double sugar;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double sodium;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double dietaryFiber;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double calcium;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double saturatedFat;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double transFat;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double cholesterol;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double vitaminA;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double vitaminB1;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double vitaminC;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double vitaminD;
+
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  private Double ash;
+
+  private String ingredientImage;
 }
