@@ -25,7 +25,7 @@ public class SecurityConfig {
             .cors(withDefaults()) // Spring Security 기본 CORS 설정 사용
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/users/login", "/users/signup", "/exerciseData/upload-csv").permitAll()
+                .requestMatchers("/", "/users/login", "/users/signup", "/exerciseData/upload-csv", "/api/data/*").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
