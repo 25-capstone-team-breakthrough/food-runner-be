@@ -219,7 +219,7 @@ public static class ConfirmMealRequest {
     return new ResponseEntity<>(mealLogCreateResponse, HttpStatus.OK);
   }
 
-  @GetMapping("/getNutrient") // 오늘 섭취한 칼로리
+  @GetMapping("/getTodayNutrient") // 오늘 섭취한 칼로리
   public ResponseEntity<SelectDateNutritionDTO> todayCalories() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {

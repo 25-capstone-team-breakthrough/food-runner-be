@@ -79,6 +79,7 @@ public class NutrientService {
       nutrientLog.setUser(userRepository.findById(userId).get());
       nutrientLog.setDate(date); // 날짜 필드가 있다면 꼭 지정
       // 기본값 0.0은 이미 필드에 설정되어 있으므로 건드릴 필요 없음
+      nutritionLogRepository.save(nutrientLog);
     } else {
       nutrientLog = logs.get(0);
     }
@@ -140,6 +141,12 @@ public class NutrientService {
   public SelectDateNutritionDTO getSelectDateNutrition(String userId, LocalDateTime date) {
     SelectDateNutritionDTO selectDateNutritionDTO = new SelectDateNutritionDTO();
     NutritionLog nutritionLog = nutritionLogRepository.findByDateAndUserId(date,userId).get(0);
+    if(nutritionLog==null) {
+      nutritionLog = new NutritionLog();
+      nutritionLog.setUser(userRepository.findById(userId).get());
+      nutritionLog.setDate(date); // 날짜 필드가 있다면 꼭 지정
+      nutritionLogRepository.save(nutritionLog);
+    }
     selectDateNutritionDTO.setSelectDate(date);
 
     // NutritionLog
