@@ -10,9 +10,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import org.checkerframework.checker.units.qual.C;
 
-@Entity
 @Data
-@Table(name = "Food_Data")
 public class FoodCSV {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
