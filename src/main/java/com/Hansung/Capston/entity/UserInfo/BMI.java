@@ -1,4 +1,4 @@
-package com.Hansung.Capston.entity;
+package com.Hansung.Capston.entity.UserInfo;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.Hansung.Capston.service;
+package com.Hansung.Capston.service.UserInfo;
 
 import com.Hansung.Capston.Exception.InvalidCredentialsException;
 import com.Hansung.Capston.common.MemberType;
@@ -6,8 +6,8 @@ import com.Hansung.Capston.dto.SignIn.SignInRequest;
 import com.Hansung.Capston.dto.SignIn.SignInResponse;
 import com.Hansung.Capston.dto.SignUp.SignUpRequest;
 import com.Hansung.Capston.dto.SignUp.SignUpResponse;
-import com.Hansung.Capston.entity.User;
-import com.Hansung.Capston.repository.UserRepository;
+import com.Hansung.Capston.entity.UserInfo.User;
+import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import com.Hansung.Capston.jwt.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

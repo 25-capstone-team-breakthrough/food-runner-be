@@ -3,10 +3,7 @@ package com.Hansung.Capston.dto.SignUp;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.Hansung.Capston.entity.User;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.UUID;
+import com.Hansung.Capston.entity.UserInfo.User;
 
 @Data
 @NoArgsConstructor
