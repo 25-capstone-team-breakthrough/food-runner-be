@@ -179,7 +179,7 @@ public static class ConfirmMealRequest {
 
 
   @PostMapping("/save-search-meal") // 저장
-  public ResponseEntity<MealLog> saveSearchMealLog( @RequestBody SearchMealLogCreateRequest searchMealLogCreateRequest, @RequestParam int foodId) {
+  public ResponseEntity<MealLog> saveSearchMealLog( @RequestBody SearchMealLogCreateRequest searchMealLogCreateRequest) {
     // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
