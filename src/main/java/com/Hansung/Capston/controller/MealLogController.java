@@ -7,6 +7,7 @@ import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.SelectDateNutritionDTO;
 import com.Hansung.Capston.dto.MealLog.SelectedMealLogRequest;
 import com.Hansung.Capston.dto.Nutrition.RecommendedNutrientDTO;
+import com.Hansung.Capston.dto.Nutrition.SimpleRecNutDTO;
 import com.Hansung.Capston.entity.DataSet.FoodData;
 import com.Hansung.Capston.entity.MealLog.MealLog;
 import com.Hansung.Capston.entity.DataSet.MealType;
@@ -246,8 +247,8 @@ public static class ConfirmMealRequest {
     String userId = (String) auth.getPrincipal();
 
 
-    recommendedNutrientDTO.setMaxNutrient(nutrientService.getRecommendedNutrientByType(userId, NutritionType.MAX));
-    recommendedNutrientDTO.setMinNutrient(nutrientService.getRecommendedNutrientByType(userId, NutritionType.MIN));
+    recommendedNutrientDTO.setMaxNutrient(SimpleRecNutDTO.fromEntity(nutrientService.getRecommendedNutrientByType(userId, NutritionType.MAX)));
+    recommendedNutrientDTO.setMinNutrient(SimpleRecNutDTO.fromEntity(nutrientService.getRecommendedNutrientByType(userId, NutritionType.MIN)));
 
     return ResponseEntity.ok(recommendedNutrientDTO); // test
   }
