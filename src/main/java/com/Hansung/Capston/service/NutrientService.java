@@ -1,6 +1,5 @@
 package com.Hansung.Capston.service;
 
-import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.AverageNutritionDTO;
 import com.Hansung.Capston.dto.MealLog.SelectDateNutritionDTO;
 import com.Hansung.Capston.dto.Nutrition.NutritionStatusDTO;
@@ -49,19 +48,19 @@ public class NutrientService {
   }
 
 
-  public List<FoodDataDTO> checkNutrientData(List<String> foods, OpenAiApiService openAiApiService) {
-    List<FoodDataDTO> foodDataDTOS = new ArrayList<>();
+  public List<FoodData> checkNutrientData(List<String> foods, OpenAiApiService openAiApiService) {
+    List<FoodData> foodDataDTOS = new ArrayList<>();
 
     for (String food : foods) {
      List<FoodData> foodDataList = foodDataRepository.findByFoodName(food);
 
      if(foodDataList.isEmpty()) {
-       FoodDataDTO nutrientInfo = openAiApiService.getNutrientInfo(food);
+       FoodData nutrientInfo = openAiApiService.getNutrientInfo(food);
        nutrientInfo.setFoodImage("");
-       foodDataRepository.save(nutrientInfo.toEntity());
+       foodDataRepository.save(nutrientInfo);
        foodDataDTOS.add(nutrientInfo);
      } else{
-       foodDataDTOS.add(FoodDataDTO.fromEntity(foodDataList.get(0)));
+       foodDataDTOS.add(foodDataDTOS.getFirst());
      }
 
    }

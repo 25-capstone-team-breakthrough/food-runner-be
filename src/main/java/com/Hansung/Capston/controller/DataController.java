@@ -1,7 +1,7 @@
 package com.Hansung.Capston.controller;
 
-import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.SupplmentApi.SupplementDataFromOpenApi;
+import com.Hansung.Capston.entity.DataSet.FoodData;
 import com.Hansung.Capston.service.DataService;
 import com.Hansung.Capston.service.OpenApiService;
 import java.io.IOException;
@@ -27,8 +27,8 @@ public class DataController {
   }
 
   @GetMapping("/foods") // 음식 데이터
-  public ResponseEntity<List<FoodDataDTO>> getAllFoodData() {
-    List<FoodDataDTO> data = dataService.sendAllFoodData();
+  public ResponseEntity<List<FoodData>> getAllFoodData() {
+    List<FoodData> data = dataService.sendAllFoodData();
     return ResponseEntity.ok(data);
   }
 
@@ -48,12 +48,12 @@ public class DataController {
     return new ResponseEntity<>(requests.size(), HttpStatus.OK);
   }
 
-  @PostMapping("/foods/csvmapping")
+  @PostMapping("/foods/upload-csv")
   public ResponseEntity<String> uploadCsvFile(@RequestParam("file") MultipartFile file) {
     try {
       // 업로드된 CSV 파일을 서버에 저장하고 처리
-      String size = dataService.processFoodCsvFile(file);
-      return ResponseEntity.ok("음식 데이터가 성공적으로 업로드되었습니다.\n" + size);
+      dataService.processFoodCsvFile(file);
+      return ResponseEntity.ok("운동 데이터가 성공적으로 업로드되었습니다.");
     } catch (IOException e) {
       return ResponseEntity.status(500).body("CSV 파일 처리 실패: " + e.getMessage());
     }

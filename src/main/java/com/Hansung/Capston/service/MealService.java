@@ -1,13 +1,11 @@
 package com.Hansung.Capston.service;
 
-import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
 import com.Hansung.Capston.dto.MealLog.PreferredMealAndSupDTO;
 import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.SelectDateMealLogDTO;
 import com.Hansung.Capston.dto.Nutrition.RecommendedNutrientDTO;
-import com.Hansung.Capston.dto.SignIn.UserAndDateRequest;
 import com.Hansung.Capston.entity.*;
 import com.Hansung.Capston.entity.DataSet.FoodData;
 import com.Hansung.Capston.entity.DataSet.MealType;
@@ -73,7 +71,7 @@ public class MealService {
 
   // 이미지 MealLog 저장
   @Transactional
-  public MealLog imageSave(ImageMealLogCreateRequest imageMealLogCreateRequest, FoodDataDTO foodData) {
+  public MealLog imageSave(ImageMealLogCreateRequest imageMealLogCreateRequest, FoodData foodData) {
     // 사용자 정보 조회
     User user = userRepository.findById(imageMealLogCreateRequest.getUserId())
         .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));

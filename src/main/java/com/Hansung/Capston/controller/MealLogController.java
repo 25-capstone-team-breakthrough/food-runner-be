@@ -1,6 +1,5 @@
 package com.Hansung.Capston.controller;
 
-import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.MealLogCreateResponse;
 import com.Hansung.Capston.dto.MealLog.PreferredMealAndSupDTO;
@@ -8,7 +7,7 @@ import com.Hansung.Capston.dto.MealLog.SearchMealLogCreateRequest;
 import com.Hansung.Capston.dto.MealLog.SelectDateNutritionDTO;
 import com.Hansung.Capston.dto.MealLog.SelectedMealLogRequest;
 import com.Hansung.Capston.dto.Nutrition.RecommendedNutrientDTO;
-import com.Hansung.Capston.dto.SignIn.UserAndDateRequest;
+import com.Hansung.Capston.entity.DataSet.FoodData;
 import com.Hansung.Capston.entity.MealLog.MealLog;
 import com.Hansung.Capston.entity.DataSet.MealType;
 import com.Hansung.Capston.entity.NutritionType;
@@ -99,10 +98,10 @@ public class MealLogController {
     List<String> foodNames = openAiApiService.mealImageAnalysis(imageMealLogCreateRequest);
 
     if (foodNames != null && foodNames.size() > 0) {
-      List<FoodDataDTO> foodDataDTOS = nutrientService.checkNutrientData(foodNames, openAiApiService);
+      List<FoodData> foodData = nutrientService.checkNutrientData(foodNames, openAiApiService);
 
       // 음식 데이터를 처리하고 MealLog 저장
-      for (FoodDataDTO foodDataDTO : foodDataDTOS) {
+      for (FoodData foodDataDTO : foodData) {
         MealLog mealLog = mealService.imageSave(imageMealLogCreateRequest, foodDataDTO);
         // 식사 기록 추가할 때는 meallog 먼저 추가한 후에 해야함
         nutrientService.setNutrientLog(userId,date,true);

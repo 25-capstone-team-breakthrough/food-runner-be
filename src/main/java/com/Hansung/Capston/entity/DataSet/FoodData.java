@@ -1,15 +1,13 @@
 package com.Hansung.Capston.entity.DataSet;
 
+
+import com.opencsv.bean.CsvBindByName;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "food_data")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class FoodData {
 
   @Id
@@ -17,78 +15,82 @@ public class FoodData {
   @Column(name = "food_id")
   private Long foodId;
 
-  @Column(name = "food_image", length = 255)
-  private String foodImage;
-
-  @Column(name = "food_name", nullable = false, length = 255)
+  @CsvBindByName(column = "food_name")
+  @Column(name = "food_name")
   private String foodName;
 
-  @Column(name = "food_company", length = 255)
-  private String foodCompany;
-
-  @Column(name = "calories", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+  @CsvBindByName(column = "calories")
   private Double calories;
 
-  @Column(name = "protein", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+  @CsvBindByName(column = "protein") // CSV 열 이름과 매핑
   private Double protein;
 
-  @Column(name = "carbohydrate", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double carbohydrate;
-
-  @Column(name = "fat", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+  @CsvBindByName(column = "fat")
   private Double fat;
 
-  @Column(name = "sugar", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+  @CsvBindByName(column = "carbohydrate")
+  private Double carbohydrate;
+
+  @CsvBindByName(column = "sugar")
   private Double sugar;
 
-  @Column(name = "sodium", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double sodium;
-
-  @Column(name = "dietary_fiber", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+  @CsvBindByName(column = "dietary_fiber")
   private Double dietaryFiber;
 
-  @Column(name = "calcium", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+  @CsvBindByName(column = "calcium")
   private Double calcium;
 
-  @Column(name = "saturated_fat", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double saturatedFat;
-
-  @Column(name = "trans_fat", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double transFat;
-
-  @Column(name = "cholesterol", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double cholesterol;
-
-  @Column(name = "vitamin_a", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double vitaminA;
-
-  @Column(name = "vitamin_b1", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double vitaminB1;
-
-  @Column(name = "vitamin_c", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double vitaminC;
-
-  @Column(name = "vitamin_d", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double vitaminD;
-
-  @Column(name = "vitamin_e", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double vitaminE;
-
-  @Column(name = "magnesium", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double magnesium;
-
-  @Column(name = "zinc", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double zinc;
-
-  @Column(name = "lactium", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double lactium;
-
-  @Column(name = "potassium", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+  @CsvBindByName(column = "potassium")
   private Double potassium;
 
-  @Column(name = "l_arginine", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
+  @CsvBindByName(column = "sodium")
+  private Double sodium;
+
+  @CsvBindByName(column = "vitamin_a")
+  private Double vitaminA;
+
+  @CsvBindByName(column = "vitamin_b1")
+  private Double vitaminB1;
+
+  @CsvBindByName(column = "vitamin_c")
+  private Double vitaminC;
+
+  @CsvBindByName(column = "vitamin_d")
+  private Double vitaminD;
+
+  @CsvBindByName(column = "cholesterol")
+  private Double cholesterol;
+
+  @CsvBindByName(column = "saturated_fat")
+  private Double saturatedFat;
+
+  @CsvBindByName(column = "trans_fat")
+  private Double transFat;
+
+  @CsvBindByName(column = "food_company")
+  private String foodCompany;
+
+  @CsvBindByName(column = "food_image")
+  @Column(columnDefinition = "TEXT")
+  private String foodImage;
+
+  @Column(name = "vitamin_e")
+  private Double vitaminE;
+
+  @Column(name = "zinc")
+  private Double zinc;
+
+  @Column(name = "magnesium")
+  private Double magnesium;
+
+  @Column(name = "lactium")
+  private Double lactium;
+
+  @Column(name = "omega3")
+  private Double omega3;
+
+  @Column(name = "l_arginine")
   private Double lArginine;
 
-  @Column(name = "omega3", columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double omega3;
 }
+

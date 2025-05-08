@@ -1,6 +1,5 @@
 package com.Hansung.Capston.service;
 
-import com.Hansung.Capston.dto.MealLog.FoodDataDTO;
 import com.Hansung.Capston.dto.MealLog.ImageMealLogCreateRequest;
 import com.Hansung.Capston.dto.OpenAiApi.Content;
 import com.Hansung.Capston.dto.OpenAiApi.ImageAnalysisOpenAiApiRequest;
@@ -9,6 +8,7 @@ import com.Hansung.Capston.dto.OpenAiApi.Message;
 import com.Hansung.Capston.dto.OpenAiApi.OpenAiApiResponse;
 import com.Hansung.Capston.dto.OpenAiApi.TextAnalysisOpenAiApiRequest;
 import com.Hansung.Capston.dto.OpenAiApi.TextContent;
+import com.Hansung.Capston.entity.DataSet.FoodData;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -62,7 +62,7 @@ public class OpenAiApiService {
     return foodArray;
   }
 
-  public FoodDataDTO getNutrientInfo(String food) {
+  public FoodData getNutrientInfo(String food) {
     // 텍스트 기반 요청 내용
     String prompt = food + "에 대한 영양 정보를 1인분 기준으로 추정하여 아래와 같은 형식으로 반환해주세요. 각 항목은 `key=value` 형태로 출력하고, 각 항목은 쉼표(,)로 구분해주세요.\n"
         + "예시 형식:\n"
@@ -88,7 +88,7 @@ public class OpenAiApiService {
       String[] nutrientArray = content.split(",");
 
       // FoodDataResponse 객체 생성
-      FoodDataDTO foodDataResponse = new FoodDataDTO();
+      FoodData foodDataResponse = new FoodData();
 
       // nutrientArray를 순회하며 각 key=value 데이터를 파싱하고 FoodDataResponse에 세팅
       for (String nutrient : nutrientArray) {

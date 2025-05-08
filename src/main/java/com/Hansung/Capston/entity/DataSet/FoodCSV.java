@@ -8,14 +8,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.checkerframework.checker.units.qual.C;
 
 @Data
+@Getter
+@Setter
 public class FoodCSV {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "food_id")
-  private Integer foodId;
 
   @CsvBindByName(column = "food_name")
   private String foodName;
