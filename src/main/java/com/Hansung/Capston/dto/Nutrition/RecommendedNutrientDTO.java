@@ -13,6 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecommendedNutrientDTO {
-  private RecommendedNutrient maxNutrient; // 권장 칼로리 상한선
-  private RecommendedNutrient minNutrient; // 권장 칼로리 하한선
+  private SimpleRecNutDTO maxNutrient; // 권장 칼로리 상한선
+  private SimpleRecNutDTO minNutrient; // 권장 칼로리 하한선
 }
