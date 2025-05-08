@@ -63,7 +63,6 @@ public class DataService {
         .parse();
 
 
-
     List<FoodData> foodDataList = foodCSVList.stream()
         .filter(csv -> csv.getFoodName() != null && !csv.getFoodName().isBlank()) // 필수값 체크
         .map(csv -> {
@@ -99,12 +98,14 @@ public class DataService {
               .omega3(0.0)
 
               .build();
-        })
+        }
+        )
         .toList();
 
 
     // DB에 저장
     foodDataRepository.saveAll(foodDataList);
+    foodDataRepository.flush();
 
     return "데이터 갯수 : " + foodDataList.size();
   }

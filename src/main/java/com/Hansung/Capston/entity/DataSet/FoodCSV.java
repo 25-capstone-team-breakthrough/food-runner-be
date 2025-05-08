@@ -20,7 +20,6 @@ public class FoodCSV {
   @CsvBindByName(column = "food_name")
   private String foodName;
 
-
   @CsvBindByName(column = "calories")
   private Double calories = 0.0;
 
