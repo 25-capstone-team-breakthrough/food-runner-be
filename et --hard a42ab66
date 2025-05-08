@@ -1,0 +1,45 @@
+[33ma47da59[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: pull: Fast-forward
+[33m909fb9e[m HEAD@{1}: pull: Merge made by the 'ort' strategy.
+[33mcd6d434[m HEAD@{2}: commit: security
+[33ma128de3[m HEAD@{3}: pull: updating HEAD
+[33ma128de3[m HEAD@{4}: pull: Merge made by the 'ort' strategy.
+[33m2494743[m HEAD@{5}: commit (merge): Merge branch 'exercise'
+[33m21cd88e[m HEAD@{6}: reset: moving to HEAD
+[33m21cd88e[m HEAD@{7}: pull origin main: Fast-forward
+[33ma42ab66[m HEAD@{8}: checkout: moving from exercise to main
+[33m3885c97[m[33m ([m[1;31morigin/exercise[m[33m, [m[1;32mexercise[m[33m)[m HEAD@{9}: checkout: moving from main to exercise
+[33ma42ab66[m HEAD@{10}: commit: test //
+[33m8ffc774[m HEAD@{11}: pull: Fast-forward
+[33m7b37f51[m HEAD@{12}: checkout: moving from exercise to main
+[33m3885c97[m[33m ([m[1;31morigin/exercise[m[33m, [m[1;32mexercise[m[33m)[m HEAD@{13}: commit: exercise 거의 완
+[33m0baecab[m HEAD@{14}: commit: f
+[33m324ec16[m HEAD@{15}: commit: video
+[33m9199b72[m[33m ([m[1;32morigin[m[33m)[m HEAD@{16}: commit: calories is done
+[33mfcadf47[m HEAD@{17}: commit: 운동 기록 완료
+[33m7b37f51[m HEAD@{18}: checkout: moving from main to exercise
+[33m7b37f51[m HEAD@{19}: checkout: moving from exercise to main
+[33m7b37f51[m HEAD@{20}: checkout: moving from main to exercise
+[33m7b37f51[m HEAD@{21}: checkout: moving from exercise2 to main
+[33m3eab8ef[m HEAD@{22}: checkout: moving from exercise to exercise2
+[33m3557983[m HEAD@{23}: checkout: moving from main to exercise
+[33m7b37f51[m HEAD@{24}: pull: Fast-forward
+[33macad249[m HEAD@{25}: commit (merge): exercise 병합
+[33m4b58718[m HEAD@{26}: pull: Fast-forward
+[33mb6d87bf[m HEAD@{27}: pull: Fast-forward
+[33m21e20cc[m HEAD@{28}: checkout: moving from exercise2 to main
+[33m3eab8ef[m HEAD@{29}: checkout: moving from main to exercise2
+[33m21e20cc[m HEAD@{30}: checkout: moving from login to main
+[33m09f70e9[m[33m ([m[1;31morigin/login[m[33m, [m[1;32mlogin[m[33m)[m HEAD@{31}: pull: Fast-forward
+[33me508455[m HEAD@{32}: checkout: moving from main to login
+[33m21e20cc[m HEAD@{33}: pull: Fast-forward
+[33maaf5731[m HEAD@{34}: checkout: moving from exercise2 to main
+[33m3eab8ef[m HEAD@{35}: commit: 확니용
+[33m5a1e4bb[m HEAD@{36}: commit: 즐겨찾기
+[33me508455[m HEAD@{37}: checkout: moving from exercise to exercise2
+[33m3557983[m HEAD@{38}: commit: WIP: 작업 중인 Exercise_save.java 저장
+[33mffda829[m HEAD@{39}: commit: entity
+[33maaf5731[m HEAD@{40}: checkout: moving from main to exercise
+[33maaf5731[m HEAD@{41}: commit (merge): Merge remote-tracking branch 'origin/login'
+[33mec4a331[m HEAD@{42}: checkout: moving from login to main
+[33me508455[m HEAD@{43}: checkout: moving from main to login
+[33mec4a331[m HEAD@{44}: clone: from https://github.com/25-capstone-team-breakthrough/food-runner-be.git
