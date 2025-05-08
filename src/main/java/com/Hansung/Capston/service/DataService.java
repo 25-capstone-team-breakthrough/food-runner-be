@@ -103,11 +103,12 @@ public class DataService {
         .toList();
 
 
+
     // DB에 저장
     foodDataRepository.saveAll(foodDataList);
     foodDataRepository.flush();
 
-    return "데이터 갯수 : " + foodDataList.size();
+    return "데이터 갯수 : " + foodDataList.size() + "\n 첫 번째 데이터 음식 명: " + foodDataList.getFirst().getFoodName();
   }
 
 }
