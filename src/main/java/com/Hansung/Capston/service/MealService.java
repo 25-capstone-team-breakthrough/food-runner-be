@@ -187,15 +187,8 @@ public class MealService {
     mealLogRepository.delete(mealLog);
   }
 
-  // DietCreate 페이지에 필요한 데이터들 GET
-  public MealLogCreateResponse dietCreatePage(String user, LocalDateTime date) {
-    MealLogCreateResponse mealLogCreateResponse = new MealLogCreateResponse();
-    SelectDateMealLogDTO selectDateMealLogDTO = new SelectDateMealLogDTO();
-
-    mealLogCreateResponse.setSelectDate(date);
-
-    // 식사 내역
-    List<MealLog> mealLogs = mealLogRepository.findByUserIdAndDateOnly(user, date.toLocalDate());
+  private SelectDateMealLogDTO getSelectDateMealLog(String userId, LocalDateTime date) {
+    List<MealLog> mealLogs = mealLogRepository.findByUserIdAndDateOnly(userId, date.toLocalDate());
     mealLogs.sort(Comparator.comparing(MealLog::getDate));
 
     List<Long> mealIds = new ArrayList<>();
@@ -203,21 +196,26 @@ public class MealService {
     List<String> foodLogImage = new ArrayList<>();
 
     for (MealLog mealLog : mealLogs) {
-      if(mealLog.getType() == MealType.image){
-        mealLogImage.add(imageMealLogRepository.
-            findByMealId(mealLog.getMealId()).getMealImage());
-      }
-      else if(mealLog.getType() == MealType.search) {
-        foodLogImage.add(searchMealLogRepository.findByMealid(mealLog.
-                        getMealId()).getFoodData().getFoodImage());
+      if (mealLog.getType() == MealType.image) {
+        mealLogImage.add(imageMealLogRepository.findByMealId(mealLog.getMealId()).getMealImage());
+      } else if (mealLog.getType() == MealType.search) {
+        foodLogImage.add(searchMealLogRepository.findByMealid(mealLog.getMealId()).getFoodData().getFoodImage());
       }
       mealIds.add(mealLog.getMealId());
     }
 
-    // 상세정보로 넘어가기위한 초석작업??
-    selectDateMealLogDTO.setMealIds(mealIds);
-    selectDateMealLogDTO.setMealLogImage(mealLogImage);
-    selectDateMealLogDTO.setFoodLogImage(foodLogImage);
+    SelectDateMealLogDTO dto = new SelectDateMealLogDTO();
+    dto.setMealIds(mealIds);
+    dto.setMealLogImage(mealLogImage);
+    dto.setFoodLogImage(foodLogImage);
+    return dto;
+  }
+
+
+  // DietCreate 페이지에 필요한 데이터들 GET
+  public MealLogCreateResponse dietCreatePage(String user, LocalDateTime date) {
+    MealLogCreateResponse mealLogCreateResponse = new MealLogCreateResponse();
+    SelectDateMealLogDTO selectDateMealLogDTO = getSelectDateMealLog(user, date);
 
     SimpleRecNutDTO max = SimpleRecNutDTO.fromEntity(nutrientService.getRecommendedNutrientByType(user,NutritionType.MAX));
     SimpleRecNutDTO min = SimpleRecNutDTO.fromEntity(nutrientService.getRecommendedNutrientByType(user,NutritionType.MIN));

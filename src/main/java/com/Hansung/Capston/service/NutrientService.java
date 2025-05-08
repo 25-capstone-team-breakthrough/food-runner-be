@@ -62,7 +62,6 @@ public class NutrientService {
      } else{
        foodDataDTOS.add(foodDataDTOS.getFirst());
      }
-
    }
 
     return foodDataDTOS;
