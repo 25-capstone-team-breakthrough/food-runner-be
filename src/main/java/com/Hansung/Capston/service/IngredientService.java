@@ -128,7 +128,7 @@ public class IngredientService {
       case "vitaminB1" -> i.getVitaminB1();
       case "vitaminC" -> i.getVitaminC();
       case "vitaminD" -> i.getVitaminD();
-      case "ash", "magnesium", "potassium", "zinc" -> i.getAsh();
+      case "potassium" -> i.getPotassium();
       default -> 0.0;
     };
   }

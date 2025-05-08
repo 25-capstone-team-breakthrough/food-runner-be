@@ -1,6 +1,7 @@
 package com.Hansung.Capston.entity.DataSet;
 
 
+import com.opencsv.bean.CsvBindByName;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,56 +27,78 @@ public class IngredientData {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long ingredientId;
 
-  @Column(nullable = false)
+  @CsvBindByName(column = "ingredient_name")
+  @Column(name = "ingredient_name", nullable = false)
   private String ingredientName;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "calories")
   private Double calories;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "protein") // CSV 열 이름과 매핑
   private Double protein;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "carbohydrate")
   private Double carbohydrate;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "fat")
   private Double fat;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "sugar")
   private Double sugar;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "sodium")
   private Double sodium;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "dietary_fiber")
   private Double dietaryFiber;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "calcium")
   private Double calcium;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "saturated_fat")
   private Double saturatedFat;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "trans_fat")
   private Double transFat;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "cholesterol")
   private Double cholesterol;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "vitamin_a")
   private Double vitaminA;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "vitamin_b1")
   private Double vitaminB1;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "vitamin_c")
   private Double vitaminC;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
+  @CsvBindByName(column = "vitamin_d")
   private Double vitaminD;
 
-  @Column(columnDefinition = "DECIMAL(10,2)")
-  private Double ash;
+  @CsvBindByName(column = "potassium")
+  private Double potassium;
 
+  @CsvBindByName(column = "image_url")
+  @Column(columnDefinition = "TEXT")
   private String ingredientImage;
+
+  @CsvBindByName(column = "vitamin_e")
+  private Double vitaminE;
+
+  @CsvBindByName(column = "zinc")
+  private Double zinc;
+
+  @CsvBindByName(column = "magnesium")
+  private Double magnesium;
+
+  @CsvBindByName(column = "lactium")
+  private Double lactium;
+
+  @CsvBindByName(column = "omega3")
+  private Double omega3;
+
+  @CsvBindByName(column = "l_arginine")
+  private Double lArginine;
+
 }
