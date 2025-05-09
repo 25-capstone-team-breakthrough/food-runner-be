@@ -195,8 +195,14 @@ public class NutrientService {
   }
 
   public List<RecommendedNutrient> GetRecommendedNutrients(String userId) {
-    return recommendedNutrientRepository.findByUserUserId(userId);
-  }
+    List<RecommendedNutrient> res = new ArrayList<>();
+    List<RecommendedNutrient> nutrients = recommendedNutrientRepository.findByUserUserId(userId);
 
+    for(RecommendedNutrient nutrient : nutrients) {
+      nutrient.setUser(null);
+      res.add(nutrient);
+    }
+    return res;
+  }
 
 }
