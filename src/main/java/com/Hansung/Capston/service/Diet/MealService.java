@@ -260,6 +260,7 @@ public class MealService {
         .build();
 
     searchMealLog.setFoodImage(foodData.getFoodImage());
+    searchMealLog.setFoodName(foodData.getFoodName());
 
     return new SearchMealLogRecord(mealLog, searchMealLog);
   }

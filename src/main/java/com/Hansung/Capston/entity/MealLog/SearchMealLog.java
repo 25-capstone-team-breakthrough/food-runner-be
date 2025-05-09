@@ -25,6 +25,9 @@ public class SearchMealLog {
   @Column(name = "food_id", nullable = false)
   private Long foodId;
 
+  @Column(name = "food_name", nullable = false)
+  private String foodName;
+
   @Column(name = "food_image", nullable = false, columnDefinition = "TEXT")
   private String foodImage;
 }

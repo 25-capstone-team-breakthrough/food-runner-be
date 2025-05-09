@@ -272,6 +272,7 @@ CREATE TABLE Search_Meal_Log (
                                  search_meal_log_id INT AUTO_INCREMENT PRIMARY KEY,
                                  meal_id INT NOT NULL,
                                  food_id INT NOT NULL,
+                                 food_name CHAR(50),
                                  food_image TEXT NOT NULL,
                                  FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id)
 );
