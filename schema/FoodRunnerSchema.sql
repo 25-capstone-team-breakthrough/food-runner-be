@@ -223,7 +223,7 @@ CREATE TABLE meal_log (
                           l_arginine DECIMAL(10,2) DEFAULT 0,
                           omega3 DECIMAL(10,2) DEFAULT 0,
                           date DATETIME NOT NULL,
-                          FOREIGN KEY (user_id) REFERENCES User(user_id)
+                          FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 -- ✅ 사진 식사 기록 테이블
@@ -232,7 +232,7 @@ CREATE TABLE image_meal_log (
                                 meal_id INT NOT NULL,
                                 meal_name VARCHAR(255) NOT NULL,
                                 meal_image TEXT NOT NULL,
-                                FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id)
+                                FOREIGN KEY (meal_id) REFERENCES meal_log(meal_id)
 );
 
 
@@ -274,7 +274,7 @@ CREATE TABLE search_meal_log (
                                  food_id INT NOT NULL,
                                  food_name CHAR(50),
                                  food_image TEXT NOT NULL,
-                                 FOREIGN KEY (meal_id) REFERENCES Meal_Log(meal_id)
+                                 FOREIGN KEY (meal_id) REFERENCES meal_log(meal_id)
 );
 
 -- ✅ 영양소 기록 테이블
@@ -304,7 +304,7 @@ CREATE TABLE nutrition_log (
                                l_arginine DECIMAL(10,2) DEFAULT 0,
                                omega3 DECIMAL(10,2) DEFAULT 0,
                                date DATETIME NOT NULL,
-                               FOREIGN KEY (user_id) REFERENCES User(user_id)
+                               FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 
