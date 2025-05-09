@@ -16,5 +16,6 @@ public interface MealLogRepository extends JpaRepository<MealLog, Long> {
   @Query("SELECT m FROM MealLog m WHERE m.user.userId = :userId AND FUNCTION('DATE', m.date) = :date")
   List<MealLog> findByUserIdAndDateOnly(@Param("userId") String userId, @Param("date") LocalDate date);
 
+  List<MealLog> findByUserUserId(String userUserId);
 }
 

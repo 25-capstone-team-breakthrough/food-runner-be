@@ -19,7 +19,7 @@ public class PreferredSupplement {
   private Long presupplementId;
 
   @ManyToOne
-  @JoinColumn(name = "supplement_id", nullable = false) // Food_Data 테이블과 연관
+  @JoinColumn(name = "sup_id", nullable = false) // Food_Data 테이블과 연관
   private SupplementData supplementData;
 
   @ManyToOne

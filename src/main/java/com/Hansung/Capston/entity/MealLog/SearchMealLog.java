@@ -1,6 +1,5 @@
 package com.Hansung.Capston.entity.MealLog;
 
-import com.Hansung.Capston.entity.DataSet.FoodData;
 import com.Hansung.Capston.entity.UserInfo.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,11 +22,9 @@ public class SearchMealLog {
   @JoinColumn(name = "meal_id", nullable = false)
   private MealLog mealLog;  // MealLog와 연결
 
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false) // User 테이블과 관계 설정
-  private User user;
+  @Column(name = "food_id", nullable = false)
+  private Long foodId;
 
-  @ManyToOne
-  @JoinColumn(name = "food_id", nullable = false)
-  private FoodData foodData;
+  @Column(name = "food_image", nullable = false, columnDefinition = "TEXT")
+  private String foodImage;
 }

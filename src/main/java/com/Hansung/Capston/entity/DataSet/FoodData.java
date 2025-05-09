@@ -92,5 +92,33 @@ public class FoodData {
   @Column(name = "l_arginine")
   private Double lArginine;
 
+  @PrePersist
+  @PreUpdate
+  public void setDefaults() {
+    if (calories == null) calories = 0.0;
+    if (protein == null) protein = 0.0;
+    if (fat == null) fat = 0.0;
+    if (carbohydrate == null) carbohydrate = 0.0;
+    if (sugar == null) sugar = 0.0;
+    if (dietaryFiber == null) dietaryFiber = 0.0;
+    if (calcium == null) calcium = 0.0;
+    if (potassium == null) potassium = 0.0;
+    if (sodium == null) sodium = 0.0;
+    if (vitaminA == null) vitaminA = 0.0;
+    if (vitaminB1 == null) vitaminB1 = 0.0;
+    if (vitaminC == null) vitaminC = 0.0;
+    if (vitaminD == null) vitaminD = 0.0;
+    if (cholesterol == null) cholesterol = 0.0;
+    if (saturatedFat == null) saturatedFat = 0.0;
+    if (transFat == null) transFat = 0.0;
+    if (vitaminE == null) vitaminE = 0.0;
+    if (zinc == null) zinc = 0.0;
+    if (magnesium == null) magnesium = 0.0;
+    if (lactium == null) lactium = 0.0;
+    if (omega3 == null) omega3 = 0.0;
+    if (lArginine == null) lArginine = 0.0;
+  }
+
+
 }
 

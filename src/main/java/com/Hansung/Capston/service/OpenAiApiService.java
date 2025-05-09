@@ -9,8 +9,11 @@ import com.Hansung.Capston.dto.OpenAiApi.OpenAiApiResponse;
 import com.Hansung.Capston.dto.OpenAiApi.TextAnalysisOpenAiApiRequest;
 import com.Hansung.Capston.dto.OpenAiApi.TextContent;
 import com.Hansung.Capston.entity.DataSet.FoodData;
+import com.Hansung.Capston.service.Diet.NutrientService;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +40,12 @@ public class OpenAiApiService {
     this.restTemplate = restTemplate;
   }
 
-  public List<String> mealImageAnalysis(ImageMealLogCreateRequest request){
+  public List<String> mealImageAnalysis(String mealImage){
 
-    ImageContent imageContent = new ImageContent(request.getMealImage());
+    ImageContent imageContent = new ImageContent(mealImage);
     TextContent textContent = new TextContent("너는 오로지 음식이 뭔지만 판단하는 음식이미지 분석 ai 모델이야. "
-        + "이미지를 보고 어떤 음식이 있는지 우리한테 알려줘야해(재료는 제외). 사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 말되 그렇다고 모르는 거 있으면 대답에 포함하지말고. 3초 이내에");
+        + "이미지를 보고 어떤 음식이 있는지 우리한테 알려줘야해(재료는 제외). 사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 말되 그렇다고 모르는 거 있으면 대답에 포함하지말고. 3초 이내에"
+        + "음식의 구분은 무조건 쉼표(,)로 다른 특수문자는 사용하지마");
 
 
     List<Content> list = new ArrayList<>();
@@ -57,7 +61,9 @@ public class OpenAiApiService {
     String response = openAiApiResponse.getChoices().get(0).getMessage().getContent();
     String trim = response.trim();
 
-    List<String> foodArray = List.of(trim.split(",\\s*"));
+    List<String> foodArray = Arrays.stream(trim.split(",\\s*"))
+        .map(s -> s.replaceAll("\\.$", "").trim()) // 맨 끝 마침표만 제거
+        .collect(Collectors.toList());
     logger.info("Food Array: {}", foodArray);  // 로그 출력
     return foodArray;
   }

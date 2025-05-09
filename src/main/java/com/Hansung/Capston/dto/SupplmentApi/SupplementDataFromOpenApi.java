@@ -46,7 +46,6 @@ public class SupplementDataFromOpenApi { //OpenApi로부터 데이터를 받아�
                 .preservationPeriod(preservationPeriod != null ? preservationPeriod : "보관 기간 정보 없음")
                 .intakeInformation(intakeInformation != null ? intakeInformation : "섭취 정보 없음")
                 .mainFunction(mainFunction != null ? mainFunction : "주요 기능 정보 없음")
-                .baseStandard(baseStandard != null ? baseStandard : "기본 기준 정보 없음")
                 .supplementImage(supplementImage != null ? supplementImage : "이미지 없음")
                 .build();
     }

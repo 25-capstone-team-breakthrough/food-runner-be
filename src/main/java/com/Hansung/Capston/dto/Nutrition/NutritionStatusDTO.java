@@ -7,7 +7,5 @@ import java.util.Map;
 
 @Data
 public class NutritionStatusDTO {
-  private String userId;
-  private LocalDateTime date;
   private Map<String, NutritionStatus> nutrientStatusMap;
 }

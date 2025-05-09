@@ -18,18 +18,4 @@ public class MealLogCreateResponse {
   private NutritionStatusDTO nutritionStatus;
   private RecommendedNutrientDTO recommendedNutrientDTO;
 
-
-  public static MealLogCreateResponse empty(String userId, LocalDateTime selectDate) {
-    MealLogCreateResponse dto = new MealLogCreateResponse();
-
-    dto.setUserId(userId);
-    dto.setSelectDate(selectDate);
-
-    dto.setSelectDateMealLog(SelectDateMealLogDTO.empty(userId, selectDate));
-    dto.setSelectDateNutrition(SelectDateNutritionDTO.empty(userId, selectDate));
-    dto.setRecommendationCalories(0);
-
-    return dto;
-  }
-
 }

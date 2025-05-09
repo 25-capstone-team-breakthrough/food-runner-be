@@ -28,7 +28,6 @@ public class SupplementDataRequest {
             .preservationPeriod(entity.getPreservationPeriod()) // preservationPeriod 기본값 설정
             .intakeInformation(entity.getIntakeInformation()) // intakeInformation 기본값 설정
             .mainFunction(entity.getMainFunction()) // mainFunction 기본값 설정
-            .baseStandard(entity.getBaseStandard()) // baseStandard 기본값 설정
             .supplementImage(entity.getSupplementImage()) // supplementImage 기본값 설정
             .build();
   }

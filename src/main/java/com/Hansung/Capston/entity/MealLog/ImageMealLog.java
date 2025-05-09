@@ -22,10 +22,6 @@ public class ImageMealLog {
   @JoinColumn(name = "meal_id", nullable = false)
   private MealLog mealLog;  // MealLog와 연결
 
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false) // User 테이블과 관계 설정
-  private User user;
-
   @Column(name = "meal_name", nullable = false)
   private String mealName;
 

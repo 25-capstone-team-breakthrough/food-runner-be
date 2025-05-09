@@ -49,5 +49,6 @@ public interface NutritionLogRepository extends JpaRepository<NutritionLog, Long
   @Query("SELECT n FROM NutritionLog n WHERE n.user.userId = :userId AND FUNCTION('DATE', n.date) = :date")
   List<NutritionLog> findByDateOnly(@Param("userId") String userId, @Param("date") LocalDate date);
 
+  List<NutritionLog> findByUserUserId(String user_userId);
 }
 

@@ -16,7 +16,7 @@ public class RecommendedNutrient {
   @Column(name = "recommended_nutrition_id")
   private Integer id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 

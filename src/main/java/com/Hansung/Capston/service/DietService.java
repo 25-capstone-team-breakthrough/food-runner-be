@@ -4,6 +4,7 @@ import com.Hansung.Capston.repository.IngredientDataRepository;
 import com.Hansung.Capston.repository.NutritionLogRepository;
 import com.Hansung.Capston.repository.PreferredIngredientRepository;
 import com.Hansung.Capston.repository.RecommendedIngredientRepository;
+import com.Hansung.Capston.service.Diet.NutrientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
