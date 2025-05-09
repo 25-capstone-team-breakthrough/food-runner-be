@@ -1,14 +1,14 @@
-//package com.Hansung.Capston.service;
+//package com.Hansung.Capston.repository.Diet.Meal.service;
 //
 //import com.Hansung.Capston.dto.Nutrition.NutritionStatusDTO;
-//import com.Hansung.Capston.entity.DataSet.IngredientData;
+//import com.Hansung.Capston.entity.Diet.Ingredient.IngredientData;
 //import com.Hansung.Capston.entity.NutritionStatus;
-//import com.Hansung.Capston.entity.PreferredIngredient;
-//import com.Hansung.Capston.repository.IngredientDataRepository;
-//import com.Hansung.Capston.repository.PreferredIngredientRepository;
-//import com.Hansung.Capston.repository.RecommendedIngredientRepository;
+//import com.Hansung.Capston.entity.Diet.Ingredient.PreferredIngredient;
+//import com.Hansung.Capston.repository.Diet.Ingredient.IngredientDataRepository;
+//import com.Hansung.Capston.repository.Diet.Ingredient.PreferredIngredientRepository;
+//import com.Hansung.Capston.repository.Diet.Ingredient.RecommendedIngredientRepository;
 //import com.Hansung.Capston.repository.UserInfo.UserRepository;
-//import com.Hansung.Capston.service.Diet.NutrientService;
+//import com.Hansung.Capston.repository.Diet.Meal.service.Diet.NutrientService;
 //import java.time.LocalDateTime;
 //import java.util.ArrayList;
 //import java.util.Collections;

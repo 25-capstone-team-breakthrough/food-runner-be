@@ -1,12 +1,10 @@
 package com.Hansung.Capston.service.UserInfo;
 
 import com.Hansung.Capston.dto.BMI.BMIRequset;
-import com.Hansung.Capston.entity.NutritionType;
 import com.Hansung.Capston.entity.UserInfo.BMI;
 import com.Hansung.Capston.entity.UserInfo.User;
 import com.Hansung.Capston.repository.UserInfo.BMIRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
-import com.Hansung.Capston.service.Diet.NutrientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

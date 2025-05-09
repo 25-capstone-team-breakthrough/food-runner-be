@@ -25,47 +25,48 @@ public class MealController {
     this.nutrientService = nutrientService;
   }
 
-  // 식사 기록 검색
-  @GetMapping("/get-logs")
-  public ResponseEntity<MealLogResponse> getLogs() {
+  // 식사 기록 저장
+  @PostMapping("/log/save")
+  public ResponseEntity<String> saveMealLog(@RequestBody MealLogRequest request) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
     }
     String userId = (String) auth.getPrincipal();
 
-    MealLogResponse res = mealService.getMealLogs(userId);
+    nutrientService.saveNutrientLog(userId, true, mealService.saveMealLog(request, userId).getMealId());
+
+    return ResponseEntity.ok("save success");
+  }
+
+
+  // 식사 기록 검색
+  @GetMapping("/log/load")
+  public ResponseEntity<MealLogResponse> loadMealLog() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || auth.getPrincipal() == null) {
+      return ResponseEntity.status(401).build();
+    }
+    String userId = (String) auth.getPrincipal();
+
+    MealLogResponse res = mealService.loadMealLogs(userId);
 
     return ResponseEntity.ok(res);
   }
 
-  // 식사 기록 저장
-  @PostMapping("/save-log")
-  public ResponseEntity<String> saveLog(@RequestBody MealLogRequest request) {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    if (auth == null || auth.getPrincipal() == null) {
-      return ResponseEntity.status(401).build();
-    }
-    String userId = (String) auth.getPrincipal();
-
-    nutrientService.setNutrientLog(userId, true, mealService.SaveMealLog(request, userId).getMealId());
-
-    return ResponseEntity.ok("Saved");
-  }
-
   // 식사 기록 삭제
-  @PostMapping("/delete-log")
-  public ResponseEntity<String> deleteLog(@RequestParam(name = "logId") Long logId) {
+  @PostMapping("/log/delete")
+  public ResponseEntity<String> deleteMealLog(@RequestParam(name = "log_id") Long logId) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
     }
     String userId = (String) auth.getPrincipal();
 
-    nutrientService.setNutrientLog(userId, false, logId);
-    mealService.DeleteMealLog(logId);
+    nutrientService.saveNutrientLog(userId, false, logId);
+    mealService.deleteMealLog(logId);
 
-    return ResponseEntity.ok("Deleted");
+    return ResponseEntity.ok("delete success");
   }
 
 }

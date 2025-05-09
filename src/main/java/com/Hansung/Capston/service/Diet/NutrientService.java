@@ -1,13 +1,13 @@
 package com.Hansung.Capston.service.Diet;
 
-import com.Hansung.Capston.entity.MealLog.MealLog;
-import com.Hansung.Capston.entity.NutritionLog;
-import com.Hansung.Capston.entity.NutritionType;
-import com.Hansung.Capston.entity.RecommendedNutrient;
+import com.Hansung.Capston.entity.Diet.Meal.MealLog;
+import com.Hansung.Capston.entity.Diet.Nutrient.NutritionLog;
+import com.Hansung.Capston.common.NutritionType;
+import com.Hansung.Capston.entity.Diet.Nutrient.RecommendedNutrient;
 import com.Hansung.Capston.entity.UserInfo.BMI;
-import com.Hansung.Capston.repository.MealLogRepository;
-import com.Hansung.Capston.repository.NutritionLogRepository;
-import com.Hansung.Capston.repository.RecommendedNutrientRepository;
+import com.Hansung.Capston.repository.Diet.Meal.MealLogRepository;
+import com.Hansung.Capston.repository.Diet.Nutrition.NutritionLogRepository;
+import com.Hansung.Capston.repository.Diet.Nutrition.RecommendedNutrientRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import com.Hansung.Capston.service.UserInfo.BMIService;
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ public class NutrientService {
   }
 
   // 섭취 영양소 정보 불러오기
-  public List<NutritionLog> GetNutritionByUserId(String userId) {
+  public List<NutritionLog> loadNutritionByUserId(String userId) {
     List<NutritionLog> res = new ArrayList<>();
     List<NutritionLog> logs = nutritionLogRepository.findByUserUserId(userId);
     for (NutritionLog log : logs) {
@@ -48,7 +48,7 @@ public class NutrientService {
   }
 
   // 섭취 영양소 정보 업데이트 및 생성(일 단위) -- MealController에서 사용
-  public void setNutrientLog(String userId, boolean addOrDel, Long mealLogId) {
+  public void saveNutrientLog(String userId, boolean addOrDel, Long mealLogId) {
     // 해당 날짜에 존재하는 NutritionLog 찾기
     MealLog mealLog = mealLogRepository.findById(mealLogId).get();
     LocalDate onlyDate = mealLog.getDate().toLocalDate();
@@ -194,7 +194,7 @@ public class NutrientService {
     recommendedNutrientRepository.save(recommendedNutrient);
   }
 
-  public List<RecommendedNutrient> GetRecommendedNutrients(String userId) {
+  public List<RecommendedNutrient> loadRecommendedNutrients(String userId) {
     List<RecommendedNutrient> res = new ArrayList<>();
     List<RecommendedNutrient> nutrients = recommendedNutrientRepository.findByUserUserId(userId);
 

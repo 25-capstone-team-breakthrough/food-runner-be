@@ -2,17 +2,17 @@ package com.Hansung.Capston.service.Diet;
 
 import com.Hansung.Capston.dto.Diet.Meal.MealLogRequest;
 import com.Hansung.Capston.dto.Diet.Meal.MealLogResponse;
-import com.Hansung.Capston.entity.DataSet.FoodData;
-import com.Hansung.Capston.entity.DataSet.MealType;
-import com.Hansung.Capston.entity.MealLog.ImageMealLog;
-import com.Hansung.Capston.entity.MealLog.MealLog;
-import com.Hansung.Capston.entity.MealLog.SearchMealLog;
-import com.Hansung.Capston.repository.FoodDataRepository;
-import com.Hansung.Capston.repository.ImageMealLogRepository;
-import com.Hansung.Capston.repository.MealLogRepository;
-import com.Hansung.Capston.repository.SearchMealLogRepository;
+import com.Hansung.Capston.entity.Diet.Food.FoodData;
+import com.Hansung.Capston.common.MealType;
+import com.Hansung.Capston.entity.Diet.Meal.ImageMealLog;
+import com.Hansung.Capston.entity.Diet.Meal.MealLog;
+import com.Hansung.Capston.entity.Diet.Meal.SearchMealLog;
+import com.Hansung.Capston.repository.Diet.Food.FoodDataRepository;
+import com.Hansung.Capston.repository.Diet.Meal.ImageMealLogRepository;
+import com.Hansung.Capston.repository.Diet.Meal.MealLogRepository;
+import com.Hansung.Capston.repository.Diet.Meal.SearchMealLogRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
-import com.Hansung.Capston.service.OpenAiApiService;
+import com.Hansung.Capston.service.ApiService.OpenAiApiService;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class MealService {
   }
 
   // 식사 기록 검색
-  public MealLogResponse getMealLogs(String userId) {
+  public MealLogResponse loadMealLogs(String userId) {
     MealLogResponse res = new MealLogResponse();
 
     List<MealLog> mealLogs = mealLogRepository.findByUserUserId(userId);
@@ -67,7 +67,7 @@ public class MealService {
     return res;
   }
 
-  public MealLog SaveMealLog(MealLogRequest request, String userId) {
+  public MealLog saveMealLog(MealLogRequest request, String userId) {
     MealLog log = new MealLog();
 
     // 식사 기록 등록
@@ -265,7 +265,7 @@ public class MealService {
     return new SearchMealLogRecord(mealLog, searchMealLog);
   }
   // 식사 기록 삭제
-  public void DeleteMealLog(Long mealLogId) {
+  public void deleteMealLog(Long mealLogId) {
     MealLog log = mealLogRepository.findById(mealLogId).get();
 
     if(log.getType().equals(MealType.image)){

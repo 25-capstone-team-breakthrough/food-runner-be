@@ -1,7 +1,7 @@
 //package com.Hansung.Capston.controller;
 //
-//import com.Hansung.Capston.entity.DataSet.IngredientData;
-//import com.Hansung.Capston.service.IngredientService;
+//import com.Hansung.Capston.entity.Diet.Ingredient.IngredientData;
+//import com.Hansung.Capston.repository.Diet.Meal.service.IngredientService;
 //import java.util.List;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.http.HttpStatus;

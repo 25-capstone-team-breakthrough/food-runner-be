@@ -2,7 +2,7 @@ CREATE DATABASE foodrunner;
 USE foodrunner;
 
 -- ✅ 사용자 테이블 최적화
-CREATE TABLE User (
+CREATE TABLE user (
                       user_id CHAR(36) NOT NULL, -- UUID 자동 생성
                       id VARCHAR(15) NOT NULL,  -- 아이디
                       name VARCHAR(15) NOT NULL, -- 이름
@@ -11,18 +11,18 @@ CREATE TABLE User (
                       PRIMARY KEY (user_id)
 );
 -- BMI 테이블
-CREATE TABLE BMI (
+CREATE TABLE bmi (
                      user_id CHAR(36) NOT NULL, -- User 테이블과 연결
                      age INT, -- 나이
                      gender VARCHAR(10), -- 성별
                      height FLOAT, -- 키
                      weight FLOAT, -- 몸무게
                      PRIMARY KEY (user_id),
-                     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
+                     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
 
 -- 인바디 테이블 Inbody
-CREATE TABLE Inbody (
+CREATE TABLE inbody (
                         inbody_id               INT AUTO_INCREMENT NOT NULL,  -- 인바디 고유 ID (기본 키)
                         user_id                 VARCHAR(15)       NOT NULL,   -- 사용자 ID (User 테이블의 FK)
                         body_water              FLOAT            NOT NULL,    -- 체수분
@@ -36,38 +36,38 @@ CREATE TABLE Inbody (
                         segmental_fat_analysis  FLOAT            NOT NULL,    -- 부위별 체지방 분획(실제로는 별도 테이블 고려 가능)
                         created_at              DATETIME         NOT NULL,    -- 데이터 생성 시간
                         PRIMARY KEY (inbody_id),
-                        FOREIGN KEY (user_id) REFERENCES User(user_id)
+                        FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 -- 인바디 이미지 테이블 Inbody_Image
-CREATE TABLE Inbody_Image (
+CREATE TABLE inbody_image (
                               picture_id  INT AUTO_INCREMENT NOT NULL, -- 인바디 사진 고유 ID (기본 키)
                               inbody_id   INT               NOT NULL,  -- 인바디 고유 ID (Inbody 테이블의 FK)
                               user_id     VARCHAR(15)       NOT NULL,  -- 사용자 ID (User 테이블의 FK)
                               file_path   VARCHAR(255)      NOT NULL,  -- 사진 파일 경로
                               created_at  DATETIME          NOT NULL,  -- 사진 업로드 시간
                               PRIMARY KEY (picture_id),
-                              FOREIGN KEY (inbody_id) REFERENCES Inbody(inbody_id),
-                              FOREIGN KEY (user_id)   REFERENCES User(user_id)
+                              FOREIGN KEY (inbody_id) REFERENCES inbody(inbody_id),
+                              FOREIGN KEY (user_id)   REFERENCES user(user_id)
 );
 
 
 
 -- 운동 즐겨찾기 테이블 Exercise_save
-CREATE TABLE Exercise_save(
+CREATE TABLE exercise_save(
                               exercise_save INT AUTO_INCREMENT NOT NULL,  -- 즐겨찾기 고유 ID (PK)
                               user_id               VARCHAR(36)       NOT NULL,   -- 사용자 ID (User 테이블 FK)
                               exercise_id           INT               NOT NULL,   -- 운동 ID ()
                               PRIMARY KEY (exercise_save),
                               UNIQUE KEY user_exercise_unique (user_id, exercise_id),
-                              FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
+                              FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
 
 
 
 
 -- ✅ 영양제 데이터 테이블
-CREATE TABLE Supplement_Data (
+CREATE TABLE supplement_data (
                                  sup_id INT AUTO_INCREMENT PRIMARY KEY,
                                  sup_name VARCHAR(255),
                                  usage_method TEXT,
@@ -101,25 +101,17 @@ CREATE TABLE Supplement_Data (
 );
 
 -- ✅ 영양제 기록 테이블
-CREATE TABLE Supplement_Log (
+CREATE TABLE supplement_log (
                                 supplement_log_id INT AUTO_INCREMENT PRIMARY KEY,
                                 user_id VARCHAR(50) NOT NULL,
                                 sup_id INT NOT NULL,
-                                type ENUM('search', 'image', '사용') NOT NULL,
-                                calories DECIMAL(10,2) DEFAULT 0,
-                                protein DECIMAL(10,2) DEFAULT 0,
-                                carbohydrate DECIMAL(10,2) DEFAULT 0,
-                                fat DECIMAL(10,2) DEFAULT 0,
-                                sugar DECIMAL(10,2) DEFAULT 0,
-                                sodium DECIMAL(10,2) DEFAULT 0,
-                                dietary_fiber DECIMAL(10,2) DEFAULT 0,
                                 date DATETIME NOT NULL,
-                                FOREIGN KEY (user_id) REFERENCES User(user_id),
-                                FOREIGN KEY (sup_id) REFERENCES Supplement_Data(sup_id)
+                                FOREIGN KEY (user_id) REFERENCES user(user_id),
+                                FOREIGN KEY (sup_id) REFERENCES supplement_data(sup_id)
 );
 
 -- ✅ 식재료 데이터 테이블
-CREATE TABLE Ingredient_Data (
+CREATE TABLE ingredient_data (
                                  ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
                                  ingredient_name VARCHAR(255) NOT NULL,
                                  calories DECIMAL(10,2) DEFAULT 0,
@@ -142,12 +134,12 @@ CREATE TABLE Ingredient_Data (
 );
 
 -- ✅ 선호 식재료 테이블
-CREATE TABLE Preferred_Ingredient (
+CREATE TABLE preferred_ingredient (
                                       preingredient_id INT AUTO_INCREMENT PRIMARY KEY,
                                       ingredient_id INT NOT NULL,
                                       user_id VARCHAR(50) NOT NULL,
-                                      FOREIGN KEY (ingredient_id) REFERENCES Ingredient_Data(ingredient_id),
-                                      FOREIGN KEY (user_id) REFERENCES User(user_id)
+                                      FOREIGN KEY (ingredient_id) REFERENCES ingredient_data(ingredient_id),
+                                      FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 -- ✅ 추천 식재료 테이블
@@ -155,8 +147,8 @@ CREATE TABLE recommended_ingredient (
                                         recommendation_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
                                         ingredient_id INT NOT NULL,
                                         user_id VARCHAR(50) NOT NULL,
-                                        FOREIGN KEY (ingredient_id) REFERENCES Ingredient_Data(ingredient_id),
-                                        FOREIGN KEY (user_id) REFERENCES User(user_id)
+                                        FOREIGN KEY (ingredient_id) REFERENCES ingredient_data(ingredient_id),
+                                        FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 -- ✅ 레시피 데이터 테이블
@@ -191,8 +183,8 @@ CREATE TABLE recommended_diet (
                                   recipe_id bigint NOT NULL,
                                   type ENUM('breakfast', 'lunch', 'dinner') NOT NULL,
                                   date DATE NOT NULL,
-                                  FOREIGN KEY (user_id) REFERENCES User(user_id),
-                                  FOREIGN KEY (recipe_id) REFERENCES Recipe_Data(recipe_id)
+                                  FOREIGN KEY (user_id) REFERENCES user(user_id),
+                                  FOREIGN KEY (recipe_id) REFERENCES recipe_data(recipe_id)
 );
 
 -- ✅ 식사 기록 테이블
@@ -338,7 +330,7 @@ CREATE TABLE recommended_nutrition (
                                        omega3 DECIMAL(10,2) DEFAULT 0,
                                        lactium DECIMAL(10,2) DEFAULT 0,
 
-                                       FOREIGN KEY (user_id) REFERENCES User(user_id)
+                                       FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 
@@ -346,16 +338,16 @@ CREATE TABLE preferred_food (
                                 prefood_id INT AUTO_INCREMENT PRIMARY KEY,
                                 food_id INT NOT NULL,
                                 user_id VARCHAR(50) NOT NULL,
-                                FOREIGN KEY (food_id) REFERENCES Food_Data(food_id),
-                                FOREIGN KEY (user_id) REFERENCES User(user_id)
+                                FOREIGN KEY (food_id) REFERENCES food_data(food_id),
+                                FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE preferred_supplement (
                                       presupplement_id INT AUTO_INCREMENT PRIMARY KEY,
                                       sup_id INT NOT NULL,
                                       user_id VARCHAR(50) NOT NULL,
-                                      FOREIGN KEY (sup_id) REFERENCES Supplement_Data(sup_id),
-                                      FOREIGN KEY (user_id) REFERENCES User(user_id)
+                                      FOREIGN KEY (sup_id) REFERENCES supplement_data(sup_id),
+                                      FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 

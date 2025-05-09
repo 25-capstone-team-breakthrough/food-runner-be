@@ -1,7 +1,7 @@
 package com.Hansung.Capston.controller.Diet;
 
-import com.Hansung.Capston.entity.NutritionLog;
-import com.Hansung.Capston.entity.RecommendedNutrient;
+import com.Hansung.Capston.entity.Diet.Nutrient.NutritionLog;
+import com.Hansung.Capston.entity.Diet.Nutrient.RecommendedNutrient;
 import com.Hansung.Capston.service.Diet.NutrientService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,26 +23,26 @@ public class NutrientController {
   }
 
   // 영양소 기록 불러오기
-  @GetMapping("/get-nutritions")
-  public ResponseEntity<List<NutritionLog>> getNutrients() {
+  @GetMapping("/log/load")
+  public ResponseEntity<List<NutritionLog>> loadNutrients() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
     }
     String userId = (String) auth.getPrincipal();
 
-    return ResponseEntity.ok(nutrientService.GetNutritionByUserId(userId));
+    return ResponseEntity.ok(nutrientService.loadNutritionByUserId(userId));
   }
 
   // 추천 영양소 정보 불러오기
-  @GetMapping("get-recommend-nutrition")
-  public ResponseEntity<List<RecommendedNutrient>> getRecommendedNutrients() {
+  @GetMapping("/rec/load")
+  public ResponseEntity<List<RecommendedNutrient>> loadRecommendedNutrients() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
     }
     String userId = (String) auth.getPrincipal();
 
-    return ResponseEntity.ok(nutrientService.GetRecommendedNutrients(userId));
+    return ResponseEntity.ok(nutrientService.loadRecommendedNutrients(userId));
   }
 }

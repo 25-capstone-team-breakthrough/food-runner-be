@@ -2,7 +2,7 @@ package com.Hansung.Capston.controller.UserInfo;
 
 import com.Hansung.Capston.dto.BMI.BMIRequset;
 import com.Hansung.Capston.dto.BMI.BMIResponse;
-import com.Hansung.Capston.entity.NutritionType;
+import com.Hansung.Capston.common.NutritionType;
 import com.Hansung.Capston.entity.UserInfo.BMI;
 import com.Hansung.Capston.service.Diet.NutrientService;
 import com.Hansung.Capston.service.UserInfo.BMIService;
