@@ -151,7 +151,7 @@ CREATE TABLE Preferred_Ingredient (
 );
 
 -- ✅ 추천 식재료 테이블
-CREATE TABLE Recommended_Ingredient (
+CREATE TABLE recommended_ingredient (
                                         recommendation_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
                                         ingredient_id INT NOT NULL,
                                         user_id VARCHAR(50) NOT NULL,
@@ -160,7 +160,7 @@ CREATE TABLE Recommended_Ingredient (
 );
 
 -- ✅ 레시피 데이터 테이블
-CREATE TABLE Recipe_Data (
+CREATE TABLE recipe_data (
                              recipe_id BIGINT PRIMARY KEY,
                              recipe_name VARCHAR(255) NOT NULL,
                              recipe_image VARCHAR(255) NOT NULL,
@@ -178,14 +178,14 @@ CREATE TABLE Recipe_Data (
                              sugar FLOAT NULL,
                              sodium FLOAT NULL,
                              dietary_fiber FLOAT NULL,
-                             FOREIGN KEY (related_recipe_1) REFERENCES Recipe_Data(recipe_id),
-                             FOREIGN KEY (related_recipe_2) REFERENCES Recipe_Data(recipe_id),
-                             FOREIGN KEY (related_recipe_3) REFERENCES Recipe_Data(recipe_id)
+                             FOREIGN KEY (related_recipe_1) REFERENCES recipe_data(recipe_id),
+                             FOREIGN KEY (related_recipe_2) REFERENCES recipe_data(recipe_id),
+                             FOREIGN KEY (related_recipe_3) REFERENCES recipe_data(recipe_id)
 );
 
 
 -- ✅ 추천 식단 테이블
-CREATE TABLE Recommended_Diet (
+CREATE TABLE recommended_diet (
                                   recommended_diet_id INT AUTO_INCREMENT PRIMARY KEY,
                                   user_id VARCHAR(50) NOT NULL,
                                   recipe_id bigint NOT NULL,
@@ -196,7 +196,7 @@ CREATE TABLE Recommended_Diet (
 );
 
 -- ✅ 식사 기록 테이블
-CREATE TABLE Meal_Log (
+CREATE TABLE meal_log (
                           meal_id INT AUTO_INCREMENT PRIMARY KEY,
                           user_id VARCHAR(50) NOT NULL,
                           type ENUM('search', 'image') NOT NULL,
@@ -227,7 +227,7 @@ CREATE TABLE Meal_Log (
 );
 
 -- ✅ 사진 식사 기록 테이블
-CREATE TABLE Image_Meal_Log (
+CREATE TABLE image_meal_log (
                                 image_meal_log_id INT AUTO_INCREMENT PRIMARY KEY,
                                 meal_id INT NOT NULL,
                                 meal_name VARCHAR(255) NOT NULL,
@@ -237,7 +237,7 @@ CREATE TABLE Image_Meal_Log (
 
 
 -- ✅ 요리 데이터 테이블
-CREATE TABLE Food_Data (
+CREATE TABLE food_data (
                            food_id INT AUTO_INCREMENT PRIMARY KEY,
                            food_image TEXT,
                            food_name VARCHAR(255) not null,
@@ -268,7 +268,7 @@ CREATE TABLE Food_Data (
 
 
 -- ✅ 검색 식사 기록 테이블
-CREATE TABLE Search_Meal_Log (
+CREATE TABLE search_meal_log (
                                  search_meal_log_id INT AUTO_INCREMENT PRIMARY KEY,
                                  meal_id INT NOT NULL,
                                  food_id INT NOT NULL,
@@ -278,7 +278,7 @@ CREATE TABLE Search_Meal_Log (
 );
 
 -- ✅ 영양소 기록 테이블
-CREATE TABLE Nutrition_Log (
+CREATE TABLE nutrition_log (
                                nutrition_log_id INT AUTO_INCREMENT PRIMARY KEY,
                                user_id VARCHAR(50) NOT NULL,
                                calories DECIMAL(10,2) DEFAULT 0,
@@ -309,7 +309,7 @@ CREATE TABLE Nutrition_Log (
 
 
 -- ✅ 권장 영양소 테이블
-CREATE TABLE Recommended_Nutrition (
+CREATE TABLE recommended_nutrition (
                                        recommended_nutrition_id INT AUTO_INCREMENT PRIMARY KEY,
                                        user_id VARCHAR(50) NOT NULL,
                                        nutrition_type VARCHAR(20) NOT NULL,  -- ← enum NutritionType 저장 (MIN, MAX)
@@ -342,7 +342,7 @@ CREATE TABLE Recommended_Nutrition (
 );
 
 
-CREATE TABLE Preferred_Food (
+CREATE TABLE preferred_food (
                                 prefood_id INT AUTO_INCREMENT PRIMARY KEY,
                                 food_id INT NOT NULL,
                                 user_id VARCHAR(50) NOT NULL,
@@ -350,7 +350,7 @@ CREATE TABLE Preferred_Food (
                                 FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
 
-CREATE TABLE Preferred_Supplement (
+CREATE TABLE preferred_supplement (
                                       presupplement_id INT AUTO_INCREMENT PRIMARY KEY,
                                       sup_id INT NOT NULL,
                                       user_id VARCHAR(50) NOT NULL,
@@ -361,7 +361,7 @@ CREATE TABLE Preferred_Supplement (
 
 
 -- ✅ 성능 최적화를 위한 인덱스 추가
-CREATE INDEX idx_user_id ON User(user_id);
-CREATE INDEX idx_recipe_id ON Recipe_Data(recipe_id);
-CREATE INDEX idx_ingredient_id ON Ingredient_Data(ingredient_id);
-CREATE INDEX idx_meal_id ON Meal_Log(meal_id);
+CREATE INDEX idx_user_id ON user(user_id);
+CREATE INDEX idx_recipe_id ON recipe_data(recipe_id);
+CREATE INDEX idx_ingredient_id ON ingredient_data(ingredient_id);
+CREATE INDEX idx_meal_id ON meal_log(meal_id);
