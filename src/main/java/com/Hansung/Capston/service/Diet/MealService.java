@@ -102,9 +102,8 @@ public class MealService {
           .omega3(logs.mealLog.getOmega3())
           .build();
 
-      mealLogRepository.save(log);
-      logs.imageMealLog.setMealLog(mealLogRepository.findByUserUserId(log.getUser().getUserId()).getLast());
-
+      MealLog savedMealLog = mealLogRepository.save(log);
+      logs.imageMealLog.setMealLog(savedMealLog);
       imageMealLogRepository.save(logs.imageMealLog);
     }
     else if(request.getType().equals(MealType.search)) {
@@ -138,9 +137,8 @@ public class MealService {
           .omega3(logs.mealLog.getOmega3())
           .build();
 
-      mealLogRepository.save(log);
-      logs.searchMealLog.setMealLog(mealLogRepository.findByUserUserId(log.getUser().getUserId()).getLast());
-
+      MealLog savedMealLog = mealLogRepository.save(log);
+      logs.searchMealLog.setMealLog(savedMealLog);
       searchMealLogRepository.save(logs.searchMealLog);
     }
     return log;
