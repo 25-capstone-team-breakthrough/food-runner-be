@@ -56,9 +56,9 @@ public class NutrientService {
       logs = List.of(newLog);
     }
 
-    for (NutritionLog log : logs) {
-      log.setUser(null); // 민감 정보 제거
-    }
+//    for (NutritionLog log : logs) {
+//      log.setUser(null); // 민감 정보 제거
+//    }
 
     return logs;
   }
