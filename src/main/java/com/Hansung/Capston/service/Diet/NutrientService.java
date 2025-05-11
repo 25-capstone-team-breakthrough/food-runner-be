@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,21 +72,20 @@ public class NutrientService {
     // 해당 날짜에 존재하는 NutritionLog 찾기
     MealLog mealLog = mealLogRepository.findById(mealLogId).get();
     LocalDate onlyDate = mealLog.getDate().toLocalDate();
-    List<NutritionLog> logs = nutritionLogRepository.findByUser_UserIdAndDate(userId, onlyDate);
+    Optional<NutritionLog> existingLog = nutritionLogRepository.findByUser_UserIdAndDate(userId, onlyDate);
+
     NutritionLog nutrientLog;
 
-    if (logs.isEmpty()) {
+
+    if (existingLog.isPresent()) {
+      nutrientLog = existingLog.get(); // 존재하는 로그 사용
+    } else {
       User user = userRepository.findById(userId)
           .orElseThrow(() -> new RuntimeException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
 
-      NutritionLog newLog = new NutritionLog();
-      newLog.setUser(user);
-      newLog.setDate(LocalDate.now());
-      nutritionLogRepository.save(newLog);
-
-      nutrientLog = newLog;
-    } else {
-      nutrientLog = logs.get(0);
+      nutrientLog = new NutritionLog();
+      nutrientLog.setUser(user);
+      nutrientLog.setDate(LocalDate.now()); // 현재 날짜를 사용하거나 mealLog에서 날짜를 가져올 수 있음.
     }
     
     if (addOrDel) {
