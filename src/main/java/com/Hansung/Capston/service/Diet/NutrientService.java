@@ -12,7 +12,6 @@ import com.Hansung.Capston.repository.Diet.Nutrition.RecommendedNutrientReposito
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import com.Hansung.Capston.service.UserInfo.BMIService;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,24 +69,27 @@ public class NutrientService {
   // 섭취 영양소 정보 업데이트 및 생성(일 단위) -- MealController에서 사용
   public void saveNutrientLog(String userId, boolean addOrDel, Long mealLogId) {
     // 해당 날짜에 존재하는 NutritionLog 찾기
-    MealLog mealLog = mealLogRepository.findById(mealLogId).get();
+    MealLog mealLog = mealLogRepository.findById(mealLogId).orElseThrow(() -> new RuntimeException("MealLog not found"));
     LocalDate onlyDate = mealLog.getDate().toLocalDate();
+
+    // NutritionLog가 존재하는지 확인
     Optional<NutritionLog> existingLog = nutritionLogRepository.findByUser_UserIdAndDate(userId, onlyDate);
 
     NutritionLog nutrientLog;
 
-
     if (existingLog.isPresent()) {
-      nutrientLog = existingLog.get(); // 존재하는 로그 사용
+      nutrientLog = existingLog.get();  // 존재하는 로그 사용
     } else {
       User user = userRepository.findById(userId)
           .orElseThrow(() -> new RuntimeException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
 
       nutrientLog = new NutritionLog();
       nutrientLog.setUser(user);
-      nutrientLog.setDate(LocalDate.now()); // 현재 날짜를 사용하거나 mealLog에서 날짜를 가져올 수 있음.
+      nutrientLog.setDate(onlyDate);  // mealLog의 날짜를 그대로 사용
+      nutritionLogRepository.save(nutrientLog);  // 새로운 NutritionLog 저장
     }
-    
+
+    // 영양소 정보 업데이트
     if (addOrDel) {
       nutrientLog.setCalories(nutrientLog.getCalories() + mealLog.getCalories());
       nutrientLog.setProtein(nutrientLog.getProtein() + mealLog.getProtein());
@@ -136,8 +138,10 @@ public class NutrientService {
       nutrientLog.setOmega3(nutrientLog.getOmega3() - mealLog.getOmega3());
     }
 
-    nutritionLogRepository.save(nutrientLog);
+    nutritionLogRepository.save(nutrientLog);  // 최종적으로 업데이트 및 저장
   }
+
+
 
   // BMI 정보를 이용해서 추천 영양소 상한 하한 구하기 -- BMIController에서 사용
   public void setRecommendedNutrition(String userId, NutritionType type, BMI bmi) {
