@@ -62,7 +62,7 @@ public class NutrientService {
 //      res.add(log);
 //    }
 
-    return res;
+    return logs;
   }
 
 
