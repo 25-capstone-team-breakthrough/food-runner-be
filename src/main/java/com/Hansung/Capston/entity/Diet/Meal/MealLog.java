@@ -98,5 +98,5 @@ public class MealLog {
     private Double omega3;
 
     @Column(name = "date", nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
 }
