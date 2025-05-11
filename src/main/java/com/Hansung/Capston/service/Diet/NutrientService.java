@@ -71,7 +71,7 @@ public class NutrientService {
     // 해당 날짜에 존재하는 NutritionLog 찾기
     MealLog mealLog = mealLogRepository.findById(mealLogId).get();
     LocalDate onlyDate = mealLog.getDate().toLocalDate();
-    List<NutritionLog> logs = nutritionLogRepository.findByDateOnly(userId, onlyDate);
+    List<NutritionLog> logs = nutritionLogRepository.findByUser_UserIdAndDate(userId, onlyDate);
     NutritionLog nutrientLog;
 
     if (logs.isEmpty()) {
