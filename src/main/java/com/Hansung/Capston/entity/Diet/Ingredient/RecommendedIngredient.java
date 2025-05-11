@@ -16,7 +16,7 @@ public class RecommendedIngredient {
   @Column(name = "recommendation_ingredient_id")
   private Integer id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "ingredient_id", nullable = false)
   private IngredientData ingredient;
 

@@ -26,7 +26,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/users/login", "/users/signup", "/exerciseData/upload-csv"
-                    , "/api/data/foods/upload-csv","/diet/food/data/**", "/diet/sup/data/**").permitAll()
+                    , "/api/data/foods/upload-csv","/diet/food/data/**", "/diet/sup/data/**", "/diet/ingredient/data/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

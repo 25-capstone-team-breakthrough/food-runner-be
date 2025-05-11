@@ -2,13 +2,13 @@
 //
 //import com.Hansung.Capston.dto.Nutrition.NutritionStatusDTO;
 //import com.Hansung.Capston.entity.Diet.Ingredient.IngredientData;
-//import com.Hansung.Capston.entity.NutritionStatus;
 //import com.Hansung.Capston.entity.Diet.Ingredient.PreferredIngredient;
+//import com.Hansung.Capston.entity.Diet.Nutrient.NutritionLog;
 //import com.Hansung.Capston.repository.Diet.Ingredient.IngredientDataRepository;
 //import com.Hansung.Capston.repository.Diet.Ingredient.PreferredIngredientRepository;
 //import com.Hansung.Capston.repository.Diet.Ingredient.RecommendedIngredientRepository;
 //import com.Hansung.Capston.repository.UserInfo.UserRepository;
-//import com.Hansung.Capston.repository.Diet.Meal.service.Diet.NutrientService;
+//import com.Hansung.Capston.service.Diet.NutrientService;
 //import java.time.LocalDateTime;
 //import java.util.ArrayList;
 //import java.util.Collections;
@@ -60,21 +60,9 @@
 //    this.nutrientService = nutrientService;
 //  }
 //
-//  public void addPreferredIngredient(String user, long ingredientId) {
-//    PreferredIngredient preferredIngredient = new PreferredIngredient();
-//
-//    preferredIngredient.setIngredient(ingredientDataRepository.findById(ingredientId).get());
-//    preferredIngredient.setUser(userRepository.findById(user).get());
-//
-//    preferredIngredientRepository.save(preferredIngredient);
-//  }
-//
-//  public void removePreferredIngredient(String user, long ingredientId) {
-//    preferredIngredientRepository.delete(preferredIngredientRepository.findByUserIdAndIngredientId(user, ingredientId));
-//  }
 //
 //  public List<IngredientData> recommendTop10Ingredients(String userId) {
-//    NutritionStatusDTO dto = nutrientService.GetNutritionByUserId(userId, LocalDateTime.now());
+//    List<NutritionLog> dto = nutrientService.loadNutritionByUserId(userId);
 //
 //    Set<String> deficient = new HashSet<>();
 //    Set<String> excessive = new HashSet<>();

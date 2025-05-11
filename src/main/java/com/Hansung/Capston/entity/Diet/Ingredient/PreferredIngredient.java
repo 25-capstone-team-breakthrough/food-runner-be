@@ -16,7 +16,7 @@ public class PreferredIngredient {
   @Column(name = "preingredient_id")
   private Integer id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "ingredient_id", nullable = false)
   private IngredientData ingredient;
 

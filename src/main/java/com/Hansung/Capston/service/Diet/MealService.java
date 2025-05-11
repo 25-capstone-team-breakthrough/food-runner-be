@@ -41,7 +41,7 @@ public class MealService {
     this.openAiApiService = openAiApiService;
   }
 
-  // 식사 기록 검색
+  // 식사 기록 불러오기
   public MealLogResponse loadMealLogs(String userId) {
     MealLogResponse res = new MealLogResponse();
 
@@ -67,10 +67,10 @@ public class MealService {
     return res;
   }
 
+  // 식사 기록 등록하기
   public MealLog saveMealLog(MealLogRequest request, String userId) {
     MealLog log = new MealLog();
 
-    // 식사 기록 등록
     if(request.getType().equals(MealType.image)) {
       ImageMealLogRecord logs = saveImageMealLog(request);
 
@@ -145,7 +145,7 @@ public class MealService {
     }
     return log;
   }
-
+  
   private ImageMealLogRecord saveImageMealLog(MealLogRequest request) {
     ImageMealLog imageMealLog = new ImageMealLog();
     MealLog mealLog;
@@ -264,7 +264,8 @@ public class MealService {
 
     return new SearchMealLogRecord(mealLog, searchMealLog);
   }
-  // 식사 기록 삭제
+  
+  // 식사 기록 삭제하기
   public void deleteMealLog(Long mealLogId) {
     MealLog log = mealLogRepository.findById(mealLogId).get();
 
