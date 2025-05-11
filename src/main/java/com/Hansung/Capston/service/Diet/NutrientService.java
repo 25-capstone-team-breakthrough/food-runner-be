@@ -57,10 +57,10 @@ public class NutrientService {
       logs = List.of(newLog);
     }
 
-    for (NutritionLog log : logs) {
-      log.setUser(null); // 민감 정보 제거
-      res.add(log);
-    }
+//    for (NutritionLog log : logs) {
+//      log.setUser(null); // 민감 정보 제거
+//      res.add(log);
+//    }
 
     return res;
   }
@@ -227,6 +227,7 @@ public class NutrientService {
     return res;
   }
 
+  // 권장 영양소 평균 구하는 메서드
   protected RecommendedNutrient getAverageRecommendedNutrient(String userId) {
     RecommendedNutrient max = recommendedNutrientRepository.findByUserUserId(userId).get(0);
     RecommendedNutrient min = recommendedNutrientRepository.findByUserUserId(userId).get(1);
