@@ -43,6 +43,7 @@ public class NutrientService {
   @Transactional
   public List<NutritionLog> loadNutritionByUserId(String userId) {
     List<NutritionLog> logs = nutritionLogRepository.findByUserUserId(userId);
+    List<NutritionLog> res = new ArrayList<>();
 
     if (logs.isEmpty()) {
       User user = userRepository.findById(userId)
@@ -56,11 +57,12 @@ public class NutrientService {
       logs = List.of(newLog);
     }
 
-//    for (NutritionLog log : logs) {
-//      log.setUser(null); // 민감 정보 제거
-//    }
+    for (NutritionLog log : logs) {
+      log.setUser(null); // 민감 정보 제거
+      res.add(log);
+    }
 
-    return logs;
+    return res;
   }
 
 
