@@ -295,7 +295,7 @@ CREATE TABLE nutrition_log (
                                potassium DECIMAL(10,2) DEFAULT 0,
                                l_arginine DECIMAL(10,2) DEFAULT 0,
                                omega3 DECIMAL(10,2) DEFAULT 0,
-                               date DATETIME NOT NULL,
+                               date DATE NOT NULL,
                                FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 

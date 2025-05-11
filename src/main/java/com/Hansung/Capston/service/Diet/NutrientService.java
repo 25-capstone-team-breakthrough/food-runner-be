@@ -70,7 +70,7 @@ public class NutrientService {
   public void saveNutrientLog(String userId, boolean addOrDel, Long mealLogId) {
     // 해당 날짜에 존재하는 NutritionLog 찾기
     MealLog mealLog = mealLogRepository.findById(mealLogId).get();
-    LocalDate onlyDate = mealLog.getDate().toLocalDate();
+    LocalDate onlyDate = mealLog.getDate();
     List<NutritionLog> logs = nutritionLogRepository.findByDateOnly(userId, onlyDate);
     NutritionLog nutrientLog;
 
