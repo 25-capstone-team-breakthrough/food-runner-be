@@ -80,7 +80,7 @@ public class NutrientService {
 
     if (existingLog != null) {
       nutrientLog = existingLog;  // 존재하는 로그 사용
-      nutrientLog.setNutritionLogId(existingLog.getNutritionLogId());
+      nutritionLogRepository.delete(existingLog);
     } else {
       User user = userRepository.findById(userId)
           .orElseThrow(() -> new RuntimeException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
