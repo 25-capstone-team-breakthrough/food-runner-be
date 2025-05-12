@@ -74,7 +74,7 @@ public class NutrientService {
 
     // NutritionLog가 존재하는지 확인
     NutritionLog existingLog = nutritionLogRepository.findByUserIdAndDate(userId, onlyDate);
-ß
+
     NutritionLog nutrientLog;
 
     if (existingLog != null) {
