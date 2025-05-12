@@ -73,12 +73,12 @@ public class NutrientService {
     LocalDate onlyDate = mealLog.getDate().toLocalDate();
 
     // NutritionLog가 존재하는지 확인
-    Optional<NutritionLog> existingLog = nutritionLogRepository.findByUser_UserIdAndDate(userId, onlyDate);
-
+    NutritionLog existingLog = nutritionLogRepository.findByUserIdAndDate(userId, onlyDate);
+ß
     NutritionLog nutrientLog;
 
-    if (existingLog.isPresent()) {
-      nutrientLog = existingLog.get();  // 존재하는 로그 사용
+    if (existingLog != null) {
+      nutrientLog = existingLog;  // 존재하는 로그 사용
     } else {
       User user = userRepository.findById(userId)
           .orElseThrow(() -> new RuntimeException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
