@@ -67,6 +67,7 @@ public class NutrientService {
 
 
   // 섭취 영양소 정보 업데이트 및 생성(일 단위) -- MealController에서 사용
+  @Transactional
   public void saveNutrientLog(String userId, boolean addOrDel, Long mealLogId) {
     // 해당 날짜에 존재하는 NutritionLog 찾기
     MealLog mealLog = mealLogRepository.findById(mealLogId).orElseThrow(() -> new RuntimeException("MealLog not found"));
