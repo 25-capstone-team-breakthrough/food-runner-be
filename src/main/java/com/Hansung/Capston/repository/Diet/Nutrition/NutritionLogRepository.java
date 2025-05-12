@@ -15,6 +15,6 @@ public interface NutritionLogRepository extends JpaRepository<NutritionLog, Long
 
   Optional<NutritionLog> findByUser_UserIdAndDate(String userId, LocalDate onlyDate);
 
-  @Query("select * from nutition_log n where n.user_id = :userId and n.date = :onlydate")
-  NutritionLog findByUserIdAndDate(@Param("userId") String userId, @Param("onlydate") LocalDate onlyDate);
+  @Query(value = "select * from nutrition_log n where n.user_id = :userId and n.date = :onlydate", nativeQuery = true)
+  NutritionLog findByUserIdAndDate(@Param("userId") String userId, @Param("onlydate") LocalDate onlydate);
 }
