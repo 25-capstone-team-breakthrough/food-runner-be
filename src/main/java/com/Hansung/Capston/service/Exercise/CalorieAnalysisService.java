@@ -2,13 +2,13 @@ package com.Hansung.Capston.service.Exercise;
 
 import com.Hansung.Capston.common.ExerciseType;
 import com.Hansung.Capston.dto.Exersice.ExerciseLogCalories.ExerciseLogCaloriesDto;
-import com.Hansung.Capston.entity.UserInfo.BMI;
 import com.Hansung.Capston.entity.Exercise.*;
-import com.Hansung.Capston.repository.UserInfo.BMIRepository;
+import com.Hansung.Capston.entity.UserInfo.BMI;
 import com.Hansung.Capston.repository.Exercise.CardioExerciseLogRepository;
 import com.Hansung.Capston.repository.Exercise.ExerciseDataRepository;
 import com.Hansung.Capston.repository.Exercise.ExerciseLogCaloriesRepository;
 import com.Hansung.Capston.repository.Exercise.StrengthExerciseLogRepository;
+import com.Hansung.Capston.repository.UserInfo.BMIRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -111,4 +111,8 @@ public class CalorieAnalysisService {
                 ))
                 .collect(Collectors.toList());
     }
+
+
+
+
 }

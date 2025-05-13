@@ -1,19 +1,17 @@
 package com.Hansung.Capston.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import com.Hansung.Capston.jwt.JwtAuthenticationFilter;
-import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableMethodSecurity
 @Configuration
@@ -26,7 +24,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/users/login", "/users/signup", "/exerciseData/upload-csv"
-                    , "/api/data/foods/upload-csv","/diet/food/data/**", "/diet/sup/data/**").permitAll()
+                    , "/api/data/foods/upload-csv","/diet/food/data/**", "/diet/sup/data/**", "/extract-text").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

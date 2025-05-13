@@ -30,6 +30,10 @@ public class ExerciseService {
     private StrengthExerciseLogRepository strengthExerciseLogRepository;
 
     @Autowired
+    private ExerciseLogCaloriesRepository exerciseLogCaloriesRepository;
+
+
+    @Autowired
     private ExerciseDataRepository exerciseDataRepository;
     @Autowired
     private UserRepository userRepository;
@@ -119,6 +123,9 @@ public class ExerciseService {
 
         ExerciseLog log = exerciseLogRepository.findByLogIdAndUser_UserId(logId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("삭제할 기록을 찾을 수 없거나, 권한이 없습니다."));
+
+        //소모칼로리 삭제
+        exerciseLogCaloriesRepository.deleteByExerciseLog_LogId(logId);
 
         if (log.getExerciseType() == ExerciseType.CARDIO) {
             cardioExerciseLogRepository.deleteByExerciseLog_LogId(logId);
