@@ -1,6 +1,8 @@
 package com.Hansung.Capston.controller.UserInfo;
 
 import com.Hansung.Capston.service.UserInfo.InbodyService;
+import java.security.Key;
+import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,9 @@ public class InbodyController {
 
 
     @PostMapping("/user/GetTodayNewUser")
-    public ResponseEntity<String>getTodayNewUser() {
-        return ResponseEntity.ok("Success");
+    public ResponseEntity<Map<String,Object>>getTodayNewUser() {
+        Map<String, Object> requestBody = Map.of("Date", "");
+
+        return ResponseEntity.ok(inbodyService.postToInbody("http://apikr.lookinbody.com/inbody/webhook/user/GetTodayNewUser", requestBody));
     }
 }
