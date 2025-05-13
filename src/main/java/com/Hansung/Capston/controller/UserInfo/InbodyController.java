@@ -25,6 +25,11 @@ public class InbodyController {
 //        }
 //    }
 
+    @PostMapping
+    public ResponseEntity<String> justTest(){
+        return ResponseEntity.ok("test success");
+    }
+
 
     @PostMapping("/user/GetTodayNewUser")
     public ResponseEntity<Map<String,Object>>getTodayNewUser() {
