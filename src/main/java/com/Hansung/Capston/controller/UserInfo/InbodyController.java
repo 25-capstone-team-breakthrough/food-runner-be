@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/inbody")
+@RequestMapping("/inbody/webhook")
 public class InbodyController {
 
     @Autowired
@@ -23,10 +23,9 @@ public class InbodyController {
 //        }
 //    }
 
-    @PostMapping("/webhook")
-    public ResponseEntity<String> receiveWebhook(@RequestBody Map<String, Object> payload) {
+
+    @PostMapping("/user/GetTodayNewUser")
+    public ResponseEntity<String>getTodayNewUser() {
         return ResponseEntity.ok("Success");
     }
-
-
 }
