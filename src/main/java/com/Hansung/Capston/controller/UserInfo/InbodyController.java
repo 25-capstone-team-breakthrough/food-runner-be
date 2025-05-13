@@ -10,7 +10,7 @@ public class InbodyController {
 
     @Autowired
     private InbodyService inbodyService;
-
+//
 //    @GetMapping("/test")
 //    public String test(@RequestParam ("imageUrl") String imageUrl) {
 //        try{
