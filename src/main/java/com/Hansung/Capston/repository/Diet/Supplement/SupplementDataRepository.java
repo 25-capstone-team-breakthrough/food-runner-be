@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SupplementDataRepository extends JpaRepository<SupplementData, Long> {
 
-  PreferredSupplement findByUserUserIdAndSupplementDataSupplementId(String userId, Long supplementId);
 }
