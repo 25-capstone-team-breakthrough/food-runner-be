@@ -1,10 +1,13 @@
 package com.Hansung.Capston.controller.Diet;
 
+import com.Hansung.Capston.dto.Diet.Meal.ImageMealLogDTO;
 import com.Hansung.Capston.dto.Diet.Meal.MealLogRequest;
 import com.Hansung.Capston.dto.Diet.Meal.MealLogResponse;
+import com.Hansung.Capston.entity.Diet.Meal.ImageMealLog;
 import com.Hansung.Capston.service.ApiService.AwsS3Service;
 import com.Hansung.Capston.service.Diet.MealService;
 import com.Hansung.Capston.service.Diet.NutrientService;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -58,10 +61,15 @@ public class MealController {
       }
     };
 
-    Long number = mealService.loadMealLogs(userId).getImageMealLogs().getLast().getImageMealLogId();
-    if(number == null) {
-      number = 0L;
+    Long number;
+    List<ImageMealLogDTO> ImageMealLog = mealService.loadMealLogs(
+        userId).getImageMealLogs();
+    if(ImageMealLog.isEmpty()){
+      number =0L;
+    }else {
+      number = mealService.loadMealLogs(userId).getImageMealLogs().getLast().getImageMealLogId();
     }
+
 
     // 파일 이름 해시화
     String hashedFileName = hashFileName.apply(fileName + number);
