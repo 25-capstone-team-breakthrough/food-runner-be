@@ -44,5 +44,4 @@ public class InbodyConfig {
     return restTemplateProvider.getIfAvailable()
         .exchange(apiUrl, HttpMethod.POST, requestEntity, Map.class);
   }
-
 }
