@@ -1,6 +1,7 @@
 package com.Hansung.Capston.config;
 
 import java.util.Map;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,20 +34,15 @@ public class InbodyConfig {
 
   @Autowired
   @Qualifier("inbodyTemplate")
-  private RestTemplate inbodyTemplate;
+  private ObjectProvider<RestTemplate> restTemplateProvider;
 
-  // 적절한 api url로 설정할 때 사용
-  public ResponseEntity<Map> postToInbody(String apiUrl, Map<String, Object> requestBody) { // apiUrl 파라미터 추가
+  public ResponseEntity<Map> postToInbody(String apiUrl, Map<String, Object> requestBody) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
-
     HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-    return inbodyTemplate.exchange(
-        apiUrl, 
-        HttpMethod.POST,
-        requestEntity,
-        Map.class
-    );
+    return restTemplateProvider.getIfAvailable()
+        .exchange(apiUrl, HttpMethod.POST, requestEntity, Map.class);
   }
+
 }
