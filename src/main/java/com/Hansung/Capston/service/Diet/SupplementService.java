@@ -65,13 +65,20 @@ public class SupplementService {
   }
 
   // 영양제 즐겨찾기 등록하기
-  public void savePreferredSupplement(String userId,Long supplementId) {
-    PreferredSupplement preferredSupplement = new PreferredSupplement();
+  public String savePreferredSupplement(String userId,Long supplementId) {
+    PreferredSupplement preferredSupplement;
 
-    preferredSupplement.setSupplementData(supplementDataRepository.findById(supplementId).get());
-    preferredSupplement.setUser(userRepository.findById(userId).get());
+    if((preferredSupplement = supplementDataRepository.findByUserUserIdAndSupplementDataSupplementId(userId,supplementId)) != null){
+      return "실패 : 이미 등록되어 있습니다.";
+    } else {
+      preferredSupplement = new PreferredSupplement();
+      preferredSupplement.setSupplementData(supplementDataRepository.findById(supplementId).get());
+      preferredSupplement.setUser(userRepository.findById(userId).get());
 
-    preferredSupplementRepository.save(preferredSupplement);
+      preferredSupplementRepository.save(preferredSupplement);
+
+      return "성공 : 즐겨찾기 등록";
+    }
   }
   
   // 영양제 즐겨찾기 불러오기

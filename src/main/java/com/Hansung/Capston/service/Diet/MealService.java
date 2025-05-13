@@ -41,7 +41,7 @@ public class MealService {
     this.openAiApiService = openAiApiService;
   }
 
-  // 식사 기록 검색
+  // 식사 기록 불러오기
   public MealLogResponse loadMealLogs(String userId) {
     MealLogResponse res = new MealLogResponse();
 
@@ -61,16 +61,15 @@ public class MealService {
       }
     }
 
-    res.setImageMealLogs(imageMealLogs);
-    res.setSearchMealLogs(searchMealLogs);
+    res = MealLogResponse.toDto(imageMealLogs, searchMealLogs);
 
     return res;
   }
 
+  // 식사 기록 등록하기
   public MealLog saveMealLog(MealLogRequest request, String userId) {
     MealLog log = new MealLog();
 
-    // 식사 기록 등록
     if(request.getType().equals(MealType.image)) {
       ImageMealLogRecord logs = saveImageMealLog(request);
 
@@ -102,9 +101,8 @@ public class MealService {
           .omega3(logs.mealLog.getOmega3())
           .build();
 
-      mealLogRepository.save(log);
-      logs.imageMealLog.setMealLog(mealLogRepository.findByUserUserId(log.getUser().getUserId()).getLast());
-
+      MealLog savedMealLog = mealLogRepository.save(log);
+      logs.imageMealLog.setMealLog(savedMealLog);
       imageMealLogRepository.save(logs.imageMealLog);
     }
     else if(request.getType().equals(MealType.search)) {
@@ -138,14 +136,13 @@ public class MealService {
           .omega3(logs.mealLog.getOmega3())
           .build();
 
-      mealLogRepository.save(log);
-      logs.searchMealLog.setMealLog(mealLogRepository.findByUserUserId(log.getUser().getUserId()).getLast());
-
+      MealLog savedMealLog = mealLogRepository.save(log);
+      logs.searchMealLog.setMealLog(savedMealLog);
       searchMealLogRepository.save(logs.searchMealLog);
     }
     return log;
   }
-
+  
   private ImageMealLogRecord saveImageMealLog(MealLogRequest request) {
     ImageMealLog imageMealLog = new ImageMealLog();
     MealLog mealLog;
@@ -264,7 +261,8 @@ public class MealService {
 
     return new SearchMealLogRecord(mealLog, searchMealLog);
   }
-  // 식사 기록 삭제
+  
+  // 식사 기록 삭제하기
   public void deleteMealLog(Long mealLogId) {
     MealLog log = mealLogRepository.findById(mealLogId).get();
 

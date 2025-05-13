@@ -3,6 +3,7 @@ package com.Hansung.Capston.entity.Diet.Meal;
 import com.Hansung.Capston.common.MealType;
 import com.Hansung.Capston.entity.UserInfo.User;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.*;
 
 import java.time.LocalDateTime;

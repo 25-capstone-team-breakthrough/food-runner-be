@@ -44,6 +44,9 @@ public class SupplementData {
   @Column(name = "main_function", nullable = false, columnDefinition = "TEXT")
   private String mainFunction; // 주요 기능
 
+  @Column(name = "main_nutrition")
+  private String mainNutrition;
+
   @Column(name = "calories")
   private Double calories;
 

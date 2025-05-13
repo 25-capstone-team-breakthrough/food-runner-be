@@ -2,6 +2,7 @@ package com.Hansung.Capston.entity.Diet.Nutrient;
 
 import com.Hansung.Capston.entity.UserInfo.User;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -91,5 +92,5 @@ public class NutritionLog {
   private Double omega3 = 0.0;
 
   @Column(name = "date", nullable = false)
-  private LocalDateTime date;
+  private LocalDate date;
 }

@@ -1,10 +1,13 @@
 package com.Hansung.Capston.service.Diet;
 
+import com.Hansung.Capston.dto.Diet.Nutrition.NutritionLogResponse;
+import com.Hansung.Capston.dto.Diet.Nutrition.RecommendedNutrientResponse;
 import com.Hansung.Capston.entity.Diet.Meal.MealLog;
 import com.Hansung.Capston.entity.Diet.Nutrient.NutritionLog;
 import com.Hansung.Capston.common.NutritionType;
 import com.Hansung.Capston.entity.Diet.Nutrient.RecommendedNutrient;
 import com.Hansung.Capston.entity.UserInfo.BMI;
+import com.Hansung.Capston.entity.UserInfo.User;
 import com.Hansung.Capston.repository.Diet.Meal.MealLogRepository;
 import com.Hansung.Capston.repository.Diet.Nutrition.NutritionLogRepository;
 import com.Hansung.Capston.repository.Diet.Nutrition.RecommendedNutrientRepository;
@@ -13,8 +16,10 @@ import com.Hansung.Capston.service.UserInfo.BMIService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class NutrientService {
@@ -37,35 +42,56 @@ public class NutrientService {
   }
 
   // 섭취 영양소 정보 불러오기
-  public List<NutritionLog> loadNutritionByUserId(String userId) {
-    List<NutritionLog> res = new ArrayList<>();
+  @Transactional
+  public List<NutritionLogResponse> loadNutritionByUserId(String userId) {
+    List<NutritionLogResponse> res = new ArrayList<>();
     List<NutritionLog> logs = nutritionLogRepository.findByUserUserId(userId);
-    for (NutritionLog log : logs) {
-      log.setUser(null);
-      res.add(log);
+
+    if (logs.isEmpty()) {
+      User user = userRepository.findById(userId)
+          .orElseThrow(() -> new RuntimeException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
+
+      NutritionLog newLog = new NutritionLog();
+      newLog.setUser(user);
+      newLog.setDate(LocalDate.now());
+      nutritionLogRepository.save(newLog);
+
+      logs = List.of(newLog);
     }
+
+    for(NutritionLog log : logs) {
+      res.add(NutritionLogResponse.toDto(log));
+    }
+
     return res;
   }
 
   // 섭취 영양소 정보 업데이트 및 생성(일 단위) -- MealController에서 사용
+  @Transactional
   public void saveNutrientLog(String userId, boolean addOrDel, Long mealLogId) {
     // 해당 날짜에 존재하는 NutritionLog 찾기
-    MealLog mealLog = mealLogRepository.findById(mealLogId).get();
+    MealLog mealLog = mealLogRepository.findById(mealLogId).orElseThrow(() -> new RuntimeException("MealLog not found"));
     LocalDate onlyDate = mealLog.getDate().toLocalDate();
-    List<NutritionLog> logs = nutritionLogRepository.findByDateOnly(userId, onlyDate);
+
+    // NutritionLog가 존재하는지 확인
+    NutritionLog existingLog = nutritionLogRepository.findByUserIdAndDate(userId, onlyDate);
+
     NutritionLog nutrientLog;
 
-    if (logs.isEmpty()) {
-      // NutritionLog가 없으면 새로 생성
-      nutrientLog = new NutritionLog();
-      nutrientLog.setUser(userRepository.findById(userId).get());
-      nutrientLog.setDate(mealLog.getDate()); // 날짜 필드가 있다면 꼭 지정
-      // 기본값 0.0은 이미 필드에 설정되어 있으므로 건드릴 필요 없음
-      nutritionLogRepository.save(nutrientLog);
+    if (existingLog != null) {
+      nutrientLog = existingLog;  // 존재하는 로그 사용
+      nutrientLog.setNutritionLogId(existingLog.getNutritionLogId());
     } else {
-      nutrientLog = logs.get(0);
+      User user = userRepository.findById(userId)
+          .orElseThrow(() -> new RuntimeException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
+
+      nutrientLog = new NutritionLog();
+      nutrientLog.setUser(user);
+      nutrientLog.setDate(onlyDate);  // mealLog의 날짜를 그대로 사용
+      nutritionLogRepository.save(nutrientLog);  // 새로운 NutritionLog 저장
     }
-    
+
+    // 영양소 정보 업데이트
     if (addOrDel) {
       nutrientLog.setCalories(nutrientLog.getCalories() + mealLog.getCalories());
       nutrientLog.setProtein(nutrientLog.getProtein() + mealLog.getProtein());
@@ -114,7 +140,7 @@ public class NutrientService {
       nutrientLog.setOmega3(nutrientLog.getOmega3() - mealLog.getOmega3());
     }
 
-    nutritionLogRepository.save(nutrientLog);
+    nutritionLogRepository.save(nutrientLog);  // 최종적으로 업데이트 및 저장
   }
 
   // BMI 정보를 이용해서 추천 영양소 상한 하한 구하기 -- BMIController에서 사용
@@ -194,16 +220,49 @@ public class NutrientService {
     recommendedNutrientRepository.save(recommendedNutrient);
   }
 
-  public List<RecommendedNutrient> loadRecommendedNutrients(String userId) {
-    List<RecommendedNutrient> res = new ArrayList<>();
+  public List<RecommendedNutrientResponse> loadRecommendedNutrients(String userId) {
+    List<RecommendedNutrientResponse> res = new ArrayList<>();
     List<RecommendedNutrient> nutrients = recommendedNutrientRepository.findByUserUserId(userId);
 
     for(RecommendedNutrient nutrient : nutrients) {
-      nutrient.setUser(null);
-      res.add(nutrient);
+      res.add(RecommendedNutrientResponse.toDto(nutrient));
     }
     return res;
   }
 
+  // 권장 영양소 평균 구하는 메서드
+  protected RecommendedNutrient getAverageRecommendedNutrient(String userId) {
+    RecommendedNutrient max = recommendedNutrientRepository.findByUserUserId(userId).get(0);
+    RecommendedNutrient min = recommendedNutrientRepository.findByUserUserId(userId).get(1);
+
+    Double averageProtein = (max.getProtein() - min.getProtein()) / 2;
+    Double averageCarbohydrate = (max.getCarbohydrate() - min.getCarbohydrate()) / 2;
+    Double averageFat = (max.getFat() - min.getFat()) / 2;
+    Double averageDietaryFiber = (max.getDietaryFiber() - min.getDietaryFiber()) / 2;
+    Double averageVitaminB1 = (max.getVitaminB1() - min.getVitaminB1()) / 2;
+    Double averagePotassium = (max.getPotassium() - min.getPotassium()) / 2;
+    Double averageVitaminC = (max.getVitaminC() - min.getVitaminC()) / 2;
+    Double averageCalcium = (max.getCalcium() - min.getCalcium()) / 2;
+    Double averageVitaminD = (max.getVitaminD() - min.getVitaminD()) / 2;
+    Double averageVitaminA = (max.getVitaminA() - min.getVitaminA()) / 2;
+
+    RecommendedNutrient averageNutrient = new RecommendedNutrient();
+    averageNutrient.setProtein(averageProtein);
+    averageNutrient.setCarbohydrate(averageCarbohydrate);
+    averageNutrient.setFat(averageFat);
+    averageNutrient.setDietaryFiber(averageDietaryFiber);
+    averageNutrient.setVitaminB1(averageVitaminB1);
+    averageNutrient.setPotassium(averagePotassium);
+    averageNutrient.setVitaminC(averageVitaminC);
+    averageNutrient.setCalcium(averageCalcium);
+    averageNutrient.setVitaminD(averageVitaminD);
+    averageNutrient.setVitaminA(averageVitaminA);
+
+    // ✅ 사용자 설정 누락되면 오류 발생
+    averageNutrient.setUser(userRepository.findById(userId)
+        .orElseThrow(() -> new RuntimeException("해당 ID의 사용자가 존재하지 않습니다: " + userId)));
+
+    return averageNutrient;
+  }
 
 }
