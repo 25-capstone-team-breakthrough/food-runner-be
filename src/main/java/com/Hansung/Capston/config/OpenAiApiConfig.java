@@ -1,5 +1,6 @@
 package com.Hansung.Capston.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 public class OpenAiApiConfig {
   @Value("${openai.api.key}")
   private String openAiKey;
+  @Qualifier("openAiTemplate")
   @Bean
   public RestTemplate openAiTemplate(){
     RestTemplate restTemplate = new RestTemplate();

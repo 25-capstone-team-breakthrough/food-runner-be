@@ -8,7 +8,4 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class InbodyApiService {
 
-  @Autowired
-  @Qualifier("inbodyTemplate")
-  RestTemplate restTemplate = new RestTemplate();
 }
