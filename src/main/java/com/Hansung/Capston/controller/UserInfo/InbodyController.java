@@ -30,6 +30,6 @@ public class InbodyController {
     public ResponseEntity<Map<String,Object>>getTodayNewUser() {
         Map<String, Object> requestBody = Map.of("Date", "");
 
-        return ResponseEntity.ok(inbodyService.postToInbody("http://apikr.lookinbody.com/inbody/webhook/user/GetTodayNewUser", requestBody));
+        return ResponseEntity.ok(inbodyService.postToInbody("http://apikr.lookinbody.com/user/GetTodayNewUser", requestBody));
     }
 }
