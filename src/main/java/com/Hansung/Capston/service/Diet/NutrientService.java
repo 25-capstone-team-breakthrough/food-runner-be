@@ -1,5 +1,6 @@
 package com.Hansung.Capston.service.Diet;
 
+import com.Hansung.Capston.dto.Diet.Nutrition.NutritionLogResponse;
 import com.Hansung.Capston.entity.Diet.Meal.MealLog;
 import com.Hansung.Capston.entity.Diet.Nutrient.NutritionLog;
 import com.Hansung.Capston.common.NutritionType;
@@ -41,8 +42,8 @@ public class NutrientService {
 
   // 섭취 영양소 정보 불러오기
   @Transactional
-  public List<NutritionLog> loadNutritionByUserId(String userId) {
-    List<NutritionLog> res = new ArrayList<>();
+  public List<NutritionLogResponse> loadNutritionByUserId(String userId) {
+    List<NutritionLogResponse> res = new ArrayList<>();
     List<NutritionLog> logs = nutritionLogRepository.findByUserUserId(userId);
 
     if (logs.isEmpty()) {
@@ -56,6 +57,11 @@ public class NutrientService {
 
       logs = List.of(newLog);
     }
+
+    for(NutritionLog log : logs) {
+      res.add(NutritionLogResponse.toDto(log));
+    }
+
     return res;
   }
 

@@ -1,5 +1,6 @@
 package com.Hansung.Capston.controller.Diet;
 
+import com.Hansung.Capston.dto.Diet.Nutrition.NutritionLogResponse;
 import com.Hansung.Capston.entity.Diet.Nutrient.NutritionLog;
 import com.Hansung.Capston.entity.Diet.Nutrient.RecommendedNutrient;
 import com.Hansung.Capston.service.Diet.NutrientService;
@@ -24,7 +25,7 @@ public class NutrientController {
 
   // 영양소 기록 불러오기
   @GetMapping("/log/load")
-  public ResponseEntity<List<NutritionLog>> loadNutrients() {
+  public ResponseEntity<List<NutritionLogResponse>> loadNutrients() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
