@@ -4,6 +4,7 @@ import com.Hansung.Capston.dto.Diet.Meal.ImageMealLogDTO;
 import com.Hansung.Capston.dto.Diet.Meal.MealLogRequest;
 import com.Hansung.Capston.dto.Diet.Meal.MealLogResponse;
 import com.Hansung.Capston.entity.Diet.Meal.ImageMealLog;
+import com.Hansung.Capston.entity.Diet.Meal.MealLog;
 import com.Hansung.Capston.service.ApiService.AwsS3Service;
 import com.Hansung.Capston.service.Diet.MealService;
 import com.Hansung.Capston.service.Diet.NutrientService;
@@ -84,8 +85,11 @@ public class MealController {
       return ResponseEntity.status(401).build();
     }
     String userId = (String) auth.getPrincipal();
-
-    nutrientService.saveNutrientLog(userId, true, mealService.saveMealLog(request, userId).getMealId());
+    Long mealLog = mealService.saveMealLog(request, userId).getMealId();
+    if(mealLog == null){
+      return ResponseEntity.ok("실패 : 이미지에 음식이 없습니다");
+    }
+    nutrientService.saveNutrientLog(userId, true, mealLog);
 
     return ResponseEntity.ok("save success");
   }

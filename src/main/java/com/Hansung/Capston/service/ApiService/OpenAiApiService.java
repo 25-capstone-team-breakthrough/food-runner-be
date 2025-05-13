@@ -35,7 +35,7 @@ public class OpenAiApiService {
 
 
   @Autowired
-  public OpenAiApiService(RestTemplate restTemplate, NutrientService nutrientService) {
+  public OpenAiApiService(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
 
@@ -71,7 +71,8 @@ public class OpenAiApiService {
     // 텍스트 기반 요청 내용
     String prompt = food + "에 대한 영양 정보를 1인분 기준으로 추정하여 아래와 같은 형식으로 반환해주세요. 각 항목은 `key=value` 형태로 출력하고, 각 항목은 쉼표(,)로 구분해주세요.\n"
         + "예시 형식:\n"
-        + "foodName=짜장면, calories=800, protein=20, carbohydrate=130, fat=15, sugar=12, sodium=2000, dietaryFiber=5, calcium=40, saturatedFat=3, transFat=0, cholesterol=50, vitaminA=50, vitaminB1=0.5, vitaminC=2, vitaminD=null, vitaminE=null, magnesium=30, zinc=0.8, lactium=null, potassium=300, lArginine=null, omega3=null";
+        + "foodName=짜장면, calories=800, protein=20, carbohydrate=130, fat=15, sugar=12, sodium=2000, dietaryFiber=5, calcium=40, saturatedFat=3, transFat=0, cholesterol=50, vitaminA=50, vitaminB1=0.5, vitaminC=2, vitaminD=null, vitaminE=null, magnesium=30, zinc=0.8, lactium=null, potassium=300, lArginine=null, omega3=null"
+        + "만약에 사진에 음식이 없으면 foodName = null";
 
     // TextContent 객체 생성
     List<Message> messages = new ArrayList<>();
@@ -109,6 +110,9 @@ public class OpenAiApiService {
           switch (key) {
             case "foodName":
               foodDataResponse.setFoodName(value);
+              if(value.equals("null")) {
+                return null;
+              }
               break;
             case "calories":
               foodDataResponse.setCalories(value != null ? Double.parseDouble(value) : 0);

@@ -1,6 +1,8 @@
 package com.Hansung.Capston.controller.Diet;
 
+import com.Hansung.Capston.dto.Diet.Supplement.PreferredSupplementResponse;
 import com.Hansung.Capston.dto.Diet.Supplement.SupplementLogRequest;
+import com.Hansung.Capston.dto.Diet.Supplement.SupplementLogResponse;
 import com.Hansung.Capston.entity.Diet.Supplement.PreferredSupplement;
 import com.Hansung.Capston.entity.Diet.Supplement.SupplementData;
 import com.Hansung.Capston.entity.Diet.Supplement.SupplementLog;
@@ -54,7 +56,7 @@ public class SupplementController {
 
   // 영양제 섭취 기록 불러오기
   @GetMapping("/log/load")
-  public ResponseEntity<List<SupplementLog>> loadSupplementLogs() {
+  public ResponseEntity<List<SupplementLogResponse>> loadSupplementLogs() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
@@ -91,7 +93,7 @@ public class SupplementController {
 
   // 영양제 즐겨찾기 불러오기
   @GetMapping("/pref/load")
-  public ResponseEntity<List<PreferredSupplement>> loadPreferredSupplements() {
+  public ResponseEntity<List<PreferredSupplementResponse>> loadPreferredSupplements() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();

@@ -46,9 +46,8 @@ public class FoodController {
     }
     String userId = (String) auth.getPrincipal();
 
-    foodService.savePreferredFood(userId, foodId);
 
-    return ResponseEntity.ok("save success");
+    return ResponseEntity.ok(foodService.savePreferredFood(userId, foodId));
   }
 
   // 음식 즐겨찾기 불러오기

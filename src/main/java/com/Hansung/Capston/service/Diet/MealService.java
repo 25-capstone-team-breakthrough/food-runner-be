@@ -72,6 +72,9 @@ public class MealService {
 
     if(request.getType().equals(MealType.image)) {
       ImageMealLogRecord logs = saveImageMealLog(request);
+      if(logs == null) {
+        return null;
+      }
 
       log = MealLog.builder()
           .user(userRepository.findById(userId).get())
@@ -163,6 +166,9 @@ public class MealService {
       if (foundFoods.isEmpty()) {
         // OpenAI 호출 후 저장
         food = openAiApiService.getNutrientInfo(foodName);
+        if(food == null){
+          return null;
+        }
         foodDataRepository.save(food);
       } else {
         food = foundFoods.get(0); // 첫 번째 항목 사용

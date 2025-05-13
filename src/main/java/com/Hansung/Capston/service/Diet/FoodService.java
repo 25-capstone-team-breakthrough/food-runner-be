@@ -43,7 +43,6 @@ public class FoodService {
       return "실패 : 이미 추가되어 있습니다";
     } else{
       preferredFood = new PreferredFood();
-
       preferredFood.setUser(userRepository.findById(userId).get());
       preferredFood.setFood(foodDataRepository.findById(foodId).get());
 
