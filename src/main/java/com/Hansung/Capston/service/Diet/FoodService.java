@@ -1,5 +1,6 @@
 package com.Hansung.Capston.service.Diet;
 
+import com.Hansung.Capston.dto.Diet.Food.PreferredFoodResponse;
 import com.Hansung.Capston.entity.Diet.Food.FoodData;
 import com.Hansung.Capston.entity.Diet.Food.PreferredFood;
 import com.Hansung.Capston.repository.Diet.Food.FoodDataRepository;
@@ -38,19 +39,19 @@ public class FoodService {
   public void savePreferredFood(String userId, Long foodId) {
     PreferredFood preferredFood = new PreferredFood();
     preferredFood.setUser(userRepository.findById(userId).get());
-    preferredFood.setFoodData(foodDataRepository.findById(foodId).get());
+    preferredFood.setFood(foodDataRepository.findById(foodId).get());
 
     preferredFoodRepository.save(preferredFood);
   }
 
   // 음식 즐겨찾기 불러오기
-  public List<PreferredFood> loadPreferredFood(String userId) {
+  public List<PreferredFoodResponse> loadPreferredFood(String userId) {
     List<PreferredFood> preferredFoods = preferredFoodRepository.findByUserUserId(userId);
-    List<PreferredFood> res = new ArrayList<>();
+    List<PreferredFoodResponse> res = new ArrayList<>();
 
     for (PreferredFood preferredFood : preferredFoods) {
-      preferredFood.setUser(null);
-      res.add(preferredFood);
+      PreferredFoodResponse response = PreferredFoodResponse.toDTO(preferredFood);
+      res.add(response);
     }
 
     return res;

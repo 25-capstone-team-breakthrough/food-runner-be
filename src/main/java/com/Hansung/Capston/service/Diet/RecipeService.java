@@ -7,6 +7,7 @@ import com.Hansung.Capston.repository.Diet.Recipe.RecommendedRecipeRepository;
 import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,13 +28,15 @@ public class RecipeService {
     System.out.println("파일 이름: " + file.getOriginalFilename());
     System.out.println("파일 크기: " + file.getSize());
     // MultipartFile을 읽기 위한 InputStreamReader로 변환
-    InputStreamReader reader = new InputStreamReader(file.getInputStream());
+    InputStreamReader reader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
 
-    // OpenCSV 라이브러리로 CSV를 객체 리스트로 변환
     List<RecipeData> recipeDataList = new CsvToBeanBuilder<RecipeData>(reader)
         .withType(RecipeData.class)
+        .withSeparator(',')  // 필수: csv 파일이 쉼표 구분자일 경우
+        .withIgnoreLeadingWhiteSpace(true)
         .build()
         .parse();
+
 
     // DB에 저장
     recipeDataRepository.saveAll(recipeDataList);

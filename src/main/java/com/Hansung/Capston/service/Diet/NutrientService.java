@@ -205,5 +205,37 @@ public class NutrientService {
     return res;
   }
 
+  protected RecommendedNutrient getAverageRecommendedNutrient(String userId) {
+    RecommendedNutrient max = recommendedNutrientRepository.findByUserUserId(userId).get(0);
+    RecommendedNutrient min = recommendedNutrientRepository.findByUserUserId(userId).get(1);
 
+    Double averageProtein = (max.getProtein() - min.getProtein()) / 2;
+    Double averageCarbohydrate = (max.getCarbohydrate() - min.getCarbohydrate()) / 2;
+    Double averageFat = (max.getFat() - min.getFat()) / 2;
+    Double averageDietaryFiber = (max.getDietaryFiber() - min.getDietaryFiber()) / 2;
+    Double averageVitaminB1 = (max.getVitaminB1() - min.getVitaminB1()) / 2;
+    Double averagePotassium = (max.getPotassium() - min.getPotassium()) / 2;
+    Double averageVitaminC = (max.getVitaminC() - min.getVitaminC()) / 2;
+    Double averageCalcium = (max.getCalcium() - min.getCalcium()) / 2;
+    Double averageVitaminD = (max.getVitaminD() - min.getVitaminD()) / 2;
+    Double averageVitaminA = (max.getVitaminA() - min.getVitaminA()) / 2;
+
+    RecommendedNutrient averageNutrient = new RecommendedNutrient();
+    averageNutrient.setProtein(averageProtein);
+    averageNutrient.setCarbohydrate(averageCarbohydrate);
+    averageNutrient.setFat(averageFat);
+    averageNutrient.setDietaryFiber(averageDietaryFiber);
+    averageNutrient.setVitaminB1(averageVitaminB1);
+    averageNutrient.setPotassium(averagePotassium);
+    averageNutrient.setVitaminC(averageVitaminC);
+    averageNutrient.setCalcium(averageCalcium);
+    averageNutrient.setVitaminD(averageVitaminD);
+    averageNutrient.setVitaminA(averageVitaminA);
+
+    // ✅ 사용자 설정 누락되면 오류 발생
+    averageNutrient.setUser(userRepository.findById(userId)
+        .orElseThrow(() -> new RuntimeException("해당 ID의 사용자가 존재하지 않습니다: " + userId)));
+
+    return averageNutrient;
+  }
 }
