@@ -79,7 +79,7 @@ public class MealController {
   }
 
 
-  // 식사 기록 검색
+  // 식사 기록 불러오기
   @GetMapping("/log/load")
   public ResponseEntity<MealLogResponse> loadMealLog() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();

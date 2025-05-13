@@ -154,22 +154,19 @@ CREATE TABLE recommended_ingredient (
 -- ✅ 레시피 데이터 테이블
 CREATE TABLE recipe_data (
                              recipe_id BIGINT PRIMARY KEY,
-                             recipe_name VARCHAR(255) NOT NULL,
-                             recipe_image VARCHAR(255) NOT NULL,
-                             ingredient TEXT NOT NULL,
-                             serving INT NOT NULL,
-                             recipe TEXT NOT NULL,
-                             recommend_count INT NOT NULL DEFAULT 0,
-                             related_recipe_1 BIGINT NOT NULL,
-                             related_recipe_2 bigint NOT NULL,
-                             related_recipe_3 BigINT NOT NULL,
-                             calories FLOAT NULL,
-                             protein FLOAT NULL,
-                             carbohydrate FLOAT NULL,
-                             fat FLOAT NULL,
-                             sugar FLOAT NULL,
-                             sodium FLOAT NULL,
-                             dietary_fiber FLOAT NULL,
+                             recipe_name VARCHAR(255),
+                             recipe_image VARCHAR(255),
+                             ingredients TEXT,
+                             serving VARCHAR(25),
+                             recipe TEXT,
+                             recommend_count INT,
+                             related_recipe_1 BIGINT,
+                             related_recipe_2 bigint,
+                             related_recipe_3 BigINT,
+                             calories DECIMAL(10,2) DEFAULT 0,
+                             protein DECIMAL(10,2) DEFAULT 0,
+                             carbohydrate DECIMAL(10,2) DEFAULT 0,
+                             fat DECIMAL(10,2) DEFAULT 0,
                              FOREIGN KEY (related_recipe_1) REFERENCES recipe_data(recipe_id),
                              FOREIGN KEY (related_recipe_2) REFERENCES recipe_data(recipe_id),
                              FOREIGN KEY (related_recipe_3) REFERENCES recipe_data(recipe_id)
@@ -177,8 +174,8 @@ CREATE TABLE recipe_data (
 
 
 -- ✅ 추천 식단 테이블
-CREATE TABLE recommended_diet (
-                                  recommended_diet_id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE recommended_recipe (
+                                  recommended_recipe_id INT AUTO_INCREMENT PRIMARY KEY,
                                   user_id VARCHAR(50) NOT NULL,
                                   recipe_id bigint NOT NULL,
                                   type ENUM('breakfast', 'lunch', 'dinner') NOT NULL,

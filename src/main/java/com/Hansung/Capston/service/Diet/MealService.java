@@ -61,8 +61,7 @@ public class MealService {
       }
     }
 
-    res.setImageMealLogs(imageMealLogs);
-    res.setSearchMealLogs(searchMealLogs);
+    res = MealLogResponse.toDto(imageMealLogs, searchMealLogs);
 
     return res;
   }

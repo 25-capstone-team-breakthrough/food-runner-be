@@ -1,5 +1,7 @@
 package com.Hansung.Capston.service.Diet;
 
+import com.Hansung.Capston.dto.Diet.Ingredient.PreferredIngredientResponse;
+import com.Hansung.Capston.dto.Diet.Ingredient.RecommendedIngredientResponse;
 import com.Hansung.Capston.entity.Diet.Ingredient.IngredientData;
 import com.Hansung.Capston.entity.Diet.Ingredient.PreferredIngredient;
 import com.Hansung.Capston.entity.Diet.Ingredient.RecommendedIngredient;
@@ -52,7 +54,7 @@ public class IngredientService {
   public List<IngredientData> loadIngredientData() {
     return ingredientDataRepository.findAll();
   }
-  
+
   // 식재료 즐겨찾기 등록하기
   public void savePreferredIngredient(String userId, Long ingredientId) {
     PreferredIngredient preferredIngredient = new PreferredIngredient();
@@ -62,15 +64,14 @@ public class IngredientService {
 
     preferredIngredientRepository.save(preferredIngredient);
   }
-  
+
   // 식재료 즐겨찾기 불러오기
-  public List<PreferredIngredient> loadPreferredIngredients(String userId) {
+  public List<PreferredIngredientResponse> loadPreferredIngredients(String userId) {
     List<PreferredIngredient> preferredIngredients = preferredIngredientRepository.findByUserUserId(userId);
-    List<PreferredIngredient> res = new ArrayList<>();
+    List<PreferredIngredientResponse> res = new ArrayList<>();
 
     for(PreferredIngredient preferredIngredient : preferredIngredients){
-      preferredIngredient.setUser(null);
-      res.add(preferredIngredient);
+      res.add(PreferredIngredientResponse.toDTO(preferredIngredient));
     }
 
     return res;
@@ -194,13 +195,12 @@ public class IngredientService {
   }
 
   // 추천 식재료 불러오기
-  public List<RecommendedIngredient> loadRecommendedIngredient(String userId) {
+  public List<RecommendedIngredientResponse> loadRecommendedIngredient(String userId) {
     List<RecommendedIngredient> recommendedIngredients = recommendedIngredientRepository.findByUserUserId(userId);
-    List<RecommendedIngredient> res = new ArrayList<>();
+    List<RecommendedIngredientResponse> res = new ArrayList<>();
 
     for (RecommendedIngredient recommendedIngredient : recommendedIngredients) {
-      recommendedIngredient.setUser(null);
-      res.add(recommendedIngredient);
+      res.add(RecommendedIngredientResponse.toDTO(recommendedIngredient));
     }
 
     return res;

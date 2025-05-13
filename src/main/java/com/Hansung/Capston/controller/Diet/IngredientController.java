@@ -1,5 +1,7 @@
 package com.Hansung.Capston.controller.Diet;
 
+import com.Hansung.Capston.dto.Diet.Ingredient.PreferredIngredientResponse;
+import com.Hansung.Capston.dto.Diet.Ingredient.RecommendedIngredientResponse;
 import com.Hansung.Capston.entity.Diet.Ingredient.IngredientData;
 import com.Hansung.Capston.entity.Diet.Ingredient.PreferredIngredient;
 import com.Hansung.Capston.entity.Diet.Ingredient.RecommendedIngredient;
@@ -50,7 +52,7 @@ public class IngredientController {
 
   // 식재료 즐겨찾기 불러오기
   @GetMapping("/pref/load")
-  public ResponseEntity<List<PreferredIngredient>> loadPreferredIngredients() {
+  public ResponseEntity<List<PreferredIngredientResponse>> loadPreferredIngredients() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
@@ -90,7 +92,7 @@ public class IngredientController {
 
   // 추천 식재료 불러오기
   @GetMapping("/rec/load")
-  public ResponseEntity<List<RecommendedIngredient>> loadRecommendedIngredients() {
+  public ResponseEntity<List<RecommendedIngredientResponse>> loadRecommendedIngredients() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
@@ -111,4 +113,3 @@ public class IngredientController {
     }
   }
 }
-

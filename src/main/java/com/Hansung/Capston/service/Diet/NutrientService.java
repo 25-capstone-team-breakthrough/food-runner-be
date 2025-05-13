@@ -42,8 +42,8 @@ public class NutrientService {
   // 섭취 영양소 정보 불러오기
   @Transactional
   public List<NutritionLog> loadNutritionByUserId(String userId) {
-    List<NutritionLog> logs = nutritionLogRepository.findByUserUserId(userId);
     List<NutritionLog> res = new ArrayList<>();
+    List<NutritionLog> logs = nutritionLogRepository.findByUserUserId(userId);
 
     if (logs.isEmpty()) {
       User user = userRepository.findById(userId)
@@ -56,15 +56,8 @@ public class NutrientService {
 
       logs = List.of(newLog);
     }
-
-//    for (NutritionLog log : logs) {
-//      log.setUser(null); // 민감 정보 제거
-//      res.add(log);
-//    }
-
-    return logs;
+    return res;
   }
-
 
   // 섭취 영양소 정보 업데이트 및 생성(일 단위) -- MealController에서 사용
   @Transactional
@@ -142,8 +135,6 @@ public class NutrientService {
 
     nutritionLogRepository.save(nutrientLog);  // 최종적으로 업데이트 및 저장
   }
-
-
 
   // BMI 정보를 이용해서 추천 영양소 상한 하한 구하기 -- BMIController에서 사용
   public void setRecommendedNutrition(String userId, NutritionType type, BMI bmi) {
