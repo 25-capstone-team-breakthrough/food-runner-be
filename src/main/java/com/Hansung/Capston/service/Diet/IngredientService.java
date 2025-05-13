@@ -56,13 +56,18 @@ public class IngredientService {
   }
 
   // 식재료 즐겨찾기 등록하기
-  public void savePreferredIngredient(String userId, Long ingredientId) {
-    PreferredIngredient preferredIngredient = new PreferredIngredient();
+  public String savePreferredIngredient(String userId, Long ingredientId) {
+    PreferredIngredient preferredIngredient;
+    if((preferredIngredient = preferredIngredientRepository.findByUserIdAndIngredientId(userId, ingredientId)) != null) {
+      return "실패 : 이미 추가되어 있습니다.";
+    } else {
+      preferredIngredient  = new PreferredIngredient();
+      preferredIngredient.setIngredient(ingredientDataRepository.findById(ingredientId).get());
+      preferredIngredient.setUser(userRepository.findById(userId).get());
 
-    preferredIngredient.setIngredient(ingredientDataRepository.findById(ingredientId).get());
-    preferredIngredient.setUser(userRepository.findById(userId).get());
-
-    preferredIngredientRepository.save(preferredIngredient);
+      preferredIngredientRepository.save(preferredIngredient);
+      return "성공 : 즐겨찾기 추가";
+    }
   }
 
   // 식재료 즐겨찾기 불러오기
@@ -78,8 +83,9 @@ public class IngredientService {
   }
 
   // 식재료 즐겨찾기 삭제하기
-  public void deletePreferredIngredient(Long preferredIngredientId) {
+  public String deletePreferredIngredient(Long preferredIngredientId) {
     recommendedIngredientRepository.deleteById(preferredIngredientId);
+    return("성공 : 즐겨찾기 삭제");
   }
 
   // 추천 식재료 등록하기

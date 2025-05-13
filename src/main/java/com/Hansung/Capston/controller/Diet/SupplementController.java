@@ -34,7 +34,6 @@ public class SupplementController {
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
     }
-    String userId = (String) auth.getPrincipal();
 
     return ResponseEntity.ok(supplementService.loadSupplementData());
   }
@@ -87,9 +86,7 @@ public class SupplementController {
     }
     String userId = (String) auth.getPrincipal();
 
-    supplementService.savePreferredSupplement(userId, supplementId);
-
-    return ResponseEntity.ok("save success");
+    return ResponseEntity.ok(supplementService.savePreferredSupplement(userId, supplementId));
   }
 
   // 영양제 즐겨찾기 불러오기
@@ -111,7 +108,6 @@ public class SupplementController {
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
     }
-    String userId = (String) auth.getPrincipal();
 
     supplementService.deletePreferredSupplement(preferredSupplementId);
 

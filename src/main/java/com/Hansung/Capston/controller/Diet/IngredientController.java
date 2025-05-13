@@ -45,9 +45,8 @@ public class IngredientController {
     }
     String userId = (String) auth.getPrincipal();
 
-    ingredientService.savePreferredIngredient(userId, IngredientId);
 
-    return ResponseEntity.ok("save success");
+    return ResponseEntity.ok(ingredientService.savePreferredIngredient(userId, IngredientId));
   }
 
   // 식재료 즐겨찾기 불러오기
@@ -71,9 +70,8 @@ public class IngredientController {
     }
     String userId = (String) auth.getPrincipal();
 
-    ingredientService.deletePreferredIngredient(preferredIngredientId);
 
-    return ResponseEntity.ok("delete success");
+    return ResponseEntity.ok(ingredientService.deletePreferredIngredient(preferredIngredientId));
   }
 
   // 추천 식재료 등록하기

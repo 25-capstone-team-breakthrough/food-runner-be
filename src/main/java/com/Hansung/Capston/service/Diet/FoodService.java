@@ -36,12 +36,21 @@ public class FoodService {
   }
   
   // 음식 즐겨찾기 등록하기
-  public void savePreferredFood(String userId, Long foodId) {
-    PreferredFood preferredFood = new PreferredFood();
-    preferredFood.setUser(userRepository.findById(userId).get());
-    preferredFood.setFood(foodDataRepository.findById(foodId).get());
+  public String savePreferredFood(String userId, Long foodId) {
+    PreferredFood preferredFood;
 
-    preferredFoodRepository.save(preferredFood);
+    if((preferredFood = preferredFoodRepository.findByUserUserIdAndFoodFoodId(userId,foodId)) != null){
+      return "실패 : 이미 추가되어 있습니다";
+    } else{
+      preferredFood = new PreferredFood();
+
+      preferredFood.setUser(userRepository.findById(userId).get());
+      preferredFood.setFood(foodDataRepository.findById(foodId).get());
+
+      preferredFoodRepository.save(preferredFood);
+
+      return ("성공 : 즐겨찾기 추가");
+    }
   }
 
   // 음식 즐겨찾기 불러오기
@@ -58,8 +67,10 @@ public class FoodService {
   }
   
   // 음식 즐겨찾기 삭제하기
-  public void deletePreferredFood(Long preferredFoodId) {
+  public String deletePreferredFood(Long preferredFoodId) {
     preferredFoodRepository.deleteById(preferredFoodId);
+    
+    return "성공 : 즐겨찾기 삭제";
   }
   
   // csv 파일 to 음식 데이터

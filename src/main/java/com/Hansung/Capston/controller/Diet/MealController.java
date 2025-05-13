@@ -70,7 +70,6 @@ public class MealController {
       number = mealService.loadMealLogs(userId).getImageMealLogs().getLast().getImageMealLogId();
     }
 
-
     // 파일 이름 해시화
     String hashedFileName = hashFileName.apply(fileName + number);
 
