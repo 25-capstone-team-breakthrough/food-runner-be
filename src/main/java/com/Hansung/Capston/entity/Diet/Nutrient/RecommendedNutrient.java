@@ -23,7 +23,7 @@ public class RecommendedNutrient {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "nutrition_type", nullable = false)
-  private NutritionType type; // MIN, RECOMMENDED, MAX
+  private NutritionType type; // MIN, MAX
 
   @Column(name = "inbody_info")
   private Boolean inbodyInfo = false;

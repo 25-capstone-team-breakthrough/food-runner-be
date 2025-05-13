@@ -74,6 +74,7 @@ CREATE TABLE supplement_data (
                                  preservation_period VARCHAR(50),
                                  intake_information TEXT,
                                  main_function TEXT,
+                                 main_nutrition VARCHAR(50),
                                  sup_company VARCHAR(255),
                                  calories DECIMAL(10,2) DEFAULT 0,
                                  protein DECIMAL(10,2) DEFAULT 0,

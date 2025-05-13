@@ -1,6 +1,7 @@
 package com.Hansung.Capston.service.Diet;
 
 import com.Hansung.Capston.dto.Diet.Nutrition.NutritionLogResponse;
+import com.Hansung.Capston.dto.Diet.Nutrition.RecommendedNutrientResponse;
 import com.Hansung.Capston.entity.Diet.Meal.MealLog;
 import com.Hansung.Capston.entity.Diet.Nutrient.NutritionLog;
 import com.Hansung.Capston.common.NutritionType;
@@ -219,13 +220,12 @@ public class NutrientService {
     recommendedNutrientRepository.save(recommendedNutrient);
   }
 
-  public List<RecommendedNutrient> loadRecommendedNutrients(String userId) {
-    List<RecommendedNutrient> res = new ArrayList<>();
+  public List<RecommendedNutrientResponse> loadRecommendedNutrients(String userId) {
+    List<RecommendedNutrientResponse> res = new ArrayList<>();
     List<RecommendedNutrient> nutrients = recommendedNutrientRepository.findByUserUserId(userId);
 
     for(RecommendedNutrient nutrient : nutrients) {
-      nutrient.setUser(null);
-      res.add(nutrient);
+      res.add(RecommendedNutrientResponse.toDto(nutrient));
     }
     return res;
   }
