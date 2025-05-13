@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class YoutubeService {
+public class VideoService {
 
     @Value("${youtube.api.key}")
     private String apiKey;

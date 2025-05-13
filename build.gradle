@@ -62,9 +62,14 @@ dependencies {
 	implementation 'com.google.apis:google-api-services-youtube:v3-rev20230816-2.0.0'
 	implementation 'com.google.http-client:google-http-client-jackson2:1.39.2'
 
-	// Google Cloud Vision API
-	implementation 'com.google.cloud:google-cloud-vision:3.34.0'
-	implementation 'com.google.protobuf:protobuf-java:3.24.1'
+	// Google Cloud 라이브러리 버전 관리를 위한 BOM
+    implementation platform('com.google.cloud:libraries-bom:26.1.0')
+
+    // Vision 클라이언트
+	implementation 'com.google.cloud:google-cloud-vision'
+
+	implementation 'com.google.protobuf:protobuf-java:3.24.2'
+
 }
 
 tasks.named('test') {
