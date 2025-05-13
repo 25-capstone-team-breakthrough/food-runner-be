@@ -58,8 +58,13 @@ public class MealController {
       }
     };
 
+    Long number = mealService.loadMealLogs(userId).getImageMealLogs().getLast().getImageMealLogId();
+    if(number == null) {
+      number = 0L;
+    }
+
     // 파일 이름 해시화
-    String hashedFileName = hashFileName.apply(fileName + mealService.loadMealLogs(userId).getImageMealLogs().getLast().getImageMealLogId());
+    String hashedFileName = hashFileName.apply(fileName + number);
 
     return ResponseEntity.ok(awsS3Service.generatePreSignedUrl(hashedFileName, contentType));
   }
