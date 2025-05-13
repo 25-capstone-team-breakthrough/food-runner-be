@@ -1,5 +1,7 @@
 package com.Hansung.Capston.service.Diet;
 
+import com.Hansung.Capston.dto.Diet.Supplement.PreferredSupplementResponse;
+import com.Hansung.Capston.dto.Diet.Supplement.SupplementLogResponse;
 import com.Hansung.Capston.entity.Diet.Supplement.PreferredSupplement;
 import com.Hansung.Capston.entity.Diet.Supplement.SupplementData;
 import com.Hansung.Capston.entity.Diet.Supplement.SupplementLog;
@@ -47,13 +49,12 @@ public class SupplementService {
   }
   
   // 영양제 섭취 기록 불러오기
-  public List<SupplementLog> loadSupplementLogs(String userId) {
+  public List<SupplementLogResponse> loadSupplementLogs(String userId) {
     List<SupplementLog> supplementLogs = supplementLogRepository.findByUserUserId(userId);
-    List<SupplementLog> res = new ArrayList<>();
+    List<SupplementLogResponse> res = new ArrayList<>();
 
     for (SupplementLog supplementLog : supplementLogs) {
-      supplementLog.setUser(null);
-      res.add(supplementLog);
+      res.add(SupplementLogResponse.toDto(supplementLog));
     }
 
     return res;
@@ -82,13 +83,12 @@ public class SupplementService {
   }
   
   // 영양제 즐겨찾기 불러오기
-  public List<PreferredSupplement> getPreferredSupplements(String userId) {
+  public List<PreferredSupplementResponse> getPreferredSupplements(String userId) {
     List<PreferredSupplement> preferredSupplements = preferredSupplementRepository.findByUserUserId(userId);
-    List<PreferredSupplement> res = new ArrayList<>();
+    List<PreferredSupplementResponse> res = new ArrayList<>();
 
     for (PreferredSupplement preferredSupplement : preferredSupplements) {
-      preferredSupplement.setUser(null);
-      res.add(preferredSupplement);
+      res.add(PreferredSupplementResponse.toDto(preferredSupplement));
     }
 
     return res;
