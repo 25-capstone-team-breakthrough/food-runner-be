@@ -158,11 +158,11 @@ public class IngredientService {
 
     // 2. 섞고 상위 10개 선택
     Collections.shuffle(top50);
-    List<IngredientScore> selected10 = top50.subList(0, Math.min(10, top50.size()));
+    List<IngredientScore> selected14 = top50.subList(0, Math.min(14, top50.size()));
 
     // 3. 기존 추천 삭제 후 저장
     recommendedIngredientRepository.deleteAllByUserUserId(userId);
-    for (IngredientScore top : selected10) {
+    for (IngredientScore top : selected14) {
       RecommendedIngredient recIng = new RecommendedIngredient();
       recIng.setUser(userRepository.findById(userId).get());
       recIng.setIngredient(top.ingredient);

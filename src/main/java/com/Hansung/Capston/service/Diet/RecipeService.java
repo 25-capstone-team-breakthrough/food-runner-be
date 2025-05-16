@@ -23,6 +23,16 @@ public class RecipeService {
     this.recommendedRecipeRepository = recommendedRecipeRepository;
   }
 
+  // 레시피 데이터 불러오기
+  public List<RecipeData> loadRecipeData() {
+    return recipeDataRepository.findAll();
+  }
+
+  public void recommendRecipe(String userId){
+
+  }
+
+
   // 업로드된 CSV 파일을 처리하여 DB에 저장
   public void changeCsvToRecipeData(MultipartFile file) throws IOException {
     System.out.println("파일 이름: " + file.getOriginalFilename());
