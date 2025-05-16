@@ -22,6 +22,7 @@ public class RecipeController {
     this.recipeService = recipeService;
   }
 
+  // 레시피 데이터 불러오기
   @GetMapping("/data/load")
   public ResponseEntity<List<RecipeData>> loadRecipeData(){
     return ResponseEntity.ok(recipeService.loadRecipeData());
