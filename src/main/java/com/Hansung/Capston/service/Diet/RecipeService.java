@@ -27,7 +27,8 @@ public class RecipeService {
   public List<RecipeData> loadRecipeData() {
     return recipeDataRepository.findAll();
   }
-
+  
+  // 레시피 추천
   public void recommendRecipe(String userId){
 
   }
