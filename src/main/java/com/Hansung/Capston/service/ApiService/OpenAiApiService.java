@@ -1,18 +1,9 @@
 package com.Hansung.Capston.service.ApiService;
 
-import com.Hansung.Capston.dto.Api.OpenAiApi.Content;
-import com.Hansung.Capston.dto.Api.OpenAiApi.ImageAnalysisOpenAiApiRequest;
-import com.Hansung.Capston.dto.Api.OpenAiApi.ImageContent;
-import com.Hansung.Capston.dto.Api.OpenAiApi.Message;
-import com.Hansung.Capston.dto.Api.OpenAiApi.OpenAiApiResponse;
-import com.Hansung.Capston.dto.Api.OpenAiApi.TextAnalysisOpenAiApiRequest;
-import com.Hansung.Capston.dto.Api.OpenAiApi.TextContent;
+import com.Hansung.Capston.dto.Api.OpenAiApi.*;
 import com.Hansung.Capston.entity.Diet.Food.FoodData;
-import com.Hansung.Capston.service.Diet.NutrientService;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +11,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OpenAiApiService {
@@ -189,6 +186,45 @@ public class OpenAiApiService {
     return null;
   }
 
+  // Jackson ObjectMapper 자동 주입
+  @Autowired
+  private ObjectMapper objectMapper;
 
+  public Map<String, Float> extractInbodyMetrics(String ocrText) {
+    // 1) 프롬프트 생성
+    String systemPrompt = """
+      You are an InBody numeric extractor.
+                    Only use the raw OCR text provided in the user prompt.
+                    Output ONLY a JSON object with these keys:
+                      bodyWater, protein, minerals, bodyFatAmount,
+                      weight, skeletalMuscleMass, bmi, bodyFatPercentage.
+                    Values must be floats or null if not found.
+                    No extra keys or commentary.
+    """;
 
+    String user = "OCR Text:\n```" + ocrText + "```";
+
+    List<Message> msgs = List.of(
+            new Message("system", systemPrompt),
+            new Message("user",   user)
+    );
+
+    TextAnalysisOpenAiApiRequest req =
+            new TextAnalysisOpenAiApiRequest(model, msgs,0.0);
+    OpenAiApiResponse resp =
+            restTemplate.postForObject(openAiUrl, req, OpenAiApiResponse.class);
+
+    String json = resp.getChoices().get(0).getMessage().getContent()
+            .replaceAll("^```.*?\\n", "")
+            .replaceAll("```$", "")
+            .trim();
+
+    try {
+      return objectMapper.readValue(
+              json, new TypeReference<Map<String,Float>>(){}
+      );
+    } catch (Exception ex) {
+      throw new RuntimeException("OpenAI 파싱 실패:\n" + json, ex);
+    }
+  }
 }

@@ -1,40 +1,96 @@
 package com.Hansung.Capston.controller.UserInfo;
 
+import com.Hansung.Capston.dto.Inbody.InbodyDTO;
+import com.Hansung.Capston.entity.UserInfo.Inbody.Inbody;
+import com.Hansung.Capston.entity.UserInfo.Inbody.InbodyImage;
+import com.Hansung.Capston.repository.UserInfo.Inbody.InbodyImageRepository;
 import com.Hansung.Capston.service.UserInfo.InbodyService;
-import java.security.Key;
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/inbody/webhook")
+@RequestMapping("/inbody")
 public class InbodyController {
 
     @Autowired
     private InbodyService inbodyService;
-//
-//    @GetMapping("/test")
-//    public String test(@RequestParam ("imageUrl") String imageUrl) {
-//        try{
-//            return  inbodyService.extractTextFromImageUrl(imageUrl);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "Failed:" + e;
+
+    @Autowired
+    private InbodyImageRepository imgRepository;
+
+    //인바디 이미지 업로드
+    //업로드시 자동으로 인바디 분석가능
+    @PostMapping(value = "/imageUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Inbody> upload(@RequestParam("file") MultipartFile file) throws IOException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null) {
+            return ResponseEntity.status(401).build();
+        }
+        String userId = (String) auth.getPrincipal();
+
+        Inbody saved = inbodyService.uploadAndSave(file, userId);
+
+        return ResponseEntity.ok(saved);
+    }
+
+    //인바디 조회
+    @GetMapping("/inbody-info")
+    public ResponseEntity<List<Inbody>> getAll() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String userId = (String) auth.getPrincipal();
+        List<Inbody> all = inbodyService.getAllByUser(userId);
+        return ResponseEntity.ok(all);
+    }
+
+    //인바디 이미지 조회 - 웹서비스 용
+    @GetMapping("/image-info")
+    public ResponseEntity<List<InbodyDTO>> listByUser() {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String userId = (String) auth.getPrincipal();
+        List<InbodyImage> images = imgRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
+
+        List<InbodyDTO> dtos = images.stream()
+                .map(img ->
+                        new InbodyDTO(
+                                img.getPictureId(),
+                                img.getInbody().getInbodyId(),
+                                img.getFilePath()
+                        )
+                )
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+//    @PostMapping(
+//            value = "/ocr-test",
+//            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+//            produces = MediaType.TEXT_PLAIN_VALUE
+//    )
+//    public ResponseEntity<String> ocrTest(@RequestParam("file") MultipartFile file) throws IOException {
+//        // 파일이 비어있다면 400
+//        if (file.isEmpty()) {
+//            return ResponseEntity.badRequest().body("파일이 없습니다.");
 //        }
+//
+//        String text = visionService.extractText(file);
+//        return ResponseEntity.ok(text);
 //    }
 
-    @PostMapping
-    public ResponseEntity<String> justTest(){
-        return ResponseEntity.ok("test success");
-    }
-
-
-    @PostMapping("/user/GetTodayNewUser")
-    public ResponseEntity<Map<String,Object>>getTodayNewUser() {
-        Map<String, Object> requestBody = Map.of("Date", "");
-
-        return ResponseEntity.ok(inbodyService.postToInbody("http://apikr.lookinbody.com/user/GetTodayNewUser", requestBody));
-    }
 }
