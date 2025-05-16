@@ -3,7 +3,9 @@ package com.Hansung.Capston.controller.Diet;
 import com.Hansung.Capston.entity.Diet.Recipe.RecipeData;
 import com.Hansung.Capston.service.Diet.RecipeService;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,12 @@ public class RecipeController {
     this.recipeService = recipeService;
   }
 
+  @GetMapping("/data/load")
+  public ResponseEntity<List<RecipeData>> loadRecipeData(){
+    return ResponseEntity.ok(recipeService.loadRecipeData());
+  }
+
+  // 업로드된 CSV 파일을 처리하여 DB에 저장
   @PostMapping("/data/change")
   public ResponseEntity<String> changeCsvToRecipeData(@RequestParam("file") MultipartFile file) {
     try {
