@@ -14,4 +14,6 @@ public interface RecommendedIngredientRepository extends
 
 
   void deleteAllByUserUserId(String userId);
+
+  List<RecommendedIngredient> findAllByUserUserId(String userId);
 }

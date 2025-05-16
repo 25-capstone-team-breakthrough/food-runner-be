@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -152,22 +154,37 @@ public class IngredientService {
       scored.add(new IngredientScore(ing, score));
     }
 
-    // 1. 상위 50개 정렬 후 추출
     scored.sort((a, b) -> Double.compare(b.score, a.score));
     List<IngredientScore> top50 = scored.subList(0, Math.min(50, scored.size()));
 
-    // 2. 섞고 상위 10개 선택
     Collections.shuffle(top50);
     List<IngredientScore> selected14 = top50.subList(0, Math.min(14, top50.size()));
 
-    // 3. 기존 추천 삭제 후 저장
-    recommendedIngredientRepository.deleteAllByUserUserId(userId);
+    List<RecommendedIngredient> existingRecommendations = recommendedIngredientRepository.findAllByUserUserId(userId);
+    Set<Long> existingIngredientIds = existingRecommendations.stream()
+        .map(recIng -> recIng.getIngredient().getIngredientId())
+        .collect(Collectors.toSet());
+
+    List<RecommendedIngredient> toSave = new ArrayList<>();
+    Set<Long> selectedIngredientIds = selected14.stream()
+        .map(top -> top.ingredient.getIngredientId())
+        .collect(Collectors.toSet());
+
     for (IngredientScore top : selected14) {
-      RecommendedIngredient recIng = new RecommendedIngredient();
-      recIng.setUser(userRepository.findById(userId).get());
-      recIng.setIngredient(top.ingredient);
-      recommendedIngredientRepository.save(recIng);
+      if (!existingIngredientIds.contains(top.ingredient.getIngredientId())) {
+        RecommendedIngredient recIng = new RecommendedIngredient();
+        recIng.setUser(userRepository.findById(userId).get());
+        recIng.setIngredient(top.ingredient);
+        toSave.add(recIng);
+      }
     }
+
+    recommendedIngredientRepository.saveAll(toSave);
+
+    List<RecommendedIngredient> toDelete = existingRecommendations.stream()
+        .filter(recIng -> !selectedIngredientIds.contains(recIng.getIngredient().getIngredientId()))
+        .collect(Collectors.toList());
+    recommendedIngredientRepository.deleteAll(toDelete);
   }
 
   private double getNutrientValue(Object obj, String key) {
