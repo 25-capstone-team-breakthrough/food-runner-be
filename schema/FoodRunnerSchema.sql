@@ -24,16 +24,17 @@ CREATE TABLE bmi (
 -- 인바디 테이블 Inbody
 CREATE TABLE inbody (
                         inbody_id               INT AUTO_INCREMENT NOT NULL,  -- 인바디 고유 ID (기본 키)
-                        user_id                 VARCHAR(15)       NOT NULL,   -- 사용자 ID (User 테이블의 FK)
+                        user_id                 VARCHAR(36)       NOT NULL,   -- 사용자 ID (User 테이블의 FK)
                         body_water              FLOAT            NOT NULL,    -- 체수분
                         protein                 FLOAT            NOT NULL,    -- 단백질
                         minerals                FLOAT            NOT NULL,    -- 무기질
                         body_fat_amount         FLOAT            NOT NULL,    -- 체지방량
-                        skeletal_muscle_mass    FLOAT            NOT NULL,    -- 골격근량
+						weight					float			not null,		 -- 체중
+						skeletal_muscle_mass    FLOAT            NOT NULL,    -- 골격근량
                         BMI                     FLOAT            NOT NULL,    -- BMI
-                        body_fat_percentage     FLOAT            NOT NULL,    -- 체지방률
-                        segmental_lean_analysis FLOAT            NOT NULL,    -- 부위별 근육 분석(실제로는 별도 테이블 고려 가능)
-                        segmental_fat_analysis  FLOAT            NOT NULL,    -- 부위별 체지방 분획(실제로는 별도 테이블 고려 가능)
+                        body_fat_percentage     FLOAT             Not NULL,    -- 체지방률
+                        segmental_lean_analysis text              NULL,    -- 부위별 근육 분석(실제로는 별도 테이블 고려 가능)
+                        segmental_fat_analysis  text             NULL,    -- 부위별 체지방 분획(실제로는 별도 테이블 고려 가능)
                         created_at              DATETIME         NOT NULL,    -- 데이터 생성 시간
                         PRIMARY KEY (inbody_id),
                         FOREIGN KEY (user_id) REFERENCES user(user_id)
@@ -43,7 +44,7 @@ CREATE TABLE inbody (
 CREATE TABLE inbody_image (
                               picture_id  INT AUTO_INCREMENT NOT NULL, -- 인바디 사진 고유 ID (기본 키)
                               inbody_id   INT               NOT NULL,  -- 인바디 고유 ID (Inbody 테이블의 FK)
-                              user_id     VARCHAR(15)       NOT NULL,  -- 사용자 ID (User 테이블의 FK)
+                              user_id     VARCHAR(36)       NOT NULL,  -- 사용자 ID (User 테이블의 FK)
                               file_path   VARCHAR(255)      NOT NULL,  -- 사진 파일 경로
                               created_at  DATETIME          NOT NULL,  -- 사진 업로드 시간
                               PRIMARY KEY (picture_id),
