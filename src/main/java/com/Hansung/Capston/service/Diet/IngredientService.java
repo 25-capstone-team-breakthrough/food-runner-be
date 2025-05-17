@@ -60,7 +60,7 @@ public class IngredientService {
   // 식재료 즐겨찾기 등록하기
   public String savePreferredIngredient(String userId, Long ingredientId) {
     PreferredIngredient preferredIngredient;
-    if((preferredIngredientRepository.findByUserIdAndIngredientId(userId, ingredientId)) != null) {
+    if((preferredIngredientRepository.findByUserIdAndIngredientId(userId, ingredientId)).isPresent()) {
       return "실패 : 이미 추가되어 있습니다.";
     } else {
       preferredIngredient  = new PreferredIngredient();
