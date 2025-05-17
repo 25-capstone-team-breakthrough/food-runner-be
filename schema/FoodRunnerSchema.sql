@@ -155,7 +155,7 @@ CREATE TABLE recommended_ingredient (
 
 -- ✅ 레시피 데이터 테이블
 CREATE TABLE recipe_data (
-                             recipe_id BIGINT PRIMARY KEY,
+                             recipe_id BIGINT AUTO_INCREMENT PRIMARY KEY ,
                              recipe_name VARCHAR(255),
                              recipe_image VARCHAR(255),
                              ingredients TEXT,

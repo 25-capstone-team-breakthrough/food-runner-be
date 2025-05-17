@@ -28,6 +28,13 @@ public class RecipeController {
     return ResponseEntity.ok(recipeService.loadRecipeData());
   }
 
+  // 연관 레시피 설정하기
+  @GetMapping("/data/relatedsave")
+  public ResponseEntity<String> saveRelatedRecipeData(){
+    recipeService.saveRelatedRecipeData();
+    return ResponseEntity.ok("Saved");
+  }
+
   // 업로드된 CSV 파일을 처리하여 DB에 저장
   @PostMapping("/data/change")
   public ResponseEntity<String> changeCsvToRecipeData(@RequestParam("file") MultipartFile file) {
