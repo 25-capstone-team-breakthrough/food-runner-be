@@ -48,7 +48,7 @@ public class RecipeService {
       List<RecipeData> relatedRecipes = entry.getValue();
 
       // 연관 레시피 ID들을 해당 필드에 저장
-      if (relatedRecipes.size() > 0) {
+      if (!relatedRecipes.isEmpty()) {
         baseRecipe.setRelatedRecipe1(String.valueOf(relatedRecipes.get(0).getRecipeId()));
       }
       if (relatedRecipes.size() > 1) {

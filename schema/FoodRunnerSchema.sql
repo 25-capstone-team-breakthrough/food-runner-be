@@ -161,6 +161,7 @@ CREATE TABLE recipe_data (
                              ingredients TEXT,
                              serving VARCHAR(25),
                              recipe TEXT,
+                             cleaned_ingredients TEXT,
                              recommend_count INT,
                              related_recipe_1 BIGINT,
                              related_recipe_2 bigint,

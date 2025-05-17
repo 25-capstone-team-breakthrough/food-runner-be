@@ -15,8 +15,8 @@ import lombok.Data;
 @Data
 public class RecipeData {
   @Id
-  @CsvBindByName(column = "RCP_SNO")
   @Column(name = "recipe_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long recipeId;
 
   @CsvBindByName(column = "CKG_NM")
@@ -42,6 +42,10 @@ public class RecipeData {
   @CsvBindByName(column = "RCP_INS")
   @Column(name = "recipe")
   private String recipe;
+
+  @CsvBindByName(column = "cleaned_ingredients")
+  @Column(name = "cleaned_ingredients")
+  private String cleanedIngredients;
 
   @Column(name = "related_recipe_1")
   private String relatedRecipe1;
