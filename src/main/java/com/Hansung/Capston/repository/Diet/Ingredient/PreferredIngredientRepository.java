@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PreferredIngredientRepository extends JpaRepository<PreferredIngredient, Long> {
-  @Query("select p from PreferredIngredient p where p.id = :userId and  p.ingredient = : ingredientId")
+  @Query("select p from PreferredIngredient p where p.user.userId = :userId and  p.ingredient = : ingredientId")
   PreferredIngredient findByUserIdAndIngredientId(@Param("userId") String userId, @Param("ingredientId") Long ingredientId);
 
   List<PreferredIngredient> findByUserUserId(String userId);
