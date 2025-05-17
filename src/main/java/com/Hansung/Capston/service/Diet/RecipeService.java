@@ -90,8 +90,8 @@ public class RecipeService {
       return 0.0;
     }
 
-    Set<String> ingredients1 = new HashSet<>(Arrays.asList(recipe1.getIngredients().split(",")));
-    Set<String> ingredients2 = new HashSet<>(Arrays.asList(recipe2.getIngredients().split(",")));
+    Set<String> ingredients1 = new HashSet<>(Arrays.asList(recipe1.getCleanedIngredients().split(",")));
+    Set<String> ingredients2 = new HashSet<>(Arrays.asList(recipe2.getCleanedIngredients().split(",")));
 
     Set<String> intersection = new HashSet<>(ingredients1);
     intersection.retainAll(ingredients2);
