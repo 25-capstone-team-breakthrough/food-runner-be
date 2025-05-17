@@ -15,9 +15,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.Data;
 
 @Entity
 @Table(name = "recommended_recipe")
+@Data
 public class RecommendedRecipe {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
