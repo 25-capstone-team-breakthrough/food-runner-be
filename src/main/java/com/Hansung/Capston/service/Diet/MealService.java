@@ -7,6 +7,7 @@ import com.Hansung.Capston.common.MealType;
 import com.Hansung.Capston.entity.Diet.Meal.ImageMealLog;
 import com.Hansung.Capston.entity.Diet.Meal.MealLog;
 import com.Hansung.Capston.entity.Diet.Meal.SearchMealLog;
+import com.Hansung.Capston.entity.UserInfo.User;
 import com.Hansung.Capston.repository.Diet.Food.FoodDataRepository;
 import com.Hansung.Capston.repository.Diet.Meal.ImageMealLogRepository;
 import com.Hansung.Capston.repository.Diet.Meal.MealLogRepository;
@@ -14,6 +15,7 @@ import com.Hansung.Capston.repository.Diet.Meal.SearchMealLogRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import com.Hansung.Capston.service.ApiService.AwsS3Service;
 import com.Hansung.Capston.service.ApiService.OpenAiApiService;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,82 +78,34 @@ public class MealService {
   @Transactional
   public MealLog saveMealLog(MealLogRequest request, String userId) {
     MealLog log = new MealLog();
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+    log.setUser(user);
+    log.setType(request.getType());
+    log.setDate(request.getDateTime());
 
-    if(request.getType().equals(MealType.image)) {
+    if (request.getType().equals(MealType.image)) {
       ImageMealLogRecord logs = saveImageMealLog(request);
-      if(logs == null) {
+      if (logs == null) {
         return null;
       }
-
-      log = MealLog.builder()
-          .user(userRepository.findById(userId).get())
-          .type(request.getType())
-          .date(request.getDateTime())
-          .fat(logs.mealLog.getFat())
-          .calories(logs.mealLog.getCalories())
-          .protein(logs.mealLog.getProtein())
-          .carbohydrate(logs.mealLog.getCarbohydrate())
-          .sugar(logs.mealLog.getSugar())
-          .sodium(logs.mealLog.getSodium())
-          .dietaryFiber(logs.mealLog.getDietaryFiber())
-          .calcium(logs.mealLog.getCalcium())
-          .saturatedFat(logs.mealLog.getSaturatedFat())
-          .transFat(logs.mealLog.getTransFat())
-          .cholesterol(logs.mealLog.getCholesterol())
-          .vitaminA(logs.mealLog.getVitaminA())
-          .vitaminB1(logs.mealLog.getVitaminB1())
-          .vitaminC(logs.mealLog.getVitaminC())
-          .vitaminD(logs.mealLog.getVitaminD())
-          .vitaminE(logs.mealLog.getVitaminE())
-          .magnesium(logs.mealLog.getMagnesium())
-          .zinc(logs.mealLog.getZinc())
-          .lactium(logs.mealLog.getLactium())
-          .potassium(logs.mealLog.getPotassium())
-          .lArginine(logs.mealLog.getLArginine())
-          .omega3(logs.mealLog.getOmega3())
-          .build();
-
+      copyMealLogDetails(logs.mealLog(), log);
       MealLog savedMealLog = mealLogRepository.save(log);
-      logs.imageMealLog.setMealLog(savedMealLog);
-      imageMealLogRepository.save(logs.imageMealLog);
-    }
-    else if(request.getType().equals(MealType.search)) {
+      logs.imageMealLog().setMealLog(savedMealLog);
+      imageMealLogRepository.save(logs.imageMealLog());
+      return savedMealLog;
+
+    } else if (request.getType().equals(MealType.search)) {
       SearchMealLogRecord logs = saveSearchMealLog(request);
-
-      log = MealLog.builder()
-          .user(userRepository.findById(userId).get())
-          .type(request.getType())
-          .date(request.getDateTime())
-          .fat(logs.mealLog.getFat())
-          .calories(logs.mealLog.getCalories())
-          .protein(logs.mealLog.getProtein())
-          .carbohydrate(logs.mealLog.getCarbohydrate())
-          .sugar(logs.mealLog.getSugar())
-          .sodium(logs.mealLog.getSodium())
-          .dietaryFiber(logs.mealLog.getDietaryFiber())
-          .calcium(logs.mealLog.getCalcium())
-          .saturatedFat(logs.mealLog.getSaturatedFat())
-          .transFat(logs.mealLog.getTransFat())
-          .cholesterol(logs.mealLog.getCholesterol())
-          .vitaminA(logs.mealLog.getVitaminA())
-          .vitaminB1(logs.mealLog.getVitaminB1())
-          .vitaminC(logs.mealLog.getVitaminC())
-          .vitaminD(logs.mealLog.getVitaminD())
-          .vitaminE(logs.mealLog.getVitaminE())
-          .magnesium(logs.mealLog.getMagnesium())
-          .zinc(logs.mealLog.getZinc())
-          .lactium(logs.mealLog.getLactium())
-          .potassium(logs.mealLog.getPotassium())
-          .lArginine(logs.mealLog.getLArginine())
-          .omega3(logs.mealLog.getOmega3())
-          .build();
-
+      copyMealLogDetails(logs.mealLog(), log);
       MealLog savedMealLog = mealLogRepository.save(log);
-      logs.searchMealLog.setMealLog(savedMealLog);
-      searchMealLogRepository.save(logs.searchMealLog);
+      logs.searchMealLog().setMealLog(savedMealLog);
+      searchMealLogRepository.save(logs.searchMealLog());
+      return savedMealLog;
     }
     return log;
   }
+
 
   @Transactional
   protected ImageMealLogRecord saveImageMealLog(MealLogRequest request) {
@@ -291,6 +245,31 @@ public class MealService {
       searchMealLogRepository.delete(searchMealLogRepository.findByMealid(log.getMealId()));
       mealLogRepository.delete(log);
     }
+  }
+
+  private void copyMealLogDetails(MealLog source, MealLog target) {
+    target.setFat(source.getFat());
+    target.setCalories(source.getCalories());
+    target.setProtein(source.getProtein());
+    target.setCarbohydrate(source.getCarbohydrate());
+    target.setSugar(source.getSugar());
+    target.setSodium(source.getSodium());
+    target.setDietaryFiber(source.getDietaryFiber());
+    target.setCalcium(source.getCalcium());
+    target.setSaturatedFat(source.getSaturatedFat());
+    target.setTransFat(source.getTransFat());
+    target.setCholesterol(source.getCholesterol());
+    target.setVitaminA(source.getVitaminA());
+    target.setVitaminB1(source.getVitaminB1());
+    target.setVitaminC(source.getVitaminC());
+    target.setVitaminD(source.getVitaminD());
+    target.setVitaminE(source.getVitaminE());
+    target.setMagnesium(source.getMagnesium());
+    target.setZinc(source.getZinc());
+    target.setLactium(source.getLactium());
+    target.setPotassium(source.getPotassium());
+    target.setLArginine(source.getLArginine());
+    target.setOmega3(source.getOmega3());
   }
 
   private record ImageMealLogRecord(MealLog mealLog, ImageMealLog imageMealLog) {}

@@ -62,7 +62,7 @@ public class RecipeService {
   }
 
   // 레시피 추천
-  public void recommendRecipe(String userId) {
+  public void setRecommendRecipe(String userId) {
     // 사용자 기반 레시피 추천 로직 (현재는 비어 있음)
   }
 
