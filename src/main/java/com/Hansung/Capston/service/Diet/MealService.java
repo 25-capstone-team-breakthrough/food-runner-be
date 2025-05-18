@@ -12,11 +12,13 @@ import com.Hansung.Capston.repository.Diet.Meal.ImageMealLogRepository;
 import com.Hansung.Capston.repository.Diet.Meal.MealLogRepository;
 import com.Hansung.Capston.repository.Diet.Meal.SearchMealLogRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
+import com.Hansung.Capston.service.ApiService.AwsS3Service;
 import com.Hansung.Capston.service.ApiService.OpenAiApiService;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MealService {
@@ -27,21 +29,25 @@ public class MealService {
   private final FoodDataRepository foodDataRepository;
 
   private final OpenAiApiService openAiApiService;
+  private final AwsS3Service awsS3Service;
 
   @Autowired
   public MealService(MealLogRepository mealLogRepository,
       ImageMealLogRepository imageMealLogRepository,
       SearchMealLogRepository searchMealLogRepository, UserRepository userRepository,
-      FoodDataRepository foodDataRepository, OpenAiApiService openAiApiService) {
+      FoodDataRepository foodDataRepository, OpenAiApiService openAiApiService,
+      AwsS3Service awsS3Service) {
     this.mealLogRepository = mealLogRepository;
     this.imageMealLogRepository = imageMealLogRepository;
     this.searchMealLogRepository = searchMealLogRepository;
     this.userRepository = userRepository;
     this.foodDataRepository = foodDataRepository;
     this.openAiApiService = openAiApiService;
+    this.awsS3Service = awsS3Service;
   }
 
   // 식사 기록 불러오기
+  @Transactional
   public MealLogResponse loadMealLogs(String userId) {
     MealLogResponse res = new MealLogResponse();
 
@@ -67,6 +73,7 @@ public class MealService {
   }
 
   // 식사 기록 등록하기
+  @Transactional
   public MealLog saveMealLog(MealLogRequest request, String userId) {
     MealLog log = new MealLog();
 
@@ -273,7 +280,9 @@ public class MealService {
     MealLog log = mealLogRepository.findById(mealLogId).get();
 
     if(log.getType().equals(MealType.image)){
-      imageMealLogRepository.delete(imageMealLogRepository.findByMealId(log.getMealId()));
+      ImageMealLog imageMealLog = imageMealLogRepository.findByMealId(log.getMealId());
+      imageMealLogRepository.delete(imageMealLog);
+      // 나중에 추가 awsS3Service.deleteImageFromS3(imageMealLog.getMealImage());
       mealLogRepository.delete(log);
     } else if(log.getType().equals(MealType.search)){
       searchMealLogRepository.delete(searchMealLogRepository.findByMealid(log.getMealId()));

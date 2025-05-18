@@ -63,12 +63,12 @@ public class MealController {
     };
 
     Long number;
-    List<ImageMealLogDTO> ImageMealLog = mealService.loadMealLogs(
+    List<ImageMealLogDTO> imageMealLog = mealService.loadMealLogs(
         userId).getImageMealLogs();
-    if(ImageMealLog.isEmpty()){
+    if(imageMealLog.isEmpty()){
       number =0L;
     }else {
-      number = mealService.loadMealLogs(userId).getImageMealLogs().getLast().getImageMealLogId();
+      number = imageMealLog.getLast().getImageMealLogId();
     }
 
     // 파일 이름 해시화

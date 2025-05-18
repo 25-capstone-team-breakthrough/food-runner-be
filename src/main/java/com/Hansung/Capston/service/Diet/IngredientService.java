@@ -85,6 +85,7 @@ public class IngredientService {
   }
 
   // 식재료 즐겨찾기 삭제하기
+  @Transactional
   public String deletePreferredIngredient(Long preferredIngredientId) {
     recommendedIngredientRepository.deleteById(preferredIngredientId);
     return("성공 : 즐겨찾기 삭제");
