@@ -20,7 +20,7 @@ public class PreferredIngredient {
   @JoinColumn(name = "ingredient_id", nullable = false)
   private IngredientData ingredient;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 }
