@@ -85,7 +85,7 @@ public class IngredientService {
   }
 
   // 식재료 즐겨찾기 삭제하기
-  @Transactionalg
+  @Transactional
   public String deletePreferredIngredient(Long preferredIngredientId) {
     if (recommendedIngredientRepository.existsById(preferredIngredientId)) {
       recommendedIngredientRepository.deleteById(preferredIngredientId);
