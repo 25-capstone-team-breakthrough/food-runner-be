@@ -152,8 +152,9 @@ public class MealService {
     }
     return log;
   }
-  
-  private ImageMealLogRecord saveImageMealLog(MealLogRequest request) {
+
+  @Transactional
+  protected ImageMealLogRecord saveImageMealLog(MealLogRequest request) {
     ImageMealLog imageMealLog = new ImageMealLog();
     MealLog mealLog;
 
@@ -237,7 +238,8 @@ public class MealService {
     return new ImageMealLogRecord(mealLog, imageMealLog);
   }
 
-  private SearchMealLogRecord saveSearchMealLog(MealLogRequest request) {
+  @Transactional
+  protected SearchMealLogRecord saveSearchMealLog(MealLogRequest request) {
     SearchMealLog searchMealLog = new SearchMealLog();
     FoodData foodData = foodDataRepository.getReferenceById(request.getFoodId());
     searchMealLog.setFoodId(request.getFoodId());
@@ -276,6 +278,7 @@ public class MealService {
   }
   
   // 식사 기록 삭제하기
+  @Transactional
   public void deleteMealLog(Long mealLogId) {
     MealLog log = mealLogRepository.findById(mealLogId).get();
 
