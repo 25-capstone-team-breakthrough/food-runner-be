@@ -58,6 +58,7 @@ public class IngredientService {
   }
 
   // 식재료 즐겨찾기 등록하기
+  @Transactional
   public String savePreferredIngredient(String userId, Long ingredientId) {
     PreferredIngredient preferredIngredient;
     if((preferredIngredientRepository.findByUserIdAndIngredientId(userId, ingredientId)).isPresent()) {

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +63,7 @@ public class IngredientController {
   }
 
   // 식재료 즐겨찾기 삭제하기
+  @Transactional
   @PostMapping("/pref/delete")
   public ResponseEntity<String> deletePreferredIngredient(@RequestParam("pref_id") Long preferredIngredientId) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
