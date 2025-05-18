@@ -78,7 +78,7 @@ public class MealService {
     MealLog log = new MealLog();
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
-    log.setUser(user);
+
     log.setType(request.getType());
     log.setDate(request.getDateTime());
 
@@ -87,7 +87,10 @@ public class MealService {
       if (logs == null) {
         return null;
       }
+
       copyMealLogDetails(logs.mealLog(), log);
+      log.setUser(user); // 🔥 중요: copy 이후에 다시 설정!
+
       MealLog savedMealLog = mealLogRepository.save(log);
       logs.imageMealLog().setMealLog(savedMealLog);
       imageMealLogRepository.save(logs.imageMealLog());
@@ -96,6 +99,8 @@ public class MealService {
     } else if (request.getType().equals(MealType.search)) {
       SearchMealLogRecord logs = saveSearchMealLog(request);
       copyMealLogDetails(logs.mealLog(), log);
+      log.setUser(user); // 🔥 여기도 마찬가지!
+
       MealLog savedMealLog = mealLogRepository.save(log);
       logs.searchMealLog().setMealLog(savedMealLog);
       searchMealLogRepository.save(logs.searchMealLog());
@@ -103,6 +108,7 @@ public class MealService {
     }
     return log;
   }
+
 
 
   @Transactional
