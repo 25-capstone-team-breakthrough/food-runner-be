@@ -68,8 +68,6 @@ public class IngredientController {
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
     }
-    String userId = (String) auth.getPrincipal();
-
 
     return ResponseEntity.ok(ingredientService.deletePreferredIngredient(preferredIngredientId));
   }
