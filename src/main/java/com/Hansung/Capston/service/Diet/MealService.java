@@ -60,11 +60,9 @@ public class MealService {
     for(MealLog mealLog : mealLogs) {
       if(mealLog.getType().equals(MealType.image)) {
         ImageMealLog log = imageMealLogRepository.findByMealId(mealLog.getMealId());
-        log.getMealLog().setUser(null);
         imageMealLogs.add(log);
       } else if(mealLog.getType().equals(MealType.search)) {
         SearchMealLog log = searchMealLogRepository.findByMealid(mealLog.getMealId());
-        log.getMealLog().setUser(null);
         searchMealLogs.add(log);
       }
     }
