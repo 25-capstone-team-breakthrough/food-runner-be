@@ -14,7 +14,7 @@ public class RecommendedIngredient {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "recommendation_ingredient_id")
-  private Integer id;
+  private Long id;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "ingredient_id", nullable = false)

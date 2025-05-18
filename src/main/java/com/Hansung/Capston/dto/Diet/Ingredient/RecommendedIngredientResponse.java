@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class RecommendedIngredientResponse {
-  private Integer id;
+  private Long id;
   private IngredientData ingredient;
 
   public static RecommendedIngredientResponse toDTO(RecommendedIngredient recommendedIngredient) {
