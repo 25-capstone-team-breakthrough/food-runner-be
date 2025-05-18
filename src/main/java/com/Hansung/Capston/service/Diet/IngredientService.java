@@ -88,8 +88,8 @@ public class IngredientService {
   // 식재료 즐겨찾기 삭제하기
   @Transactional
   public String deletePreferredIngredient(Long preferredIngredientId) {
-    if (recommendedIngredientRepository.existsById(preferredIngredientId)) {
-      recommendedIngredientRepository.deleteById(preferredIngredientId);
+    if (preferredIngredientRepository.existsById(preferredIngredientId)) {
+      preferredIngredientRepository.deleteById(preferredIngredientId);
       return "성공 : 즐겨찾기 삭제";
     } else {
       return "실패 : 해당 즐겨찾기 ID가 존재하지 않습니다.";
