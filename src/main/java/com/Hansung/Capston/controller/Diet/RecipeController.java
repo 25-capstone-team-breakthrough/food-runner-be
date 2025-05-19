@@ -46,7 +46,7 @@ public class RecipeController {
   }
 
   @PostMapping("/rec/set")
-  public ResponseEntity<String> setRecommendRecipe(@RequestBody RecipeData recipeData) {
+  public ResponseEntity<String> setRecommendRecipe() {
     // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
