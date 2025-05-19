@@ -1,10 +1,15 @@
 package com.Hansung.Capston.controller.Diet;
 
+import com.Hansung.Capston.dto.Diet.Recipe.RecommendRecipeResponse;
 import com.Hansung.Capston.entity.Diet.Recipe.RecipeData;
 import com.Hansung.Capston.service.Diet.RecipeService;
 import java.io.IOException;
 import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +31,32 @@ public class RecipeController {
   @GetMapping("/data/load")
   public ResponseEntity<List<RecipeData>> loadRecipeData(){
     return ResponseEntity.ok(recipeService.loadRecipeData());
+  }
+
+  @GetMapping("/rec/load")
+  public ResponseEntity<List<RecommendRecipeResponse>> loadRecommendRecipe(){
+    // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || auth.getPrincipal() == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);  // 401 Unauthorized
+    }
+    String userId = (String) auth.getPrincipal();
+
+    return ResponseEntity.ok(recipeService.loadRecommendRecipe(userId));
+  }
+
+  @PostMapping("/rec/set")
+  public ResponseEntity<String> setRecommendRecipe(@RequestBody RecipeData recipeData) {
+    // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || auth.getPrincipal() == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);  // 401 Unauthorized
+    }
+    String userId = (String) auth.getPrincipal();
+
+    recipeService.setRecommendRecipe(userId);
+
+    return ResponseEntity.ok("대 성 공");
   }
 
   // 연관 레시피 설정하기
