@@ -1,24 +1,27 @@
 package com.Hansung.Capston.service.UserInfo;
 
+import com.Hansung.Capston.dto.Exersice.YoutubeExerciseDTO;
+import com.Hansung.Capston.entity.Exercise.RecommandExerciseVideo;
 import com.Hansung.Capston.entity.UserInfo.Inbody.Inbody;
 import com.Hansung.Capston.entity.UserInfo.Inbody.InbodyImage;
+import com.Hansung.Capston.entity.UserInfo.User;
 import com.Hansung.Capston.repository.UserInfo.Inbody.InbodyImageRepository;
 import com.Hansung.Capston.repository.UserInfo.Inbody.InbodyRepository;
+import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import com.Hansung.Capston.service.ApiService.AwsS3Service;
 import com.Hansung.Capston.service.ApiService.OpenAiApiService;
 import com.Hansung.Capston.service.ApiService.VisionService;
-import org.springframework.transaction.annotation.Transactional;
+import com.Hansung.Capston.service.Exercise.RecommandExerciseVideoService;
+import com.Hansung.Capston.service.Exercise.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,18 +36,24 @@ public class InbodyService {
   private InbodyImageRepository inbodyImgRepostiory;
   @Autowired
   private OpenAiApiService openAiApiService;
+  @Autowired
+  private VideoService videoService;
+  @Autowired
+  private RecommandExerciseVideoService recommandExerciseVideoService;
+  @Autowired
+  private UserRepository userRepository;
 
-  private Float toFloat(Object o) {
-    if (o == null) return null;
-    if (o instanceof Number) {
-      return ((Number) o).floatValue();
-    }
-    try {
-      return Float.parseFloat(o.toString());
-    } catch (Exception e) {
-      return null;
-    }
-  }
+
+  private static final Pattern SEG_PATTERN =
+          Pattern.compile("^표준(?:이상|이하)?$");
+
+  private static final List<String> SEG_LABELS = List.of(
+          "왼쪽 상체","오른쪽 상체","복부","왼쪽 하체","오른쪽 하체"
+  );
+
+  private static final List<String> EX_VIDEO_CATEGORIES = List.of(
+          "어깨","가슴","배","팔","허벅지","엉덩이","종아리","등"
+  );
 
   //인바디 이미지 업로드 시
   @Transactional
@@ -64,8 +73,11 @@ public class InbodyService {
     String fat  = joinByIndex(allSeg, 2,3,5,8,9);
 
     // 6) 엔티티 빌드
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("존재 하지 않은 유저입니다."));
+
     Inbody inbody = Inbody.builder()
-            .userId(userId)
+            .user(user)
             .bodyWater(        metrics.get("bodyWater"))
             .protein(          metrics.get("protein"))
             .minerals(         metrics.get("minerals"))
@@ -89,14 +101,84 @@ public class InbodyService {
                     .createdAt(LocalDateTime.now())
                     .build()
     );
+    // 8) AI 및 YouTube 운동 추천
+    List<String> leanArr = Arrays.asList(lean.split(","));
+    List<String> fatArr  = Arrays.asList(fat.split(","));
 
+    boolean upper = false, core = false, lower = false;
+    for (int i = 0; i < SEG_LABELS.size(); i++) {
+      if ("표준이하".equals(leanArr.get(i)) || "표준이상".equals(fatArr.get(i))) {
+        String seg = SEG_LABELS.get(i);
+        if (seg.contains("상체")) upper = true;
+        if (seg.contains("복부")) core  = true;
+        if (seg.contains("하체")) lower = true;
+      }
+    }
+    if (!upper && !core && !lower) {
+      return inbody;
+    }
+
+    List<String> targets = new ArrayList<>();
+    if (upper) targets.addAll(List.of("어깨","가슴","팔","등"));
+    if (core)  targets.add("배");
+    if (lower) targets.addAll(List.of("허벅지","엉덩이","종아리"));
+    targets = targets.stream().distinct().collect(Collectors.toList());
+    targets = targets.stream().distinct().collect(Collectors.toList());
+
+
+    recommandExerciseVideoService.clearRecommendationsByUserId(userId);
+
+    for (String cat : targets) {
+      Set<String> savedIds = new HashSet<>();
+      int savedCount = 0;
+
+      List<String> exs = openAiApiService.recommendExercisesBySegments(
+              List.of(cat), 3
+      ).stream().distinct().limit(3).toList();
+
+      for (String ex : exs) {
+        if (savedCount == 3) break;
+        List<YoutubeExerciseDTO> vids = videoService.searchVideos(ex, 1);
+        if (vids.isEmpty()) continue;
+        String vidId = vids.get(0).getVideoId();
+        if (savedIds.contains(vidId)) continue;
+
+        RecommandExerciseVideo rec = new RecommandExerciseVideo();
+        rec.setUser(inbody.getUser());
+        rec.setCategory(cat);
+        rec.setVideoId(vidId);
+        rec.setTitle(vids.get(0).getTitle());
+        rec.setUrl(vids.get(0).getUrl());
+        rec.setIsAIRecommendation(true);
+        recommandExerciseVideoService.saveRecommendation(rec);
+
+        savedIds.add(vidId);
+        savedCount++;
+      }
+      if (savedCount < 3) {
+        List<YoutubeExerciseDTO> fallback = videoService.searchVideos(cat + " 운동", 3);
+        for (YoutubeExerciseDTO dto : fallback) {
+          if (savedCount == 3) break;
+          if (savedIds.contains(dto.getVideoId())) continue;
+
+          RecommandExerciseVideo rec = new RecommandExerciseVideo();
+          rec.setUser(inbody.getUser());
+          rec.setCategory(cat);
+          rec.setVideoId(dto.getVideoId());
+          rec.setTitle(dto.getTitle());
+          rec.setUrl(dto.getUrl());
+          rec.setIsAIRecommendation(true);
+          recommandExerciseVideoService.saveRecommendation(rec);
+
+          savedIds.add(dto.getVideoId());
+          savedCount++;
+        }
+      }
+    }
     return inbody;
   }
 
-  // ────────────────────────────────────────────────────
-  // 분류어만 골라내서 리스트로 반환 (순서 보존)
-  private static final Pattern SEG_PATTERN =
-          Pattern.compile("^표준(?:이상|이하)?$");
+  // 인바디이미지 분석관련
   private List<String> extractAllSegmentalValues(String text) {
     List<String> out = new ArrayList<>(10);
     boolean started = false;
@@ -119,8 +201,6 @@ public class InbodyService {
 
     return out;
   }
-
-  // 주어진 인덱스 배열로 리스트에서 꺼내 comma-join
   private String joinByIndex(List<String> list, int... idxs) {
     return Arrays.stream(idxs)
             .mapToObj(i -> i < list.size() ? list.get(i) : "")
@@ -130,7 +210,9 @@ public class InbodyService {
   //인바디 조회
   @Transactional(readOnly = true)
   public List<Inbody> getAllByUser(String userId) {
-    return inbodyRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
+    return inbodyRepository.findAllByUserUserIdOrderByCreatedAtDesc(userId);
   }
+
+
 }
 

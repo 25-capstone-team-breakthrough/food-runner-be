@@ -1,5 +1,8 @@
 package com.Hansung.Capston.entity.UserInfo.Inbody;
 
+import com.Hansung.Capston.entity.UserInfo.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +20,17 @@ public class Inbody {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer inbodyId;
 
-    private String userId;
+    @JsonIgnore
+    @Getter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @JsonProperty("userId")
+    public String getUserId() {
+        return user != null ? user.getUserId() : null;
+    }
+
     private Float bodyWater;
     private Float protein;
     private Float minerals;

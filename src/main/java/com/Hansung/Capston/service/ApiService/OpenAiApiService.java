@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -189,7 +190,7 @@ public class OpenAiApiService {
   // Jackson ObjectMapper 자동 주입
   @Autowired
   private ObjectMapper objectMapper;
-
+  //인바디 이미지 업로드시 인바디 텍스트  분석
   public Map<String, Float> extractInbodyMetrics(String ocrText) {
     // 1) 프롬프트 생성
     String systemPrompt = """
@@ -227,4 +228,57 @@ public class OpenAiApiService {
       throw new RuntimeException("OpenAI 파싱 실패:\n" + json, ex);
     }
   }
+
+
+  //운동 종류
+  public List<String> recommendExercisesBySegments(List<String> segments, int count) {
+    String targetStr = String.join(", ", segments);
+    String userPrompt = String.format(
+            "다음 부위에 적합한 운동 %d가지를 쉼표로 구분하여 알려줘. 부위: %s. 운동 이름만 출력해줘.",
+            count, targetStr
+    );
+    List<Message> messages = List.of(
+            new Message("system", "You are a fitness recommendation assistant."),
+            new Message("user", userPrompt)
+    );
+    TextAnalysisOpenAiApiRequest req = new TextAnalysisOpenAiApiRequest(model, messages);
+    OpenAiApiResponse resp = restTemplate.postForObject(openAiUrl, req, OpenAiApiResponse.class);
+    String content = resp.getChoices().get(0).getMessage().getContent().trim();
+    return Arrays.stream(content.split(",\\s*"))
+            .map(String::trim)
+            .collect(Collectors.toList());
+  }
+
+  //운동카테고리 분류
+  public Map<String, String> categorizeExercises(List<String> exercises,
+                                                 List<String> categories) {
+    String exList = String.join(", ", exercises);
+    String catList = String.join(", ", categories);
+    String prompt = String.format(
+            "아래 운동들을 다음 카테고리 중 하나로 분류해주세요. " +
+                    "운동: %s\n카테고리: %s\n" +
+                    "JSON 형식으로 {\"운동명\":\"카테고리\"} 형태로 반환해주세요.",
+            exList, catList
+    );
+
+    List<Message> messages = List.of(
+            new Message("system", "You are an exercise categorization assistant."),
+            new Message("user", prompt)
+    );
+    TextAnalysisOpenAiApiRequest req = new TextAnalysisOpenAiApiRequest(model, messages);
+    OpenAiApiResponse resp = restTemplate.postForObject(openAiUrl, req, OpenAiApiResponse.class);
+    String content = resp.getChoices().get(0).getMessage().getContent().trim();
+
+    content = content.replaceAll("(?s)```json\\s*(\\{.*?\\})\\s*```", "$1");
+    content = content.replace("```json", "").replace("```", "").trim();
+
+    try {
+
+      return objectMapper.readValue(content, new TypeReference<Map<String,String>>(){});
+    } catch (IOException e) {
+      throw new RuntimeException("운동 분류 실패: " + content, e);
+    }
+  }
+
+
 }

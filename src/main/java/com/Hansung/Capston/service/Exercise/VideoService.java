@@ -1,18 +1,19 @@
 package com.Hansung.Capston.service.Exercise;
 
 import com.Hansung.Capston.dto.Exersice.YoutubeExerciseDTO;
+import com.Hansung.Capston.service.ApiService.OpenAiApiService;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,12 +22,13 @@ public class VideoService {
     @Value("${youtube.api.key}")
     private String apiKey;
 
-    /**
-     * @param query      검색어(예: "어깨 운동")
-     * @param maxResults 최대 가져올 영상 개수(예: 5)
-     * @return VideoDto 리스트
-     *
-     */
+    private final OpenAiApiService openAiApiService;
+
+    @Autowired
+    public VideoService(OpenAiApiService openAiApiService) {
+        this.openAiApiService = openAiApiService;
+    }
+
     public List<YoutubeExerciseDTO> searchVideos(String query, long maxResults) throws IOException {
         JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
         YouTube youtube = new YouTube.Builder(
@@ -49,11 +51,12 @@ public class VideoService {
             return Collections.emptyList();
         }
         return items.stream()
-                .map(item -> new YoutubeExerciseDTO(
-                        item.getId().getVideoId(),
-                        item.getSnippet().getTitle(),
-                        "https://www.youtube.com/watch?v=" + item.getId().getVideoId()
-                ))
+                .map(item -> YoutubeExerciseDTO.builder()
+                        .videoId(item.getId().getVideoId())
+                        .title(item.getSnippet().getTitle())
+                        .url("https://www.youtube.com/watch?v=" + item.getId().getVideoId())
+                        .isAIRecommendation(false)  // 일반 검색 Ai 추천 ㄴㄴ
+                        .build())
                 .collect(Collectors.toList());
     }
 }

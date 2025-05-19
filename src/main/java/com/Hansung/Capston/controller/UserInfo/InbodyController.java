@@ -31,7 +31,7 @@ public class InbodyController {
     //인바디 이미지 업로드
     //업로드시 자동으로 인바디 분석가능
     @PostMapping(value = "/imageUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Inbody> upload(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getPrincipal() == null) {
             return ResponseEntity.status(401).build();
@@ -40,7 +40,7 @@ public class InbodyController {
 
         Inbody saved = inbodyService.uploadAndSave(file, userId);
 
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.ok("인바디 이미지가 저장되었습니다.");
     }
 
     //인바디 조회

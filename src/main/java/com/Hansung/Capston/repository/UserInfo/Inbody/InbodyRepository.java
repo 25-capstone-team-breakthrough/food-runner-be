@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface InbodyRepository extends JpaRepository<Inbody, Integer> {
 
-    List<Inbody> findAllByUserIdOrderByCreatedAtDesc(String userId);
+    List<Inbody> findAllByUserUserIdOrderByCreatedAtDesc(String userId);
 }
