@@ -1,5 +1,6 @@
 package com.Hansung.Capston.entity.Diet.Recipe;
 
+import com.Hansung.Capston.common.DayOfWeek;
 import com.Hansung.Capston.common.DietType;
 import com.Hansung.Capston.common.MealType;
 import com.Hansung.Capston.entity.UserInfo.User;
@@ -39,5 +40,5 @@ public class RecommendedRecipe {
   private DietType type;  // Enum type (  BREAKFAST,LUNCH,DINNER)
 
   @Column(name = "date", nullable = false)
-  private LocalDate date;  // 날짜 필드
+  private DayOfWeek date;  // 날짜 필드
 }

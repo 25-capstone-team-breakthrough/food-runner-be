@@ -246,7 +246,7 @@ CREATE TABLE recommended_recipe (
                                   user_id VARCHAR(50) NOT NULL,
                                   recipe_id bigint NOT NULL,
                                   type ENUM('breakfast', 'lunch', 'dinner') NOT NULL,
-                                  date DATE NOT NULL,
+                                  date VARCHAR(10) NOT NULL,
                                   FOREIGN KEY (user_id) REFERENCES user(user_id),
                                   FOREIGN KEY (recipe_id) REFERENCES recipe_data(recipe_id)
 );

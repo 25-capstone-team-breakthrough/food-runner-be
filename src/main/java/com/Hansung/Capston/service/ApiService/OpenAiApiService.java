@@ -187,6 +187,29 @@ public class OpenAiApiService {
     return null;
   }
 
+  public String getRecommendedRecipes(List<String> recipes) {
+    // 텍스트 기반 요청 내용
+
+    String prompt =   String.join(", ", recipes) + "이 레시피들 중에서 아침 점심 저녁으로 먹을만한 레시피를 랜덤으로 나눠서 요일별 식단을 줘. 형식을 무조건 지켜야 해. 각 식사마다 최대 2개 대신에 2개를 한다면 반찬이나 쌀밥 이런 간단한 보조식품만 포함해줘" +
+            "형식 예 : 아침 레시피1,아침 레시피2|점심 레시피|저녁 레시피-아침 레시피|점심 레시피|저녁 레시피-..." +
+            "이런 형식으로 7일치 추천하면 되는거야, 다른 말은 하지마";
+
+    // TextContent 객체 생성
+    List<Message> messages = new ArrayList<>();
+    messages.add(new Message("user", prompt));
+
+
+    // TextAnalysisOpenAiApiRequest 객체 생성
+    TextAnalysisOpenAiApiRequest input = new TextAnalysisOpenAiApiRequest(model, messages);
+
+    // OpenAI API 호출
+    OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input, OpenAiApiResponse.class);
+
+    String content = openAiApiResponse.getChoices().get(0).getMessage().getContent();
+
+    return content;
+  }
+
   // Jackson ObjectMapper 자동 주입
   @Autowired
   private ObjectMapper objectMapper;

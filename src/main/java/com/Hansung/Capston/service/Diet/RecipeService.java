@@ -1,19 +1,22 @@
 package com.Hansung.Capston.service.Diet;
 
+import com.Hansung.Capston.common.DayOfWeek;
+import com.Hansung.Capston.common.DietType;
+import com.Hansung.Capston.dto.Diet.Ingredient.PreferredIngredientResponse;
+import com.Hansung.Capston.dto.Diet.Ingredient.RecommendedIngredientResponse;
+import com.Hansung.Capston.dto.Diet.Recipe.RecommendRecipeResponse;
 import com.Hansung.Capston.entity.Diet.Recipe.RecipeData;
 import com.Hansung.Capston.entity.Diet.Recipe.RecommendedRecipe;
+import com.Hansung.Capston.entity.UserInfo.User;
 import com.Hansung.Capston.repository.Diet.Recipe.RecipeDataRepository;
 import com.Hansung.Capston.repository.Diet.Recipe.RecommendedRecipeRepository;
+import com.Hansung.Capston.repository.UserInfo.UserRepository;
+import com.Hansung.Capston.service.ApiService.OpenAiApiService;
 import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +27,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class RecipeService {
   private final RecipeDataRepository recipeDataRepository;
   private final RecommendedRecipeRepository recommendedRecipeRepository;
+  private final UserRepository userRepository;
+
+  private final IngredientService ingredientService;
+  private final OpenAiApiService openAiApiService;
 
   public RecipeService(RecipeDataRepository recipeDataRepository,
-      RecommendedRecipeRepository recommendedRecipeRepository) {
+                       RecommendedRecipeRepository recommendedRecipeRepository, IngredientService ingredientService, OpenAiApiService openAiApiService, UserRepository userRepository) {
     this.recipeDataRepository = recipeDataRepository;
     this.recommendedRecipeRepository = recommendedRecipeRepository;
+      this.ingredientService = ingredientService;
+      this.openAiApiService = openAiApiService;
+    this.userRepository = userRepository;
   }
 
   // 레시피 데이터 불러오기
@@ -61,9 +71,80 @@ public class RecipeService {
     }
   }
 
+  // 데이터 불러오기
+  public List<RecommendRecipeResponse> loadRecommendRecipe(String userId) {
+    List<RecommendedRecipe> recommendedRecipes = recommendedRecipeRepository.findByUser_UserId(userId);
+    List<RecommendRecipeResponse> recommendedRecipeResponses = new ArrayList<>();
+    for (RecommendedRecipe recommendedRecipe : recommendedRecipes) {
+      recommendedRecipeResponses.add(RecommendRecipeResponse.toDto(recommendedRecipe));
+    }
+
+    return recommendedRecipeResponses;
+  }
+
   // 레시피 추천
   public void setRecommendRecipe(String userId) {
-    // 사용자 기반 레시피 추천 로직 (현재는 비어 있음)
+    List<RecommendedIngredientResponse> recList = ingredientService.loadRecommendedIngredient(userId);
+    List<PreferredIngredientResponse> prefList = ingredientService.loadPreferredIngredients(userId);
+
+    List<String> allIngredients = new ArrayList<>();
+    recList.forEach(r -> allIngredients.add(r.getIngredient().getIngredientName()));
+    prefList.forEach(p -> allIngredients.add(p.getIngredient().getIngredientName()));
+
+    // 연관 레시피 조회
+    List<RecipeData> matchingRecipes = recipeDataRepository.findByIngredientsContainingAny(allIngredients);
+    List<String> recipeNames = matchingRecipes.stream()
+            .map(RecipeData::getRecipeName)
+            .collect(Collectors.toList());
+
+    // OpenAI로부터 요일별 식단 추천 받기
+    String recommendRecipes = openAiApiService.getRecommendedRecipes(recipeNames);
+    String[] weeklyRecipes = recommendRecipes.split("-");
+
+    User user = userRepository.findById(userId).orElseThrow();
+
+    // 요일별 식단 저장 또는 업데이트
+    for (int i = 0; i < weeklyRecipes.length; i++) {
+      DayOfWeek currentDay;
+      switch (i) {
+        case 0 -> currentDay = DayOfWeek.mon;
+        case 1 -> currentDay = DayOfWeek.tue;
+        case 2 -> currentDay = DayOfWeek.wed;
+        case 3 -> currentDay = DayOfWeek.thu;
+        case 4 -> currentDay = DayOfWeek.fri;
+        case 5 -> currentDay = DayOfWeek.sat;
+        case 6 -> currentDay = DayOfWeek.sun;
+        default -> throw new IllegalStateException("Unexpected day index: " + i);
+      }
+
+      String[] meals = weeklyRecipes[i].split("\\|"); // 아침|점심|저녁
+      for (int j = 0; j < meals.length; j++) {
+        DietType currentType;
+        switch (j) {
+          case 0 -> currentType = DietType.BREAKFAST;
+          case 1 -> currentType = DietType.LUNCH;
+          case 2 -> currentType = DietType.DINNER;
+          default -> throw new IllegalStateException("Unexpected meal type index: " + j);
+        }
+
+        // 기존 추천 레시피 삭제
+        recommendedRecipeRepository.findByUserAndDateAndType(user, currentDay, currentType)
+                .ifPresent(recommendedRecipeRepository::delete);
+
+        String[] recipeNamesForMeal = meals[j].split(",");
+        for (String recipeName : recipeNamesForMeal) {
+          RecipeData recipeData = recipeDataRepository.findByRecipeName(recipeName.trim());
+
+          RecommendedRecipe recipe = new RecommendedRecipe();
+          recipe.setUser(user);
+          recipe.setDate(currentDay);
+          recipe.setType(currentType);
+          recipe.setRecipeData(recipeData);
+
+          recommendedRecipeRepository.save(recipe);
+        }
+      }
+    }
   }
 
   // 업로드된 CSV 파일을 처리하여 DB에 저장
