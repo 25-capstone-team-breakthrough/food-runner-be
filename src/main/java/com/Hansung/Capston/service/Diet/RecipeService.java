@@ -209,21 +209,20 @@ public class RecipeService {
         recipeData.setFat(foodData.getFat());
         recipeData.setCarbohydrate(foodData.getCarbohydrate());
 
-        mok.add(recipeData);
+        recipeDataRepository.save(recipeData);
+
       } else{
         FoodData foodData = openAiApiService.getNutrientInfo(recipeData.getRecipeName());
-        foodDataList.add(foodData);
+
+        foodDataRepository.save(foodData);
 
         recipeData.setCalories(foodData.getCalories());
         recipeData.setProtein(foodData.getProtein());
         recipeData.setFat(foodData.getFat());
         recipeData.setCarbohydrate(foodData.getCarbohydrate());
-
-        mok.add(recipeData);
+        recipeDataRepository.save(recipeData);
       }
 
-      foodDataRepository.saveAll(foodDataList);
-      recipeDataRepository.saveAll(mok);
     }
   }
 
