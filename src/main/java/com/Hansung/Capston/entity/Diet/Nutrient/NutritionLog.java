@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class NutritionLog {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL AUTO_INCREMENT 적용
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "nutrition_log_id")
   private Long nutritionLogId;
 
@@ -25,70 +25,70 @@ public class NutritionLog {
   private User user;
 
   @Column(name = "calories", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double calories;
+  private Double calories = 0.0;
 
   @Column(name = "protein", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double protein ;
+  private Double protein = 0.0;
 
   @Column(name = "carbohydrate", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double carbohydrate;
+  private Double carbohydrate = 0.0;
 
   @Column(name = "fat", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double fat;
+  private Double fat = 0.0;
 
   @Column(name = "sugar", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double sugar;
+  private Double sugar = 0.0;
 
   @Column(name = "sodium", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double sodium ;
+  private Double sodium = 0.0;
 
   @Column(name = "dietary_fiber", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double dietaryFiber ;
+  private Double dietaryFiber = 0.0;
 
   @Column(name = "calcium", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double calcium ;
+  private Double calcium = 0.0;
 
   @Column(name = "saturated_fat", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double saturatedFat;
+  private Double saturatedFat = 0.0;
 
   @Column(name = "trans_fat", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double transFat ;
+  private Double transFat = 0.0;
 
   @Column(name = "cholesterol", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double cholesterol;
+  private Double cholesterol = 0.0;
 
   @Column(name = "vitamin_a", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double vitaminA;
+  private Double vitaminA = 0.0;
 
   @Column(name = "vitamin_b1", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double vitaminB1;
+  private Double vitaminB1 = 0.0;
 
   @Column(name = "vitamin_c", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double vitaminC;
+  private Double vitaminC = 0.0;
 
   @Column(name = "vitamin_d", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double vitaminD;
+  private Double vitaminD = 0.0;
 
   @Column(name = "vitamin_e", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double vitaminE ;
+  private Double vitaminE = 0.0;
 
   @Column(name = "magnesium", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double magnesium;
+  private Double magnesium = 0.0;
 
   @Column(name = "zinc", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double zinc ;
+  private Double zinc = 0.0;
 
   @Column(name = "lactium", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double lactium ;
+  private Double lactium = 0.0;
 
   @Column(name = "potassium", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double potassium ;
+  private Double potassium = 0.0;
 
   @Column(name = "l_arginine", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double lArginine;
+  private Double lArginine = 0.0;
 
   @Column(name = "omega3", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-  private Double omega3 ;
+  private Double omega3 = 0.0;
 
   @Column(name = "date", nullable = false)
   private LocalDate date;

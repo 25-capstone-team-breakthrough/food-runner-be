@@ -89,7 +89,7 @@ public class MealService {
       }
 
       copyMealLogDetails(logs.mealLog(), log);
-      log.setUser(user); // 🔥 중요: copy 이후에 다시 설정!
+      log.setUser(user);
 
       MealLog savedMealLog = mealLogRepository.save(log);
       logs.imageMealLog().setMealLog(savedMealLog);
@@ -99,7 +99,7 @@ public class MealService {
     } else if (request.getType().equals(MealType.search)) {
       SearchMealLogRecord logs = saveSearchMealLog(request);
       copyMealLogDetails(logs.mealLog(), log);
-      log.setUser(user); // 🔥 여기도 마찬가지!
+      log.setUser(user);
 
       MealLog savedMealLog = mealLogRepository.save(log);
       logs.searchMealLog().setMealLog(savedMealLog);
