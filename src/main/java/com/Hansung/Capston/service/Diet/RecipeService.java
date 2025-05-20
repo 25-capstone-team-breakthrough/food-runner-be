@@ -5,9 +5,11 @@ import com.Hansung.Capston.common.DietType;
 import com.Hansung.Capston.dto.Diet.Ingredient.PreferredIngredientResponse;
 import com.Hansung.Capston.dto.Diet.Ingredient.RecommendedIngredientResponse;
 import com.Hansung.Capston.dto.Diet.Recipe.RecommendRecipeResponse;
+import com.Hansung.Capston.entity.Diet.Food.FoodData;
 import com.Hansung.Capston.entity.Diet.Recipe.RecipeData;
 import com.Hansung.Capston.entity.Diet.Recipe.RecommendedRecipe;
 import com.Hansung.Capston.entity.UserInfo.User;
+import com.Hansung.Capston.repository.Diet.Food.FoodDataRepository;
 import com.Hansung.Capston.repository.Diet.Recipe.RecipeDataRepository;
 import com.Hansung.Capston.repository.Diet.Recipe.RecommendedRecipeRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
@@ -26,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 public class RecipeService {
   private final RecipeDataRepository recipeDataRepository;
+  private final FoodDataRepository foodDataRepository;
   private final RecommendedRecipeRepository recommendedRecipeRepository;
   private final UserRepository userRepository;
 
@@ -33,8 +36,10 @@ public class RecipeService {
   private final OpenAiApiService openAiApiService;
 
   public RecipeService(RecipeDataRepository recipeDataRepository,
+      FoodDataRepository foodDataRepository,
                        RecommendedRecipeRepository recommendedRecipeRepository, IngredientService ingredientService, OpenAiApiService openAiApiService, UserRepository userRepository) {
     this.recipeDataRepository = recipeDataRepository;
+    this.foodDataRepository = foodDataRepository;
     this.recommendedRecipeRepository = recommendedRecipeRepository;
       this.ingredientService = ingredientService;
       this.openAiApiService = openAiApiService;
@@ -185,6 +190,41 @@ public class RecipeService {
     }
 
     return (double) intersection.size() / union.size();
+  }
+  
+  // 푸드데이터로부터 가져오기
+  public void nutritionFromFoodData(){
+    List<RecipeData> recipeDataList = loadRecipeData();
+    List<RecipeData> mok = new ArrayList<>();
+    List<FoodData> foods = new ArrayList<>();
+
+    for (RecipeData recipeData : recipeDataList) {
+      List<FoodData> foodDataList = foodDataRepository.findByFoodName(recipeData.getRecipeName());
+
+      if (!foodDataList.isEmpty()) {
+        FoodData foodData = foodDataList.get(0);
+
+        recipeData.setCalories(foodData.getCalories());
+        recipeData.setProtein(foodData.getProtein());
+        recipeData.setFat(foodData.getFat());
+        recipeData.setCarbohydrate(foodData.getCarbohydrate());
+
+        mok.add(recipeData);
+      } else{
+        FoodData foodData = openAiApiService.getNutrientInfo(recipeData.getRecipeName());
+        foodDataList.add(foodData);
+
+        recipeData.setCalories(foodData.getCalories());
+        recipeData.setProtein(foodData.getProtein());
+        recipeData.setFat(foodData.getFat());
+        recipeData.setCarbohydrate(foodData.getCarbohydrate());
+
+        mok.add(recipeData);
+      }
+
+      foodDataRepository.saveAll(foodDataList);
+      recipeDataRepository.saveAll(mok);
+    }
   }
 
   // 연관 레시피 찾기

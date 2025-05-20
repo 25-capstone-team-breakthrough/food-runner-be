@@ -415,6 +415,8 @@ CREATE TABLE preferred_supplement (
 );
 
 
+-- unique 설정
+ALTER TABLE nutrition_log ADD CONSTRAINT uk_user_date UNIQUE (user_id, date);
 
 -- ✅ 성능 최적화를 위한 인덱스 추가
 CREATE INDEX idx_user_id ON user(user_id);

@@ -33,6 +33,8 @@ public class RecipeController {
     return ResponseEntity.ok(recipeService.loadRecipeData());
   }
 
+
+
   @GetMapping("/rec/load")
   public ResponseEntity<List<RecommendRecipeResponse>> loadRecommendRecipe(){
     // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
@@ -62,6 +64,13 @@ public class RecipeController {
   @GetMapping("/data/relatedsave")
   public ResponseEntity<String> saveRelatedRecipeData(){
     recipeService.saveRelatedRecipeData();
+    return ResponseEntity.ok("Saved");
+  }
+
+  // 푸드데이터로부터 탄단지와 칼로리 정보 가져오기
+  @GetMapping("/data/from-food")
+  public ResponseEntity<String> saveFromFoodData(){
+    recipeService.nutritionFromFoodData();
     return ResponseEntity.ok("Saved");
   }
 

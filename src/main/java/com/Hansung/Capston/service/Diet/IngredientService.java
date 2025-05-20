@@ -96,7 +96,7 @@ public class IngredientService {
     }
   }
 
-  // 추천 식재료 등록하기
+  // 추천 식재료 설정하기
   @Transactional
   public void saveRecommendedIngredient(String userId) {
     NutritionLog log = nutritionLogRepository.findByUserUserId(userId).getLast();

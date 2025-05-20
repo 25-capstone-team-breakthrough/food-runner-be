@@ -31,6 +31,7 @@ public class MealService {
   private final FoodDataRepository foodDataRepository;
 
   private final OpenAiApiService openAiApiService;
+  private final NutrientService nutrientService;
   private final AwsS3Service awsS3Service;
 
   @Autowired
@@ -38,6 +39,7 @@ public class MealService {
       ImageMealLogRepository imageMealLogRepository,
       SearchMealLogRepository searchMealLogRepository, UserRepository userRepository,
       FoodDataRepository foodDataRepository, OpenAiApiService openAiApiService,
+      NutrientService nutrientService,
       AwsS3Service awsS3Service) {
     this.mealLogRepository = mealLogRepository;
     this.imageMealLogRepository = imageMealLogRepository;
@@ -45,6 +47,7 @@ public class MealService {
     this.userRepository = userRepository;
     this.foodDataRepository = foodDataRepository;
     this.openAiApiService = openAiApiService;
+    this.nutrientService = nutrientService;
     this.awsS3Service = awsS3Service;
   }
 
