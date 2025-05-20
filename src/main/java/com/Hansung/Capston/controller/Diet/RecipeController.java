@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
+// push
 @RestController
 @RequestMapping("/diet/recipe")
 public class RecipeController {
@@ -53,7 +53,6 @@ public class RecipeController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);  // 401 Unauthorized
     }
     String userId = (String) auth.getPrincipal();
-
     recipeService.setRecommendRecipe(userId);
 
     return ResponseEntity.ok("대 성 공");
