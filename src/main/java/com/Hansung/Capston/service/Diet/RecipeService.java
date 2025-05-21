@@ -117,7 +117,7 @@ public class RecipeService {
 
     User user = userRepository.findById(userId).orElseThrow();
 
-    for (int i = 0; i < weeklyRecipes.length; i++) {
+    for (int i = 0; i < 6; i++) {
       DayOfWeek currentDay = DayOfWeek.values()[i];
 
       String[] meals = weeklyRecipes[i].split("\\|"); // 식사 시간 구분
