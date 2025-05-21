@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface RecommendedRecipeRepository extends JpaRepository<RecommendedRecipe, Long> {
-    Optional<RecommendedRecipe> findByUserAndDateAndType(User user, DayOfWeek date, DietType type);
+    List<RecommendedRecipe> findByUserAndDateAndType(User user, DayOfWeek date, DietType type);
 
     List<RecommendedRecipe> findByUser_UserId(String user_userId);
 }

@@ -78,7 +78,7 @@ public class RecipeService {
     }
   }
 
-  // 데이터 불러오기
+  // 추천 식단 불러오기
   public List<RecommendRecipeResponse> loadRecommendRecipe(String userId) {
     List<RecommendedRecipe> recommendedRecipes = recommendedRecipeRepository.findByUser_UserId(userId);
     List<RecommendRecipeResponse> recommendedRecipeResponses = new ArrayList<>();
@@ -89,6 +89,7 @@ public class RecipeService {
     return recommendedRecipeResponses;
   }
 
+  // 추천 식단 설정하기
   public void setRecommendRecipe(String userId) {
     List<RecommendedIngredientResponse> recList = ingredientService.loadRecommendedIngredient(userId);
     List<PreferredIngredientResponse> prefList = ingredientService.loadPreferredIngredients(userId);
@@ -128,8 +129,11 @@ public class RecipeService {
           default -> throw new IllegalStateException("Unexpected meal type index: " + j);
         };
 
-        recommendedRecipeRepository.findByUserAndDateAndType(user, currentDay, currentType)
-            .ifPresent(recommendedRecipeRepository::delete);
+        List<RecommendedRecipe> existingRecipes = recommendedRecipeRepository.findByUserAndDateAndType(user, currentDay, currentType);
+        if (!existingRecipes.isEmpty()) {
+          recommendedRecipeRepository.deleteAll(existingRecipes); // 찾아온 모든 레시피를 삭제
+        }
+
 
         // 추천 레시피 저장
         String[] recipeNamesForMeal = meals[j].split(",");
