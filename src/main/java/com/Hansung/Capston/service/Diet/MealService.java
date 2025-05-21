@@ -33,6 +33,7 @@ public class MealService {
   private final OpenAiApiService openAiApiService;
   private final NutrientService nutrientService;
   private final AwsS3Service awsS3Service;
+  private final IngredientService ingredientService;
 
   @Autowired
   public MealService(MealLogRepository mealLogRepository,
@@ -40,7 +41,7 @@ public class MealService {
       SearchMealLogRepository searchMealLogRepository, UserRepository userRepository,
       FoodDataRepository foodDataRepository, OpenAiApiService openAiApiService,
       NutrientService nutrientService,
-      AwsS3Service awsS3Service) {
+      AwsS3Service awsS3Service, IngredientService ingredientService) {
     this.mealLogRepository = mealLogRepository;
     this.imageMealLogRepository = imageMealLogRepository;
     this.searchMealLogRepository = searchMealLogRepository;
@@ -49,6 +50,7 @@ public class MealService {
     this.openAiApiService = openAiApiService;
     this.nutrientService = nutrientService;
     this.awsS3Service = awsS3Service;
+    this.ingredientService = ingredientService;
   }
 
   // 식사 기록 불러오기
@@ -97,6 +99,8 @@ public class MealService {
       MealLog savedMealLog = mealLogRepository.save(log);
       logs.imageMealLog().setMealLog(savedMealLog);
       imageMealLogRepository.save(logs.imageMealLog());
+      nutrientService.saveNutrientLog(userId, true, savedMealLog.getMealId());
+      ingredientService.saveRecommendedIngredient(userId);
       return savedMealLog;
 
     } else if (request.getType().equals(MealType.search)) {
@@ -107,6 +111,8 @@ public class MealService {
       MealLog savedMealLog = mealLogRepository.save(log);
       logs.searchMealLog().setMealLog(savedMealLog);
       searchMealLogRepository.save(logs.searchMealLog());
+      nutrientService.saveNutrientLog(userId, true, savedMealLog.getMealId());
+      ingredientService.saveRecommendedIngredient(userId);
       return savedMealLog;
     }
     return log;
@@ -242,6 +248,7 @@ public class MealService {
   @Transactional
   public void deleteMealLog(Long mealLogId) {
     MealLog log = mealLogRepository.findById(mealLogId).get();
+    nutrientService.saveNutrientLog(log.getUser().getUserId(), false, log.getMealId());
 
     if(log.getType().equals(MealType.image)){
       ImageMealLog imageMealLog = imageMealLogRepository.findByMealId(log.getMealId());

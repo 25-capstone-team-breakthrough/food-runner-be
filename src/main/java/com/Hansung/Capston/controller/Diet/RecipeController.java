@@ -34,7 +34,6 @@ public class RecipeController {
   }
 
 
-
   @GetMapping("/rec/load")
   public ResponseEntity<List<RecommendRecipeResponse>> loadRecommendRecipe(){
     // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출

@@ -20,12 +20,14 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
+@Slf4j
 public class RecipeService {
   private final RecipeDataRepository recipeDataRepository;
   private final FoodDataRepository foodDataRepository;
@@ -87,7 +89,6 @@ public class RecipeService {
     return recommendedRecipeResponses;
   }
 
-  // 레시피 추천
   public void setRecommendRecipe(String userId) {
     List<RecommendedIngredientResponse> recList = ingredientService.loadRecommendedIngredient(userId);
     List<PreferredIngredientResponse> prefList = ingredientService.loadPreferredIngredients(userId);
@@ -96,49 +97,49 @@ public class RecipeService {
     recList.forEach(r -> allIngredients.add(r.getIngredient().getIngredientName()));
     prefList.forEach(p -> allIngredients.add(p.getIngredient().getIngredientName()));
 
-    // 연관 레시피 조회
-    List<RecipeData> matchingRecipes = recipeDataRepository.findByIngredientsContainingAny(allIngredients);
-    List<String> recipeNames = matchingRecipes.stream()
-            .map(RecipeData::getRecipeName)
-            .collect(Collectors.toList());
+    // 추천 식재료와 권장 식재료를 바탕으로 추천하는 식단
+    Set<RecipeData> matchingRecipesSet = new HashSet<>();
+    for (String ingredient : allIngredients) {
+      matchingRecipesSet.addAll(recipeDataRepository.findByIngredient(ingredient));
+    }
+    List<RecipeData> matchingRecipes = new ArrayList<>(matchingRecipesSet);
 
-    // OpenAI로부터 요일별 식단 추천 받기
+    // 레시피 이름 추출(llm 활용 위해서)
+    List<String> recipeNames = matchingRecipes.stream()
+        .map(RecipeData::getRecipeName)
+        .collect(Collectors.toList());
+    log.info("✅ matchingRecipes 크기: {}", matchingRecipes.size());
+
+    // openai api 호출
     String recommendRecipes = openAiApiService.getRecommendedRecipes(recipeNames);
-    String[] weeklyRecipes = recommendRecipes.split("-");
+    String[] weeklyRecipes = recommendRecipes.split("-"); // 요일 구분
 
     User user = userRepository.findById(userId).orElseThrow();
 
-    // 요일별 식단 저장 또는 업데이트
     for (int i = 0; i < weeklyRecipes.length; i++) {
-      DayOfWeek currentDay;
-      switch (i) {
-        case 0 -> currentDay = DayOfWeek.mon;
-        case 1 -> currentDay = DayOfWeek.tue;
-        case 2 -> currentDay = DayOfWeek.wed;
-        case 3 -> currentDay = DayOfWeek.thu;
-        case 4 -> currentDay = DayOfWeek.fri;
-        case 5 -> currentDay = DayOfWeek.sat;
-        case 6 -> currentDay = DayOfWeek.sun;
-        default -> throw new IllegalStateException("Unexpected day index: " + i);
-      }
+      DayOfWeek currentDay = DayOfWeek.values()[i];
 
-      String[] meals = weeklyRecipes[i].split("\\|"); // 아침|점심|저녁
+      String[] meals = weeklyRecipes[i].split("\\|"); // 식사 시간 구분
       for (int j = 0; j < meals.length; j++) {
-        DietType currentType;
-        switch (j) {
-          case 0 -> currentType = DietType.BREAKFAST;
-          case 1 -> currentType = DietType.LUNCH;
-          case 2 -> currentType = DietType.DINNER;
+        DietType currentType = switch (j) {
+          case 0 -> DietType.breakfast;
+          case 1 -> DietType.lunch;
+          case 2 -> DietType.dinner;
           default -> throw new IllegalStateException("Unexpected meal type index: " + j);
-        }
+        };
 
-        // 기존 추천 레시피 삭제
         recommendedRecipeRepository.findByUserAndDateAndType(user, currentDay, currentType)
-                .ifPresent(recommendedRecipeRepository::delete);
+            .ifPresent(recommendedRecipeRepository::delete);
 
+        // 추천 레시피 저장
         String[] recipeNamesForMeal = meals[j].split(",");
         for (String recipeName : recipeNamesForMeal) {
           RecipeData recipeData = recipeDataRepository.findByRecipeName(recipeName.trim());
+
+          if (recipeData == null) {
+            System.out.println("❗ DB에 없는 레시피: " + recipeName);
+            continue;
+          }
 
           RecommendedRecipe recipe = new RecommendedRecipe();
           recipe.setUser(user);
@@ -151,6 +152,7 @@ public class RecipeService {
       }
     }
   }
+
 
   // 업로드된 CSV 파일을 처리하여 DB에 저장
   public void changeCsvToRecipeData(MultipartFile file) throws IOException {
@@ -213,7 +215,7 @@ public class RecipeService {
 
       } else{
         FoodData foodData = openAiApiService.getNutrientInfo(recipeData.getRecipeName());
-
+        foodData.setFoodImage(recipeData.getRecipeImage());
         foodDataRepository.save(foodData);
 
         recipeData.setCalories(foodData.getCalories());

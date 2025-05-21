@@ -18,9 +18,9 @@ public class RecommendRecipeResponse {
   public static RecommendRecipeResponse toDto(RecommendedRecipe recommendedRecipe) {
     RecommendRecipeResponse response = new RecommendRecipeResponse();
 
-    response.setRecommendedRecipeId(response.getRecommendedRecipeId());
+    response.setRecommendedRecipeId(recommendedRecipe.getRecommendedRecipeId());
     response.setRecipeData(recommendedRecipe.getRecipeData());
-    response.setDietType(response.getDietType());
+    response.setDietType(recommendedRecipe.getType());
     response.setDate(recommendedRecipe.getDate());
 
     return response;

@@ -12,12 +12,10 @@ import java.util.List;
 @Repository
 public interface RecipeDataRepository extends JpaRepository<RecipeData, Long> {
 
-    @Query("SELECT r FROM RecipeData r WHERE " +
-            "FUNCTION('FIND_IN_SET', :ingredient1, r.cleanedIngredients) > 0 OR " +
-            "FUNCTION('FIND_IN_SET', :ingredient2, r.cleanedIngredients) > 0 OR " +
-            // ... (pref나 rec 리스트의 모든 재료에 대해 추가)
-            "FUNCTION('FIND_IN_SET', :ingredientN, r.cleanedIngredients) > 0")
-    List<RecipeData> findByIngredientsContainingAny(@Param("ingredientNames") List<String> ingredientNames);
+    @Query(value = "SELECT * FROM recipe_data r WHERE FIND_IN_SET(:ingredient, r.cleaned_ingredients) > 0", nativeQuery = true)
+    List<RecipeData> findByIngredient(@Param("ingredient") String ingredient);
+
+
 
     RecipeData findByRecipeName(String name);
 }
