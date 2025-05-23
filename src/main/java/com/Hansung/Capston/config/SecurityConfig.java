@@ -25,7 +25,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/users/login", "/users/signup", "/exerciseData/upload-csv","/api/data/**"
                     , "/api/data/foods/upload-csv","/diet/food/data/**", "/diet/sup/data/**",
-                    "/diet/recipe/data/**", "/diet/ingredient/data/**", "/inbody/ocr-test").permitAll()
+                    "/diet/recipe/data/**", "/diet/ingredient/data/**", "/inbody/ocr-test", "/stt/audio").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

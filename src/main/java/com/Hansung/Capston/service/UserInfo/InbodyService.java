@@ -133,11 +133,11 @@ public class InbodyService {
       int savedCount = 0;
 
       List<String> exs = openAiApiService.recommendExercisesBySegments(
-              List.of(cat), 3
-      ).stream().distinct().limit(3).toList();
+              List.of(cat), 2
+      ).stream().distinct().limit(2).toList();
 
       for (String ex : exs) {
-        if (savedCount == 3) break;
+        if (savedCount == 2) break;
         List<YoutubeExerciseDTO> vids = videoService.searchVideos(ex, 1);
         if (vids.isEmpty()) continue;
         String vidId = vids.get(0).getVideoId();
@@ -155,10 +155,10 @@ public class InbodyService {
         savedIds.add(vidId);
         savedCount++;
       }
-      if (savedCount < 3) {
-        List<YoutubeExerciseDTO> fallback = videoService.searchVideos(cat + " 운동", 3);
+      if (savedCount < 2) {
+        List<YoutubeExerciseDTO> fallback = videoService.searchVideos(cat + " 운동", 2);
         for (YoutubeExerciseDTO dto : fallback) {
-          if (savedCount == 3) break;
+          if (savedCount == 2) break;
           if (savedIds.contains(dto.getVideoId())) continue;
 
           RecommandExerciseVideo rec = new RecommandExerciseVideo();

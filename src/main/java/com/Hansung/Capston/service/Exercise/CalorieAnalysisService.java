@@ -30,10 +30,10 @@ public class CalorieAnalysisService {
     private final StrengthExerciseLogRepository strengthExerciseLogRepository;
 
     //유산소
-    private int calculateCaloriesByCardio(double weightKg, int paceMinPerKm, int durationMin) {
-        double speed     = 1000.0 / paceMinPerKm;      // m/min
-        double vo2       = 0.2 * speed + 3.5;          // ml/kg/min
-        double kcalPerMin= vo2 * weightKg / 200.0;     // kcal/min
+    private int calculateCaloriesByCardio(double weightKg, double distanceKm, int durationMin) {
+        double speed = (distanceKm * 1000.0) / durationMin;   // m/min
+        double vo2 = 0.2 * speed + 3.5;                        // ml/kg/min
+        double kcalPerMin = vo2 * weightKg / 200.0;           // kcal/min
         return (int) Math.round(kcalPerMin * durationMin);
     }
 
@@ -69,8 +69,8 @@ public class CalorieAnalysisService {
                     .orElseThrow(() -> new IllegalArgumentException("유산소 기록이 없습니다."));
 
             int minutes = cardio.getTime();              // 분
-            int pace = (int) Math.round(cardio.getPace());  // min/km
-            calories = calculateCaloriesByCardio(userWeight, pace, minutes);
+            double distance  = cardio.getDistance();  // min/km
+            calories = calculateCaloriesByCardio(userWeight, distance, minutes);
 
         }
         else { //근력 계산

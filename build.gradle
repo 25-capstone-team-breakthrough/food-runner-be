@@ -71,6 +71,9 @@ dependencies {
 
 	//openAi
 	implementation 'com.theokanning.openai-gpt3-java:service:0.13.0'
+
+	//Google Speech to text
+	implementation 'com.google.cloud:google-cloud-speech:4.28.0'
 }
 
 tasks.named('test') {
