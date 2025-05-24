@@ -41,8 +41,8 @@ public class OpenAiApiService {
 
     ImageContent imageContent = new ImageContent(mealImage);
     TextContent textContent = new TextContent("너는 오로지 음식이 뭔지만 판단하는 음식이미지 분석 ai 모델이야. "
-        + "이미지를 보고 어떤 음식이 있는지 우리한테 알려줘야해(재료는 제외). 사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 말되 그렇다고 모르는 거 있으면 대답에 포함하지말고. 3초 이내에"
-        + "음식의 구분은 무조건 쉼표(,)로 다른 특수문자는 사용하지마");
+        + "이미지를 보고 어떤 음식이 얼마나 있는지 우리한테 알려줘야해(재료는 제외). 사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 말되 그렇다고 모르는 거 있으면 대답에 포함하지말고. 3초 이내에"
+        + "형식은 음식이름:g 단위로 나타낸 양이야. ex) 김치찌개:500. 음식의 구분은 무조건 쉼표(,)로 다른 특수문자는 사용하지마");
 
 
     List<Content> list = new ArrayList<>();
@@ -67,7 +67,7 @@ public class OpenAiApiService {
 
   public FoodData getNutrientInfo(String food) {
     // 텍스트 기반 요청 내용
-    String prompt = food + "에 대한 영양 정보를 1인분 기준으로 추정하여 아래와 같은 형식으로 반환해주세요. 각 항목은 `key=value` 형태로 출력하고, 각 항목은 쉼표(,)로 구분해주세요.\n"
+    String prompt = food + "에 대한 영양 정보를 100g 기준으로 추정하여 아래와 같은 형식으로 반환해주세요. 각 항목은 `key=value` 형태로 출력하고, 각 항목은 쉼표(,)로 구분해주세요.\n"
         + "예시 형식:\n"
         + "foodName=짜장면, calories=800, protein=20, carbohydrate=130, fat=15, sugar=12, sodium=2000, dietaryFiber=5, calcium=40, saturatedFat=3, transFat=0, cholesterol=50, vitaminA=50, vitaminB1=0.5, vitaminC=2, vitaminD=null, vitaminE=null, magnesium=30, zinc=0.8, lactium=null, potassium=300, lArginine=null, omega3=null"
         + "만약에 사진에 음식이 없으면 foodName = null";
