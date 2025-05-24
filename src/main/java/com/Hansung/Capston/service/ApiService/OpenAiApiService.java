@@ -4,6 +4,7 @@ import com.Hansung.Capston.dto.Api.OpenAiApi.*;
 import com.Hansung.Capston.entity.Diet.Food.FoodData;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class OpenAiApiService {
   private static final Logger logger = LoggerFactory.getLogger(OpenAiApiService.class);
 
@@ -188,11 +190,17 @@ public class OpenAiApiService {
   }
 
   public String getRecommendedRecipes(List<String> recipes) {
-    // 텍스트 기반 요청 내용
 
-    String prompt =   String.join(", ", recipes) + "이 레시피들 중에서 아침 점심 저녁으로 먹을만한 레시피를 랜덤으로 나눠서 요일별 식단을 줘. 형식을 무조건 지켜야 해. 각 식사마다 최대 2개 대신에 2개를 한다면 반찬이나 쌀밥 이런 간단한 보조식품만 포함해줘" +
-            "형식 예 : 아침 레시피1,아침 레시피2|점심 레시피|저녁 레시피-아침 레시피|점심 레시피|저녁 레시피-..." +
-            "이런 형식으로 7일치 추천하면 되는거야, 다른 말은 하지마";
+    String prompt = String.join(", ", recipes) +
+        "\n\nBased on ONLY these exact recipe names listed above (no modifications, additions, or removals)," +
+        " generate a 7-day meal plan assigning them to breakfast, lunch, and dinner." +
+        " You must use the recipe names EXACTLY as they appear above — no numbers, no whitespace changes, no new items." +
+        " Each day must follow this format:\n" +
+        "breakfast1,breakfast2|lunch|dinner-breakfast|lunch|dinner-...(7 days total)\n" +
+        "At most 2 recipes per meal. If there are 2, one must be a simple side dish like rice or kimchi.\n" +
+        "Return ONLY the raw text in that format. No explanations, greetings, or extra lines.";
+
+
 
     // TextContent 객체 생성
     List<Message> messages = new ArrayList<>();
@@ -206,6 +214,8 @@ public class OpenAiApiService {
     OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input, OpenAiApiResponse.class);
 
     String content = openAiApiResponse.getChoices().get(0).getMessage().getContent();
+
+    log.info("✅ LLM 반환 식단 추천 결과:\n{}", content);
 
     return content;
   }

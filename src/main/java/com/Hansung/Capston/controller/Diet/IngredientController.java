@@ -46,7 +46,6 @@ public class IngredientController {
     }
     String userId = (String) auth.getPrincipal();
 
-
     return ResponseEntity.ok(ingredientService.savePreferredIngredient(userId, IngredientId));
   }
 

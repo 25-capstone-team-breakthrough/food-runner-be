@@ -28,12 +28,10 @@ import java.util.function.Function;
 @RequestMapping("/diet/meal")
 public class MealController {
   private final MealService mealService;
-  private final NutrientService nutrientService;
   private final AwsS3Service awsS3Service;
 
-  public MealController(MealService mealService, NutrientService nutrientService, AwsS3Service awsS3Service) {
+  public MealController(MealService mealService, AwsS3Service awsS3Service) {
     this.mealService = mealService;
-    this.nutrientService = nutrientService;
       this.awsS3Service = awsS3Service;
   }
 
@@ -89,7 +87,6 @@ public class MealController {
     if(mealLog == null){
       return ResponseEntity.ok("실패 : 이미지에 음식이 없습니다");
     }
-    nutrientService.saveNutrientLog(userId, true, mealLog);
 
     return ResponseEntity.ok("save success");
   }
@@ -118,7 +115,6 @@ public class MealController {
     }
     String userId = (String) auth.getPrincipal();
 
-    nutrientService.saveNutrientLog(userId, false, logId);
     mealService.deleteMealLog(logId);
 
     return ResponseEntity.ok("delete success");

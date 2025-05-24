@@ -33,6 +33,7 @@ public class RecipeController {
     return ResponseEntity.ok(recipeService.loadRecipeData());
   }
 
+  // 추천 식단 불러오기
   @GetMapping("/rec/load")
   public ResponseEntity<List<RecommendRecipeResponse>> loadRecommendRecipe(){
     // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
@@ -45,6 +46,7 @@ public class RecipeController {
     return ResponseEntity.ok(recipeService.loadRecommendRecipe(userId));
   }
 
+  // 추천 식단 설정하기
   @PostMapping("/rec/set")
   public ResponseEntity<String> setRecommendRecipe() {
     // SecurityContext에서 JWT 토큰으로 인증된 사용자 ID 추출
@@ -53,16 +55,23 @@ public class RecipeController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);  // 401 Unauthorized
     }
     String userId = (String) auth.getPrincipal();
-
     recipeService.setRecommendRecipe(userId);
 
     return ResponseEntity.ok("대 성 공");
   }
 
+  // 여기부터는 프론트는 사용 x
   // 연관 레시피 설정하기
   @GetMapping("/data/relatedsave")
   public ResponseEntity<String> saveRelatedRecipeData(){
     recipeService.saveRelatedRecipeData();
+    return ResponseEntity.ok("Saved");
+  }
+
+  // 푸드데이터로부터 탄단지와 칼로리 정보 가져오기
+  @GetMapping("/data/from-food")
+  public ResponseEntity<String> saveFromFoodData(){
+    recipeService.nutritionFromFoodData();
     return ResponseEntity.ok("Saved");
   }
 

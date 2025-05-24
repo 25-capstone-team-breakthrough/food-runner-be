@@ -71,7 +71,8 @@ public class InbodyController {
                         new InbodyDTO(
                                 img.getPictureId(),
                                 img.getInbody().getInbodyId(),
-                                img.getFilePath()
+                                img.getFilePath(),
+                                img.getCreatedAt()
                         )
                 )
                 .collect(Collectors.toList());

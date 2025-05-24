@@ -51,7 +51,7 @@ CREATE TABLE inbody_image (
                               FOREIGN KEY (inbody_id) REFERENCES inbody(inbody_id),
                               FOREIGN KEY (user_id)   REFERENCES user(user_id)
 );
---추천 운동영상 저장 테이블
+-- 추천 운동영상 저장 테이블
 CREATE TABLE recommand_exercise_video (
   id                      BIGINT        NOT NULL AUTO_INCREMENT,
   user_id                 VARCHAR(36)   NOT NULL,  -- user 테이블의 PK(user_id) 참조
@@ -83,7 +83,7 @@ CREATE TABLE Exercise_Data (
     exercise_id INT AUTO_INCREMENT PRIMARY KEY,     -- 운동 ID
     exercise_name VARCHAR(255) NOT NULL,             -- 운동 이름
     exercise_description TEXT,                        -- 운동 설명
-	energy_Consumption_Per_Kg Float,	                  -- 단위 시간당 소모칼로리 
+	energy_Consumption_Per_Kg Float,	                  -- 단위 시간당 소모칼로리
 	exercise_Type VARCHAR(36) NOT NULL					-- 운동 타입
 );
 
@@ -415,6 +415,8 @@ CREATE TABLE preferred_supplement (
 );
 
 
+-- unique 설정
+ALTER TABLE nutrition_log ADD CONSTRAINT uk_user_date UNIQUE (user_id, date);
 
 -- ✅ 성능 최적화를 위한 인덱스 추가
 CREATE INDEX idx_user_id ON user(user_id);
