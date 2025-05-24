@@ -192,14 +192,13 @@ public class OpenAiApiService {
   public String getRecommendedRecipes(List<String> recipes) {
 
     String prompt = String.join(", ", recipes) +
-        "\n\nBased on ONLY these exact recipe names listed above (no modifications, additions, or removals)," +
+        "\n\nBased on ONLY these exact recipe names listed above (no modifications, no additions, no removals), and **you must use the recipe names precisely as they are provided, including all whitespace and characters**," +
         " generate a 7-day meal plan assigning them to breakfast, lunch, and dinner." +
-        " You must use the recipe names EXACTLY as they appear above — no numbers, no whitespace changes, no new items." +
+        " You must use the recipe names EXACTLY as they appear above — do not change anything." +
         " Each day must follow this format:\n" +
-        "breakfast1,breakfast2|lunch|dinner-breakfast|lunch|dinner-...(7 days total)\n" +
-        "At most 2 recipes per meal. If there are 2, one must be a simple side dish like rice or kimchi.\n" +
-        "Return ONLY the raw text in that format. No explanations, greetings, or extra lines.";
-
+        "breakfast1,breakfast2|lunch|dinner-breakfast|lunch1,lunch2|dinner-...(7 days total)\n" +
+        "At most 2 recipes per meal. If there are 2, one must be a simple side dish like rice or kimchi." +
+        " Return ONLY the raw text in that format. No explanations, greetings, or extra lines.";
 
 
     // TextContent 객체 생성
