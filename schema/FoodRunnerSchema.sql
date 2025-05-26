@@ -414,6 +414,15 @@ CREATE TABLE preferred_supplement (
                                       FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
+CREATE TABLE recommended_recipe_candidate (
+                                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                      user_id CHAR(36) NOT NULL,
+                                      recipe_data_id BIGINT NOT NULL,
+                                      diet_type VARCHAR(255) NOT NULL,
+
+                                      FOREIGN KEY (user_id) REFERENCES user (user_id),
+                                      FOREIGN KEY (recipe_data_id) REFERENCES recipe_data (recipe_id)
+);
 
 -- unique 설정
 ALTER TABLE nutrition_log ADD CONSTRAINT uk_user_date UNIQUE (user_id, date);
@@ -423,3 +432,5 @@ CREATE INDEX idx_user_id ON user(user_id);
 CREATE INDEX idx_recipe_id ON recipe_data(recipe_id);
 CREATE INDEX idx_ingredient_id ON ingredient_data(ingredient_id);
 CREATE INDEX idx_meal_id ON meal_log(meal_id);
+CREATE INDEX idx_recommended_candidate_user_diet_type
+    ON recommended_recipe_candidate (user_id, diet_type);

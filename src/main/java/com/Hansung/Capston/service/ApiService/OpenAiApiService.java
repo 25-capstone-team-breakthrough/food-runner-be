@@ -6,6 +6,8 @@ import com.Hansung.Capston.dto.Api.OpenAiApi.*;
 import com.Hansung.Capston.entity.Diet.Food.FoodData;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,23 +45,13 @@ public class OpenAiApiService {
 
   public List<String> mealImageAnalysis(String mealImage){
 
-    ImageContent imageContent = new ImageContent(mealImage);
-    TextContent textContent = new TextContent("너는 오로지 음식이 뭔지만 판단하는 음식이미지 분석 ai 모델이야. "
-        + "이미지를 보고 어떤 음식이 얼마나 있는지 우리한테 알려줘야해(재료는 제외). 사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 말되 그렇다고 모르는 거 있으면 대답에 포함하지말고. 3초 이내에"
-        + "형식은 음식이름:g 단위로 나타낸 양이야. ex) 김치찌개:500. 음식의 구분은 무조건 쉼표(,)로 다른 특수문자는 사용하지마");
-
-
-    List<Content> list = new ArrayList<>();
-    list.add(textContent);
-    list.add(imageContent);
-
-
-
-    ImageAnalysisOpenAiApiRequest input = new ImageAnalysisOpenAiApiRequest(model,list);
+    ImageAnalysisOpenAiApiRequest input = getImageAnalysisOpenAiApiRequest(
+        mealImage);
     OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input,
         OpenAiApiResponse.class);
 
-    String response = openAiApiResponse.getChoices().get(0).getMessage().getContent();
+    String response = Objects.requireNonNull(openAiApiResponse).getChoices().getFirst().getMessage().getContent();
+    logger.info("음식 분석 llm response: {}", response);
     String trim = response.trim();
 
     List<String> foodArray = Arrays.stream(trim.split(",\\s*"))
@@ -67,6 +59,19 @@ public class OpenAiApiService {
         .collect(Collectors.toList());
     logger.info("Food Array: {}", foodArray);  // 로그 출력
     return foodArray;
+  }
+
+  private ImageAnalysisOpenAiApiRequest getImageAnalysisOpenAiApiRequest(String mealImage) {
+    ImageContent imageContent = new ImageContent(mealImage);
+    TextContent textContent = new TextContent("너는 오로지 음식이 뭔지만 판단하는 음식이미지 분석 ai 모델이야. "
+        + "이미지를 보고 어떤 음식이 얼마나 있는지 우리한테 알려줘야해. 재료가 아닌 요리 이름으로 말해줘야해. 사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 말되 그렇다고 모르는 거 있으면 대답에 포함하지말고. 3초 이내에"
+        + "형식은 음식이름:g 단위로 나타낸 양이야. ex) 김치찌개:500,김밥:100 음식의 구분은 무조건 쉼표(,)로 다른 특수문자는 사용하지마");
+
+    List<Content> list = new ArrayList<>();
+    list.add(textContent);
+    list.add(imageContent);
+
+    return new ImageAnalysisOpenAiApiRequest(model,list);
   }
 
   public FoodData getNutrientInfo(String food) {
@@ -194,13 +199,13 @@ public class OpenAiApiService {
   public String getRecommendedRecipes(List<String> recipes) {
 
     String prompt = String.join(", ", recipes) +
-        "\n\nBased on ONLY these exact recipe names listed above (no modifications, no additions, no removals), and **you must use the recipe names precisely as they are provided, including all whitespace and characters**," +
-        " generate a 7-day meal plan assigning them to breakfast, lunch, and dinner." +
-        " You must use the recipe names EXACTLY as they appear above — do not change anything." +
-        " Each day must follow this format:\n" +
-        "breakfast1,breakfast2|lunch|dinner-breakfast|lunch1,lunch2|dinner-...(7 days total)\n" +
-        "At most 2 recipes per meal. If there are 2, one must be a simple side dish like rice or kimchi." +
-        " Return ONLY the raw text in that format. No explanations, greetings, or extra lines.";
+        "\n\n위에 나열된 정확한 레시피 이름만을 기반으로 (수정, 추가, 삭제 금지), **제공된 레시피 이름을 공백과 모든 문자를 포함하여 정확히 사용해야 합니다.**" +
+        " 아침, 점심, 저녁으로 구성된 7일간의 식단을 생성해주세요." +
+        " 레시피 이름은 위에 보이는 것과 **정확히 동일하게** 사용해야 합니다. 아무것도 변경하지 마세요." +
+        " 각 요일은 다음 형식을 따라야 합니다:\n" +
+        "아침1,아침2|점심|저녁-아침|점심1,점심2|저녁-...(총 7일)\n" +
+        "각 식사에는 최대 2개의 레시피만 포함해야 합니다. 2개일 경우, 하나는 밥이나 김치와 같은 간단한 반찬이어야 합니다." +
+        " 설명, 인사말, 추가 줄 없이 해당 형식의 원본 텍스트만 반환하세요.";
 
 
     // TextContent 객체 생성
@@ -334,5 +339,57 @@ public class OpenAiApiService {
 
     log.info("✅ LLM 반환 특정 끼니 추천 결과 ({} {}):\n{}", dayOfWeek, dietType, content);
     return content;
+  }
+
+  public Map<DietType, List<String>> getMealTypeRecipeCandidates(List<String> allRecipeNamesForLLM) {
+    Map<DietType, List<String>> mealTypeCandidates = new HashMap<>();
+
+    // 아침 식사용 레시피 후보 요청
+    String breakfastPrompt = String.join(", ", allRecipeNamesForLLM) +
+        "\n\n위에 나열된 정확한 레시피 이름만을 기반으로 (수정, 추가, 삭제 금지), **제공된 레시피 이름을 공백과 모든 문자를 포함하여 정확히 사용해야 합니다.**" +
+        " 아침 식사에 적합한 레시피 이름을 최소 14개, 최대 20개 생성해주세요." +
+        " 가볍고 간단한 요리를 우선적으로 추천합니다. 각 레시피 이름은 쉼표로 구분해주세요. 만약 레시피에 밥이나 김치와 같은 간단한 반찬이 필요하다면, 메인 요리 뒤에 쉼표와 공백으로 포함시켜주세요 (예: '떡국, 밥')." +
+        " 설명, 인사말, 추가 줄 없이 쉼표로 구분된 레시피 이름만 반환하세요.";
+    List<String> breakfastRecipes = callOpenAiApiAndParseList(breakfastPrompt);
+    mealTypeCandidates.put(DietType.breakfast, breakfastRecipes);
+    log.info("✅ LLM 반환 아침 식단 후보 ({}개):\n{}", breakfastRecipes.size(), breakfastRecipes);
+
+
+    // 점심 식사용 레시피 후보 요청
+    String lunchPrompt = String.join(", ", allRecipeNamesForLLM) +
+        "\n\n위에 나열된 정확한 레시피 이름만을 기반으로 (수정, 추가, 삭제 금지), **제공된 레시피 이름을 공백과 모든 문자를 포함하여 정확히 사용해야 합니다.**" +
+        " 점심 식사에 적합한 레시피 이름을 최소 14개, 최대 20개 생성해주세요." +
+        " 균형 잡힌 주 요리를 우선적으로 추천합니다. 각 레시피 이름은 쉼표로 구분해주세요. 만약 레시피에 밥이나 김치와 같은 간단한 반찬이 필요하다면, 메인 요리 뒤에 쉼표와 공백으로 포함시켜주세요 (예: '김치찌개, 밥')." +
+        " 설명, 인사말, 추가 줄 없이 쉼표로 구분된 레시피 이름만 반환하세요.";
+    List<String> lunchRecipes = callOpenAiApiAndParseList(lunchPrompt);
+    mealTypeCandidates.put(DietType.lunch, lunchRecipes);
+    log.info("✅ LLM 반환 점심 식단 후보 ({}개):\n{}", lunchRecipes.size(), lunchRecipes);
+
+    // 저녁 식사용 레시피 후보 요청
+    String dinnerPrompt = String.join(", ", allRecipeNamesForLLM) +
+        "\n\n위에 나열된 정확한 레시피 이름만을 기반으로 (수정, 추가, 삭제 금지), **제공된 레시피 이름을 공백과 모든 문자를 포함하여 정확히 사용해야 합니다.**" +
+        " 저녁 식사에 적합한 레시피 이름을 최소 14개, 최대 20개 생성해주세요." +
+        " 약간 더 푸짐하거나 든든한 요리를 우선적으로 추천합니다. 각 레시피 이름은 쉼표로 구분해주세요. 만약 레시피에 밥이나 김치와 같은 간단한 반찬이 필요하다면, 메인 요리 뒤에 쉼표와 공백으로 포함시켜주세요 (예: '삼겹살, 밥, 쌈채소')." +
+        " 설명, 인사말, 추가 줄 없이 쉼표로 구분된 레시피 이름만 반환하세요.";
+    List<String> dinnerRecipes = callOpenAiApiAndParseList(dinnerPrompt);
+    mealTypeCandidates.put(DietType.dinner, dinnerRecipes);
+    log.info("✅ LLM 반환 저녁 식단 후보 ({}개):\n{}", dinnerRecipes.size(), dinnerRecipes);
+
+    return mealTypeCandidates;
+  }
+
+  private List<String> callOpenAiApiAndParseList(String prompt) {
+    List<Message> messages = new ArrayList<>();
+    messages.add(new Message("user", prompt));
+
+    TextAnalysisOpenAiApiRequest input = new TextAnalysisOpenAiApiRequest(model, messages);
+    OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input, OpenAiApiResponse.class);
+    String content = openAiApiResponse.getChoices().get(0).getMessage().getContent();
+
+    // 쉼표로 분리하여 리스트로 반환 (trim() 처리 포함)
+    return Arrays.stream(content.split(","))
+        .map(String::trim)
+        .filter(s -> !s.isEmpty()) // 빈 문자열 제거
+        .collect(Collectors.toList());
   }
 }
