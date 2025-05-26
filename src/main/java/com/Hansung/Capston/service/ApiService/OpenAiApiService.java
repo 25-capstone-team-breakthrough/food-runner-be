@@ -224,7 +224,6 @@ public class OpenAiApiService {
   private ObjectMapper objectMapper;
   //인바디 이미지 업로드시 인바디 텍스트  분석
   public Map<String, Float> extractInbodyMetrics(String ocrText) {
-    // 1) 프롬프트 생성
     String systemPrompt = """
       You are an InBody numeric extractor.
                     Only use the raw OCR text provided in the user prompt.
@@ -312,5 +311,57 @@ public class OpenAiApiService {
     }
   }
 
+  //음성 stt -> 운동기록으로 매핑시키게 해준다.
+  public Map<String, Object> parseExercise(String transcript) {
+    String systemPrompt = """
+            You are an assistant that extracts exercise log details.
+            From the user-provided transcript, output ONLY a JSON object with these fields:
+              - exerciseName: name of the exercise (String)
+              - sets: number of sets (int), if applicable
+              - weight: weight in kg (double), if applicable
+              - reps: number of repetitions per set (int), if applicable
+              - time: duration in minutes (int), if applicable
+              - distance: distance in kilometers (double), if applicable
+            Do not include any extra keys or commentary.
+            Example Inputs and Outputs:
+              Input: "데드리프트 3세트 10kg 10회"
+              Output: {"exerciseName":"데드리프트","sets":3,"weight":10.0,"reps":10}
+
+              Input: "런닝 3km 10분"
+              Output: {"exerciseName":"런닝","distance":3.0,"time":10}
+            """;
+
+    String userPrompt = "Transcript: \"" + transcript + "\"";
+
+    List<Message> messages = Arrays.asList(
+            new Message("system", systemPrompt),
+            new Message("user", userPrompt)
+    );
+
+    TextAnalysisOpenAiApiRequest request =
+            new TextAnalysisOpenAiApiRequest(model, messages);
+
+    OpenAiApiResponse response = restTemplate.postForObject(
+            openAiUrl, request, OpenAiApiResponse.class
+    );
+
+
+    String content = response.getChoices().get(0).getMessage().getContent().trim();
+
+    content = content
+            .replaceAll("(?s)^```.*?\\n", "")
+            .replaceAll("```$", "")
+            .trim();
+
+    try {
+      return objectMapper.readValue(
+              content, new TypeReference<Map<String, Object>>() {
+              }
+      );
+    } catch (IOException e) {
+      log.error("운동 파싱 실패: {}", content, e);
+      throw new RuntimeException("Failed to parse exercise JSON: " + content, e);
+    }
+  }
 
 }

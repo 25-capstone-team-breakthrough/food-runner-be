@@ -3,7 +3,9 @@ package com.Hansung.Capston.controller.STT;
 import com.Hansung.Capston.dto.Exersice.ExerciseLog.ExerciseLogDto;
 import com.Hansung.Capston.dto.Exersice.ExerciseLog.StrengthSetLogDto;
 import com.Hansung.Capston.entity.Exercise.ExerciseData;
+import com.Hansung.Capston.entity.Exercise.ExerciseLog;
 import com.Hansung.Capston.repository.Exercise.ExerciseDataRepository;
+import com.Hansung.Capston.service.ApiService.OpenAiApiService;
 import com.Hansung.Capston.service.Exercise.CalorieAnalysisService;
 import com.Hansung.Capston.service.Exercise.ExerciseService;
 import com.Hansung.Capston.service.STT.SttService;
@@ -13,17 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/stt")
@@ -41,6 +39,9 @@ public class SttController {
     @Autowired
     private CalorieAnalysisService calorieAnalysisService;
 
+    @Autowired
+    private OpenAiApiService openAiApiService;
+
     //음성녹음 -> 텍스트변환
     @PostMapping(value = "/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> stt(@RequestParam("audioFile") MultipartFile audioFile) throws IOException {
@@ -53,77 +54,72 @@ public class SttController {
 
         //음성녹음 관련
         String transcribe = sttService.transcribe(audioFile);
-//
-//        //음성 파싱
-//        ExerciseLogDto dto = DtoTranscribe(transcribe);
-//
-//        //운동 기록 저장
-//        ExerciseLog saved = exerciseService.saveExerciseLog(userId, dto);
-//
-//        try {
-//            calorieAnalysisService.analyzeAndSave(saved);
-//        } catch (Exception e) {
-//            log.error("칼로리 분석 중 오류", e);
-//        }
 
         return ResponseEntity.ok().body(transcribe);
     }
+    // stt관련 운동 기록 저장
+    @PostMapping(value = "/log", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveLog(@RequestBody Map<String,String> body) {
 
-    private ExerciseLogDto DtoTranscribe(String transcribe) {
-
-        // 유산소 ex) 30분 5km
-        Pattern cardioPattern = Pattern.compile("(.+?)\\s*(\\d+)분\\s*(\\d+(?:\\.\\d+)?)km");
-        Matcher m1 = cardioPattern.matcher(transcribe);
-        if (m1.find()) {
-            String name = m1.group(1).trim();
-            int mins = Integer.parseInt(m1.group(2));
-            double distance = Double.parseDouble(m1.group(3));
-
-            ExerciseData data = exerciseDataRepository
-                    .findByExerciseName(name)
-                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 운동: " + name));
-            if (!"CARDIO".equalsIgnoreCase(data.getExerciseType())) {
-                throw new IllegalArgumentException(name + " 은 CARDIO 타입이 아닙니다.");
-            }
-
-            ExerciseLogDto dto = new ExerciseLogDto();
-            dto.setExerciseId(data.getExerciseId());
-            dto.setTime(mins);
-            dto.setDistance(distance);
-            return dto;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null) {
+            return ResponseEntity.status(401).build();
         }
-        //  근력 ex) 3세트 10kg 10회
-        Pattern strengthPattern = Pattern.compile("(.+?)\\s*(\\d+)세트\\s*(\\d+(?:\\.\\d+)?)kg\\s*(\\d+)회");
-        Matcher m2 = strengthPattern.matcher(transcribe);
-        if (m2.find()) {
-            String name = m2.group(1).trim();
-            int setsCnt = Integer.parseInt(m2.group(2));
-            double weight = Double.parseDouble(m2.group(3));
-            int reps = Integer.parseInt(m2.group(4));
+        String userId = (String) auth.getPrincipal();
 
-            ExerciseData data = exerciseDataRepository
-                    .findByExerciseName(name)
-                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 운동: " + name));
-            if (!"STRENGTH".equalsIgnoreCase(data.getExerciseType())) {
-                throw new IllegalArgumentException(name + " 은 STRENGTH 타입이 아닙니다.");
-            }
-
-            ExerciseLogDto dto = new ExerciseLogDto();
-            dto.setExerciseId(data.getExerciseId());
-
-            List<StrengthSetLogDto> sets = new ArrayList<>();
-            for (int i = 1; i <= setsCnt; i++) {
-                StrengthSetLogDto s = new StrengthSetLogDto();
-                s.setSets(i);
-                s.setWeight(weight);
-                s.setReps(reps);
-                sets.add(s);
-            }
-            dto.setStrengthSets(sets);
-            return dto;
+        String transcript = body.get("transcript");
+        if (transcript == null || transcript.isBlank()) {
+            return ResponseEntity.badRequest().body("transcript이 없습니다. ");
         }
 
-        // 둘 다 아니면 예외
-        throw new IllegalArgumentException("지원하지 않는 음성 패턴입니다: " + transcribe);
+        try{
+            Map<String, Object> parsed = openAiApiService.parseExercise(transcript);
+            String exerciseName = (String) parsed.get("exerciseName");
+
+            ExerciseData data = exerciseDataRepository
+                    .findByExerciseName(exerciseName)
+                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 운동: " + exerciseName));
+            String type = data.getExerciseType();
+
+            ExerciseLogDto dto = new ExerciseLogDto();
+
+            if("CARDIO".equals(type)){
+                int minutes = ((Number) parsed.get("time")).intValue();
+                double distance = ((Number) parsed.get("distance")).doubleValue();
+
+                dto.setExerciseId(data.getExerciseId());
+                dto.setTime(minutes);
+                dto.setDistance(distance);
+            }
+            else if("STRENGTH".equals(type)){
+                int sets = ((Number) parsed.get("sets")).intValue();
+                double weight = ((Number) parsed.get("weight")).doubleValue();
+                int reps = ((Number) parsed.get("reps")).intValue();
+
+                dto.setExerciseId(data.getExerciseId());
+                List<StrengthSetLogDto> setsLog = new ArrayList<>();
+                for(int i=1; i<=sets; i++){
+                    StrengthSetLogDto s = new StrengthSetLogDto();
+                    s.setSets(i);
+                    s.setWeight(weight);
+                    s.setReps(reps);
+                    setsLog.add(s);
+                }
+                dto.setStrengthSets(setsLog);
+            }else {
+                return ResponseEntity.badRequest().body("지원하지 않는 운동 타입: " + type);
+            }
+
+            ExerciseLog saved = exerciseService.saveExerciseLog(userId, dto);
+            try {
+                calorieAnalysisService.analyzeAndSave(saved);
+            } catch (Exception e) {
+                log.error("칼로리 분석 중 오류", e);
+            }
+            return ResponseEntity.ok("운동기록이 추가 되었습니다.");
+        }catch (IllegalArgumentException e ){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 }
