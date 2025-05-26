@@ -318,10 +318,10 @@ public class OpenAiApiService {
   public String getRecommendedRecipesForSpecificMeal(List<String> recipes, DayOfWeek dayOfWeek, DietType dietType) {
     String prompt = String.join(", ", recipes) +
             "\n\nBased on ONLY these exact recipe names listed above (no modifications, no additions, no removals), and **you must use the recipe names precisely as they are provided, including all whitespace and characters**," +
-            " generate a single meal recommendation for " + dayOfWeek + "'s " + dietType + "." + // <<-- 이 부분이 변경됩니다.
+            " generate a single meal recommendation for " + dayOfWeek + "'s " + dietType + "." +
             " You must use the recipe names EXACTLY as they appear above — do not change anything." +
             " The response must follow this format:\n" +
-            "recipe1,recipe2" + // <<-- 이 부분도 변경됩니다. (단일 끼니이므로)
+            "recipe1,recipe2" +
             "At most 2 recipes per meal. If there are 2, one must be a simple side dish like rice or kimchi." +
             " Return ONLY the raw text in that format. No explanations, greetings, or extra lines.";
 

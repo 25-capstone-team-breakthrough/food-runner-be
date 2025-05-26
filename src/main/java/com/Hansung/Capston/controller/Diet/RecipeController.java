@@ -69,9 +69,8 @@ public class RecipeController {
     }
     String userId = (String) auth.getPrincipal();
 
-    recipeService.updateRecommendedRecipeForMeal(userId, dayOfWeek, dietType);
 
-    return ResponseEntity.ok("대 성 공");
+    return ResponseEntity.ok(recipeService.updateRecommendedRecipeForMeal(userId, dayOfWeek, dietType));
   }
 
   // 여기부터는 프론트는 사용 x
