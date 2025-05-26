@@ -256,6 +256,65 @@ public class RecipeService {
     }
   }
 
+  public String updateRecommendedRecipeForMeal(String userId, DayOfWeek dayOfWeek, DietType dietType) {
+    // 1. 해당 요일/끼니에 대한 기존 추천 레시피 삭제
+    User user = userRepository.findByUserId(userId)
+        .orElseThrow(() -> new NoSuchElementException("User not found with userId: " + userId));
+
+    List<RecommendedRecipe> existingRecipes = recommendedRecipeRepository.findByUserAndDateAndType(user, dayOfWeek, dietType);
+    if (!existingRecipes.isEmpty()) {
+      recommendedRecipeRepository.deleteAll(existingRecipes);
+      log.info("기존 추천 레시피 삭제 완료 (userId: {}, Date: {}, Type: {})", userId, dayOfWeek, dietType);
+    }
+
+    // 2. 해당 요일/끼니에 대한 새로운 레시피 후보 생성 (기존 setRecommendRecipe 로직의 일부 재활용)
+    // 이 부분은 LLM에 다시 요청해야 할 수도 있고, 아니면 이미 생성된 후보군에서 선택해야 할 수도 있습니다.
+    // 현재 setRecommendRecipe는 7일치를 한꺼번에 생성하므로, 특정 끼니만 재추천하려면 LLM 호출 로직을 분리해야 합니다.
+
+    // TODO: LLM 호출 로직을 분리하여 특정 끼니에 맞는 레시피를 다시 받아오는 로직 추가
+    // 예시: openAiApiService.getRecommendedRecipeForMeal(recipeNames, dayOfWeek, dietType);
+    // 이 부분은 LLM 프롬프트 설계에 따라 달라집니다.
+    // 예를 들어, 50개의 후보 레시피 중 특정 끼니에 적합한 1~3개의 레시피를 LLM이 선택하도록 요청합니다.
+
+    List<String> allIngredients = new ArrayList<>();
+    ingredientService.loadRecommendedIngredient(userId).forEach(r -> allIngredients.add(r.getIngredient().getIngredientName()));
+    ingredientService.loadPreferredIngredients(userId).forEach(p -> allIngredients.add(p.getIngredient().getIngredientName()));
+
+    Set<RecipeData> matchingRecipesSet = new HashSet<>();
+    for (String ingredient : allIngredients) {
+      matchingRecipesSet.addAll(recipeDataRepository.findByIngredient(ingredient));
+    }
+
+    // 최종 후보 레시피 리스트 (LLM에 전달할 리스트)
+    List<RecipeData> finalRecipeCandidates = new ArrayList<>(matchingRecipesSet);
+    // 필요하다면 nutrientService를 통해 추가 후보 레시피를 가져오는 로직도 여기에 포함
+
+    List<String> recipeNamesForLLM = finalRecipeCandidates.stream()
+        .map(RecipeData::getRecipeName)
+        .collect(Collectors.toList());
+
+    // LLM에 특정 요일/끼니에 맞는 레시피만 요청하도록 프롬프트를 조정해야 함
+    String recommendRecipesForMeal = openAiApiService.getRecommendedRecipesForSpecificMeal(recipeNamesForLLM, dayOfWeek, dietType);
+
+    // LLM 응답 파싱 및 저장 (기존 setRecommendRecipe의 마지막 부분 재활용)
+    String[] recipeNamesFromLLM = recommendRecipesForMeal.split(","); // LLM이 쉼표로 구분하여 레시피 이름을 반환한다고 가정
+    for (String recipeName : recipeNamesFromLLM) {
+      RecipeData recipeData = recipeDataRepository.findByRecipeName(recipeName.trim());
+      if (recipeData == null) {
+        log.warn("❗ DB에 없는 레시피 (LLM이 생성): {} (userId: {}, Date: {}, Type: {})", recipeName.trim(), userId, dayOfWeek, dietType);
+        continue;
+      }
+
+      RecommendedRecipe newRecipe = new RecommendedRecipe();
+      newRecipe.setUser(user);
+      newRecipe.setDate(dayOfWeek);
+      newRecipe.setType(dietType);
+      newRecipe.setRecipeData(recipeData);
+      recommendedRecipeRepository.save(newRecipe);
+    }
+    return "성공: " + dayOfWeek + " " + dietType + " 레시피 업데이트";
+  }
+
   // 업로드된 CSV 파일을 처리하여 DB에 저장
   public void changeCsvToRecipeData(MultipartFile file) throws IOException {
     System.out.println("파일 이름: " + file.getOriginalFilename());
