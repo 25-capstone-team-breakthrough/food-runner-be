@@ -7,8 +7,8 @@ import com.Hansung.Capston.dto.SignIn.SignInResponse;
 import com.Hansung.Capston.dto.SignUp.SignUpRequest;
 import com.Hansung.Capston.dto.SignUp.SignUpResponse;
 import com.Hansung.Capston.entity.UserInfo.User;
-import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import com.Hansung.Capston.jwt.TokenProvider;
+import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,6 +51,12 @@ public class UserService {
         }
         String token = tokenProvider.createToken(String.format("%s:%s", user.getUserId(), user.getRole()));	// 토큰 생성
         return SignInResponse.from(user,token);
+    }
+
+    //회원가입 시 이름 정보만 조회
+    public User signUpInfo(String userId){
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException(" User ingo not found for user id: " + userId));
     }
 
 }

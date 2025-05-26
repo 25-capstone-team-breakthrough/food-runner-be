@@ -9,17 +9,17 @@ import com.Hansung.Capston.entity.UserInfo.User;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignUpResponse {
-    private String userId;
-    private String account;
+//    private String userId;
+//    private String account;
     private String name;
-    private String role;
+    //private String role;
 
     public static SignUpResponse from(User user) {
         return new SignUpResponse(
-                user.getUserId(),
-                user.getAccount(),
-                user.getName(),
-                user.getRole().toString()
+//                user.getUserId(),
+//                user.getAccount(),
+                user.getName()
+      //          user.getRole().toString()
         );
     }
 
