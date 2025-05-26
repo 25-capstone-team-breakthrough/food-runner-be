@@ -56,7 +56,8 @@ public class RecipeController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);  // 401 Unauthorized
     }
     String userId = (String) auth.getPrincipal();
-    recipeService.setRecommendRecipe(userId);
+    recipeService.setRecommendRecipeCandidate(userId);
+    recipeService.setWeekRecommendRecipe(userId);
 
     return ResponseEntity.ok("대 성 공");
   }
@@ -69,8 +70,7 @@ public class RecipeController {
     }
     String userId = (String) auth.getPrincipal();
 
-
-    return ResponseEntity.ok(recipeService.updateRecommendedRecipeForMeal(userId, dayOfWeek, dietType));
+    return ResponseEntity.ok(recipeService.updateRecommendRecipe(userId, dayOfWeek, dietType));
   }
 
   // 여기부터는 프론트는 사용 x
