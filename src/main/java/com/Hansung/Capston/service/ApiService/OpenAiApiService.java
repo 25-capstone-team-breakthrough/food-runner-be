@@ -65,7 +65,8 @@ public class OpenAiApiService {
     ImageContent imageContent = new ImageContent(mealImage);
     TextContent textContent = new TextContent("너는 오로지 음식이 뭔지만 판단하는 음식이미지 분석 ai 모델이야. "
         + "이미지를 보고 어떤 음식이 얼마나 있는지 우리한테 알려줘야해. 재료가 아닌 요리 이름으로 말해줘야해. 사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 말되 그렇다고 모르는 거 있으면 대답에 포함하지말고. 3초 이내에"
-        + "형식은 음식이름:g 단위로 나타낸 양이야. ex) 김치찌개:500,김밥:100 음식의 구분은 무조건 쉼표(,)로 다른 특수문자는 사용하지마");
+        + "형식은 음식이름:g 단위로 나타낸 양이야. 음식의 구분은 무조건 쉼표(,)로 다른 특수문자는 사용하지마. 무조건 아래 형식처럼만 답변해."
+        + "ex) 김치찌개:500,김밥:100");
 
     List<Content> list = new ArrayList<>();
     list.add(textContent);
