@@ -1,5 +1,7 @@
 package com.Hansung.Capston.service.ApiService;
 
+import com.Hansung.Capston.common.DayOfWeek;
+import com.Hansung.Capston.common.DietType;
 import com.Hansung.Capston.dto.Api.OpenAiApi.*;
 import com.Hansung.Capston.entity.Diet.Food.FoodData;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -313,4 +315,24 @@ public class OpenAiApiService {
   }
 
 
+  public String getRecommendedRecipesForSpecificMeal(List<String> recipes, DayOfWeek dayOfWeek, DietType dietType) {
+    String prompt = String.join(", ", recipes) +
+            "\n\nBased on ONLY these exact recipe names listed above (no modifications, no additions, no removals), and **you must use the recipe names precisely as they are provided, including all whitespace and characters**," +
+            " generate a single meal recommendation for " + dayOfWeek + "'s " + dietType + "." + // <<-- 이 부분이 변경됩니다.
+            " You must use the recipe names EXACTLY as they appear above — do not change anything." +
+            " The response must follow this format:\n" +
+            "recipe1,recipe2" + // <<-- 이 부분도 변경됩니다. (단일 끼니이므로)
+            "At most 2 recipes per meal. If there are 2, one must be a simple side dish like rice or kimchi." +
+            " Return ONLY the raw text in that format. No explanations, greetings, or extra lines.";
+
+    List<Message> messages = new ArrayList<>();
+    messages.add(new Message("user", prompt));
+
+    TextAnalysisOpenAiApiRequest input = new TextAnalysisOpenAiApiRequest(model, messages);
+    OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input, OpenAiApiResponse.class);
+    String content = openAiApiResponse.getChoices().get(0).getMessage().getContent();
+
+    log.info("✅ LLM 반환 특정 끼니 추천 결과 ({} {}):\n{}", dayOfWeek, dietType, content);
+    return content;
+  }
 }
