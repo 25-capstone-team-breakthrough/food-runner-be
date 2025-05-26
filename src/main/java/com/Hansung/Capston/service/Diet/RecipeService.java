@@ -160,10 +160,8 @@ public class RecipeService {
           scoredRecipes.add(new RecipeScore(recipe, score));
         }
 
-        // 점수가 낮은 순서대로 정렬
         scoredRecipes.sort(Comparator.comparingDouble(RecipeScore::getScore));
 
-        // 부족한 개수만큼 영양소 기반 레시피를 추가
         Random random = new Random();
         int recipesToAdd = targetRecipeCount - finalRecipeCandidates.size();
 
@@ -171,7 +169,6 @@ public class RecipeService {
             .map(RecipeScore::getRecipe)
             .collect(Collectors.toList());
 
-        // 상위 N개(넉넉하게) 중에서 랜덤하게 뽑기
         int nutrientCandidatePoolSize = Math.min(topScoredNutrientRecipes.size(), 200); // 영양소 기반으로 뽑을 후보 풀 (예: 상위 200개)
         List<RecipeData> nutrientCandidatesPool = new ArrayList<>(topScoredNutrientRecipes.subList(0, nutrientCandidatePoolSize));
 
