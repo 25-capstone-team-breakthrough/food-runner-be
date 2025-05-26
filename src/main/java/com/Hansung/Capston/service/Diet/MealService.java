@@ -175,7 +175,10 @@ public class MealService {
       lArginine += foodData.getLArginine() * gram;
       omega3 += foodData.getOmega3() * gram;
 
-      name.append("|").append(food).append("|");
+      if (!name.isEmpty()) { // 첫 번째 요소가 아닐 때만 파이프 추가
+        name.append("|");
+      }
+      name.append(food.split(":")[0]);
     }
 
     imageMealLog.setMealName(name.toString());
