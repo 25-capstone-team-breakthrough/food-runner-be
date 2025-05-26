@@ -3,7 +3,6 @@ package com.Hansung.Capston.controller.STT;
 import com.Hansung.Capston.dto.Exersice.ExerciseLog.ExerciseLogDto;
 import com.Hansung.Capston.dto.Exersice.ExerciseLog.StrengthSetLogDto;
 import com.Hansung.Capston.entity.Exercise.ExerciseData;
-import com.Hansung.Capston.entity.Exercise.ExerciseLog;
 import com.Hansung.Capston.repository.Exercise.ExerciseDataRepository;
 import com.Hansung.Capston.service.Exercise.CalorieAnalysisService;
 import com.Hansung.Capston.service.Exercise.ExerciseService;
@@ -42,6 +41,7 @@ public class SttController {
     @Autowired
     private CalorieAnalysisService calorieAnalysisService;
 
+    //음성녹음 -> 텍스트변환
     @PostMapping(value = "/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> stt(@RequestParam("audioFile") MultipartFile audioFile) throws IOException {
 
@@ -49,26 +49,25 @@ public class SttController {
         if (auth == null || auth.getPrincipal() == null) {
             return ResponseEntity.status(401).build();
         }
-        String userId = (String) auth.getPrincipal();
+        //String userId = (String) auth.getPrincipal();
 
         //음성녹음 관련
         String transcribe = sttService.transcribe(audioFile);
-
-        //음성 파싱
-        ExerciseLogDto dto = DtoTranscribe(transcribe);
-
-        //운동 기록 저장
-        ExerciseLog saved = exerciseService.saveExerciseLog(userId, dto);
-
-        try {
-            calorieAnalysisService.analyzeAndSave(saved);
-        } catch (Exception e) {
-            log.error("칼로리 분석 중 오류", e);
-        }
+//
+//        //음성 파싱
+//        ExerciseLogDto dto = DtoTranscribe(transcribe);
+//
+//        //운동 기록 저장
+//        ExerciseLog saved = exerciseService.saveExerciseLog(userId, dto);
+//
+//        try {
+//            calorieAnalysisService.analyzeAndSave(saved);
+//        } catch (Exception e) {
+//            log.error("칼로리 분석 중 오류", e);
+//        }
 
         return ResponseEntity.ok().body(transcribe);
     }
-
 
     private ExerciseLogDto DtoTranscribe(String transcribe) {
 

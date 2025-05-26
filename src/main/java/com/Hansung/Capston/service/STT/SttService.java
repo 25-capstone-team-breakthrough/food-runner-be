@@ -29,7 +29,7 @@ public class SttService {
             //설정 객체 생성
             RecognitionConfig recognitionConfig =
                     RecognitionConfig.newBuilder()
-                            .setEncoding(RecognitionConfig.AudioEncoding.FLAC)
+                            .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
                             .setSampleRateHertz(16000)
                             .setLanguageCode("ko-KR")
                             .setModel("latest_short")
