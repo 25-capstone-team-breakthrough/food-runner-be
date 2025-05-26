@@ -57,14 +57,14 @@ public class RecipeData {
   private String relatedRecipe3;
 
   @Column(name = "calories")
-  private double calories;
+  private Double calories;
 
   @Column(name = "carbohydrate")
-  private double carbohydrate;
+  private Double carbohydrate;
 
   @Column(name = "protein")
-  private double protein;
+  private Double protein;
 
   @Column(name = "fat")
-  private double fat;
+  private Double fat;
 }

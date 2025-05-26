@@ -126,7 +126,8 @@ public class MealService {
     MealLog mealLog;
 
     imageMealLog.setMealImage(request.getMealImage());
-    List<String> foodNames =  openAiApiService.mealImageAnalysis(request.getMealImage());
+    List<String> foods =  openAiApiService.mealImageAnalysis(request.getMealImage());
+
     StringBuilder name = new StringBuilder();
 
     double fat = 0, calories = 0, protein = 0, carbohydrate = 0, sugar = 0, sodium = 0;
@@ -134,45 +135,47 @@ public class MealService {
     double vitaminA = 0, vitaminB1 = 0, vitaminC = 0, vitaminD = 0, vitaminE = 0;
     double magnesium = 0, zinc = 0, lactium = 0, potassium = 0, lArginine = 0, omega3 = 0;
 
-    for(String foodName : foodNames){
-      List<FoodData> foundFoods = foodDataRepository.findByFoodName(foodName);
-      FoodData food;
+    for(String food : foods){
+
+      List<FoodData> foundFoods = foodDataRepository.findByFoodName(food.split(":")[0]);
+      Double gram = Double.valueOf(food.split(":")[1])/100;
+      FoodData foodData;
 
       if (foundFoods.isEmpty()) {
         // OpenAI 호출 후 저장
-        food = openAiApiService.getNutrientInfo(foodName);
-        if(food == null){
+        foodData = openAiApiService.getNutrientInfo(food);
+        if(foodData == null){
           return null;
         }
-        foodDataRepository.save(food);
+        foodDataRepository.save(foodData);
       } else {
-        food = foundFoods.get(0); // 첫 번째 항목 사용
+        foodData = foundFoods.get(0); // 첫 번째 항목 사용
       }
 
-      fat += food.getFat();
-      calories += food.getCalories();
-      protein += food.getProtein();
-      carbohydrate += food.getCarbohydrate();
-      sugar += food.getSugar();
-      sodium += food.getSodium();
-      dietaryFiber += food.getDietaryFiber();
-      calcium += food.getCalcium();
-      saturatedFat += food.getSaturatedFat();
-      transFat += food.getTransFat();
-      cholesterol += food.getCholesterol();
-      vitaminA += food.getVitaminA();
-      vitaminB1 += food.getVitaminB1();
-      vitaminC += food.getVitaminC();
-      vitaminD += food.getVitaminD();
-      vitaminE += food.getVitaminE();
-      magnesium += food.getMagnesium();
-      zinc += food.getZinc();
-      lactium += food.getLactium();
-      potassium += food.getPotassium();
-      lArginine += food.getLArginine();
-      omega3 += food.getOmega3();
+      fat += foodData.getFat() * gram;
+      calories += foodData.getCalories() * gram;
+      protein += foodData.getProtein() * gram;
+      carbohydrate += foodData.getCarbohydrate() * gram;
+      sugar += foodData.getSugar() * gram;
+      sodium += foodData.getSodium() * gram;
+      dietaryFiber += foodData.getDietaryFiber() * gram;
+      calcium += foodData.getCalcium() * gram;
+      saturatedFat += foodData.getSaturatedFat() * gram;
+      transFat += foodData.getTransFat() * gram;
+      cholesterol += foodData.getCholesterol() * gram;
+      vitaminA += foodData.getVitaminA() * gram;
+      vitaminB1 += foodData.getVitaminB1() * gram;
+      vitaminC += foodData.getVitaminC() * gram;
+      vitaminD += foodData.getVitaminD() * gram;
+      vitaminE += foodData.getVitaminE() * gram;
+      magnesium += foodData.getMagnesium() * gram;
+      zinc += foodData.getZinc() * gram;
+      lactium += foodData.getLactium() * gram;
+      potassium += foodData.getPotassium() * gram;
+      lArginine += foodData.getLArginine() * gram;
+      omega3 += foodData.getOmega3() * gram;
 
-      name.append("|").append(foodName).append("|");
+      name.append("|").append(food).append("|");
     }
 
     imageMealLog.setMealName(name.toString());
