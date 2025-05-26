@@ -1,5 +1,7 @@
 package com.Hansung.Capston.controller.Diet;
 
+import com.Hansung.Capston.common.DayOfWeek;
+import com.Hansung.Capston.common.DietType;
 import com.Hansung.Capston.dto.Diet.Recipe.RecommendRecipeResponse;
 import com.Hansung.Capston.entity.Diet.Recipe.RecipeData;
 import com.Hansung.Capston.service.Diet.RecipeService;
@@ -12,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,6 +57,19 @@ public class RecipeController {
     }
     String userId = (String) auth.getPrincipal();
     recipeService.setRecommendRecipe(userId);
+
+    return ResponseEntity.ok("대 성 공");
+  }
+
+  @PostMapping("/rec/set-one")
+  public ResponseEntity<String> setOneRecommendRecipe(@RequestParam DayOfWeek dayOfWeek, @RequestParam DietType dietType) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || auth.getPrincipal() == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+    }
+    String userId = (String) auth.getPrincipal();
+
+    recipeService.updateRecommendedRecipeForMeal(userId, dayOfWeek, dietType);
 
     return ResponseEntity.ok("대 성 공");
   }

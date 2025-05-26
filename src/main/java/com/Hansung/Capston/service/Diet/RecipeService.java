@@ -294,7 +294,7 @@ public class RecipeService {
         .collect(Collectors.toList());
 
     // LLM에 특정 요일/끼니에 맞는 레시피만 요청하도록 프롬프트를 조정해야 함
-    String recommendRecipesForMeal = openAiApiService.getRecommendedRecipesForSpecificMeal(recipeNamesForLLM, dayOfWeek.name(), dietType.name());
+    String recommendRecipesForMeal = openAiApiService.getRecommendedRecipesForSpecificMeal(recipeNamesForLLM, dayOfWeek, dietType);
 
     // LLM 응답 파싱 및 저장 (기존 setRecommendRecipe의 마지막 부분 재활용)
     String[] recipeNamesFromLLM = recommendRecipesForMeal.split(","); // LLM이 쉼표로 구분하여 레시피 이름을 반환한다고 가정
@@ -312,7 +312,7 @@ public class RecipeService {
       newRecipe.setRecipeData(recipeData);
       recommendedRecipeRepository.save(newRecipe);
     }
-    return "성공: " + dayOfWeek.getKoreanName() + " " + dietType.getKoreanName() + " 레시피 업데이트";
+    return "성공: " + dayOfWeek + " " + dietType + " 레시피 업데이트";
   }
 
   // 업로드된 CSV 파일을 처리하여 DB에 저장
