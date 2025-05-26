@@ -69,7 +69,7 @@ public class SupplementService {
   public String savePreferredSupplement(String userId,Long supplementId) {
     PreferredSupplement preferredSupplement;
 
-    if((preferredSupplement = preferredSupplementRepository.findByUserUserIdAndSupplementDataSupplementId(userId,supplementId)) != null){
+    if((preferredSupplement = preferredSupplementRepository.findByUserUserIdAndSupplementData_SupplementId(userId,supplementId)) != null){
       return "실패 : 이미 등록되어 있습니다.";
     } else {
       preferredSupplement = new PreferredSupplement();
