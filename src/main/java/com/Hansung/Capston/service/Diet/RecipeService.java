@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -97,6 +98,7 @@ public class RecipeService {
     return recommendedRecipeResponses;
   }
 
+  @Transactional
   public void setRecommendRecipeCandidate(String userId) {
     List<RecommendedIngredientResponse> recList = ingredientService.loadRecommendedIngredient(userId);
     List<PreferredIngredientResponse> prefList = ingredientService.loadPreferredIngredients(userId);
@@ -115,124 +117,73 @@ public class RecipeService {
 
     if (!matchingRecipesSet.isEmpty()) {
       finalRecipeCandidates.addAll(matchingRecipesSet);
-      log.info("✅ 재료 기반으로 {}개의 레시피가 매칭되었습니다.", finalRecipeCandidates.size());
     } else {
       log.info("ℹ️ 재료 기반으로 매칭되는 레시피가 없습니다.");
     }
 
     if (finalRecipeCandidates.size() < targetRecipeCount) {
-      log.info("ℹ️ 레시피 후보가 부족하여 영양소 기반 레시피를 추가합니다. 현재 {}개, 목표 {}개.", finalRecipeCandidates.size(), targetRecipeCount);
-
       List<RecommendedNutrientResponse> nutritionLog = nutrientService.loadRecommendedNutrients(userId);
-
-      if (nutritionLog.isEmpty()) {
-        log.warn("🚨 영양소 로그가 비어있어 추가 레시피 추천이 불가능합니다. userId: {}", userId);
-      } else {
-        double recCalories = (nutritionLog.getFirst().getCalories()+nutritionLog.getLast().getCalories())/2;
-        double recCarbohydrates = (nutritionLog.getFirst().getCarbohydrate()+nutritionLog.getLast().getCarbohydrate())/2;
-        double recProtein = (nutritionLog.getFirst().getProtein()+nutritionLog.getLast().getProtein())/2;
-        double recFat = (nutritionLog.getFirst().getFat()+nutritionLog.getLast().getFat())/2;
+      if (!nutritionLog.isEmpty()) {
+        double recCalories = (nutritionLog.getFirst().getCalories() + nutritionLog.getLast().getCalories()) / 2;
+        double recCarbohydrates = (nutritionLog.getFirst().getCarbohydrate() + nutritionLog.getLast().getCarbohydrate()) / 2;
+        double recProtein = (nutritionLog.getFirst().getProtein() + nutritionLog.getLast().getProtein()) / 2;
+        double recFat = (nutritionLog.getFirst().getFat() + nutritionLog.getLast().getFat()) / 2;
 
         List<RecipeData> allRecipes = recipeDataRepository.findAll();
         List<RecipeScore> scoredRecipes = new ArrayList<>();
 
-        double calorieRange = recCalories > 0 ? recCalories : 1.0;
-        double carbohydrateRange = recCarbohydrates > 0 ? recCarbohydrates : 1.0;
-        double proteinRange = recProtein > 0 ? recProtein : 1.0;
-        double fatRange = recFat > 0 ? recFat : 1.0;
-
         for (RecipeData recipe : allRecipes) {
-          if (finalRecipeCandidates.contains(recipe)) {
-            continue;
-          }
-
-          double recipeCalories = recipe.getCalories() != null ? recipe.getCalories() : 0.0;
-          double recipeCarbohydrate = recipe.getCarbohydrate() != null ? recipe.getCarbohydrate() : 0.0;
-          double recipeProtein = recipe.getProtein() != null ? recipe.getProtein() : 0.0;
-          double recipeFat = recipe.getFat() != null ? recipe.getFat() : 0.0;
-          int recipeServing;
-          if(recipe.getServing().isEmpty()){
-            recipeServing = 1;
-          } else{
-            recipeServing = Integer.parseInt(recipe.getServing().replaceAll("[^0-9]", ""));
-          }
-
+          if (finalRecipeCandidates.contains(recipe)) continue;
+          int serving = recipe.getServing().isEmpty() ? 1 :
+              Integer.parseInt(recipe.getServing().replaceAll("[^0-9]", ""));
           double score = 0.0;
-          score += Math.abs(((recipeCalories/recipeServing) - recCalories) / calorieRange);
-          score += Math.abs(((recipeCarbohydrate/recipeServing) - recCarbohydrates) / carbohydrateRange);
-          score += Math.abs(((recipeProtein/recipeServing) - recProtein) / proteinRange);
-          score += Math.abs(((recipeFat/recipeServing) - recFat) / fatRange);
-
+          score += Math.abs(((recipe.getCalories() != null ? recipe.getCalories() : 0) / serving - recCalories) / recCalories);
+          score += Math.abs(((recipe.getCarbohydrate() != null ? recipe.getCarbohydrate() : 0) / serving - recCarbohydrates) / recCarbohydrates);
+          score += Math.abs(((recipe.getProtein() != null ? recipe.getProtein() : 0) / serving - recProtein) / recProtein);
+          score += Math.abs(((recipe.getFat() != null ? recipe.getFat() : 0) / serving - recFat) / recFat);
           scoredRecipes.add(new RecipeScore(recipe, score));
         }
 
         scoredRecipes.sort(Comparator.comparingDouble(RecipeScore::score));
-
-        Random random = new Random();
-        int nutrientCandidatePoolSize = Math.min(scoredRecipes.size(), 200);
-        List<RecipeData> nutrientCandidatesPool = scoredRecipes.stream()
+        List<RecipeData> nutrientCandidates = scoredRecipes.stream()
             .map(RecipeScore::recipe)
-            .limit(nutrientCandidatePoolSize)
+            .limit(200)
             .collect(Collectors.toList());
 
-        while (finalRecipeCandidates.size() < targetRecipeCount && !nutrientCandidatesPool.isEmpty()) {
-          int randomIndex = random.nextInt(nutrientCandidatesPool.size());
-          RecipeData recipeToAdd = nutrientCandidatesPool.remove(randomIndex);
-          if (!finalRecipeCandidates.contains(recipeToAdd)) {
-            finalRecipeCandidates.add(recipeToAdd);
-          }
+        Random random = new Random();
+        while (finalRecipeCandidates.size() < targetRecipeCount && !nutrientCandidates.isEmpty()) {
+          finalRecipeCandidates.add(nutrientCandidates.remove(random.nextInt(nutrientCandidates.size())));
         }
-        log.info("✅ 영양소 기반으로 레시피를 추가했습니다. 최종 후보: {}개.", finalRecipeCandidates.size());
       }
     } else if (finalRecipeCandidates.size() > targetRecipeCount) {
-      log.info("ℹ️ 재료 기반 레시피가 목표 개수({})를 초과합니다. 랜덤 샘플링을 수행합니다. 현재 {}개.", targetRecipeCount, finalRecipeCandidates.size());
-      List<RecipeData> tempCandidates = new ArrayList<>();
-      Random random = new Random();
-      while (tempCandidates.size() < targetRecipeCount && !finalRecipeCandidates.isEmpty()) {
-        int randomIndex = random.nextInt(finalRecipeCandidates.size());
-        tempCandidates.add(finalRecipeCandidates.remove(randomIndex));
-      }
-      finalRecipeCandidates = tempCandidates;
-      log.info("✅ 재료 기반 레시피에서 {}개로 랜덤 샘플링 완료. 최종 후보: {}개.", targetRecipeCount, finalRecipeCandidates.size());
+      Collections.shuffle(finalRecipeCandidates);
+      finalRecipeCandidates = finalRecipeCandidates.subList(0, targetRecipeCount);
     }
 
-    List<String> allRecipeNamesForLLM = finalRecipeCandidates.stream()
+    List<String> recipeNames = finalRecipeCandidates.stream()
         .map(RecipeData::getRecipeName)
         .collect(Collectors.toList());
-    log.info("✅ LLM에 전달할 최종 레시피 후보 크기: {}", allRecipeNamesForLLM.size());
 
-    Map<DietType, List<String>> mealTypeCandidatesFromLLM = openAiApiService.getMealTypeRecipeCandidates(allRecipeNamesForLLM);
-    log.info("✅ LLM으로부터 식사 시간별 레시피 후보군을 성공적으로 받았습니다.");
-
+    Map<DietType, List<String>> mealMap = openAiApiService.getMealTypeRecipeCandidates(recipeNames);
     User user = userRepository.findByUserId(userId)
         .orElseThrow(() -> new NoSuchElementException("User not found with userId: " + userId));
 
-    recommendedRecipeCandidateRepository.deleteByUser(user);
-    recommendedRecipeCandidateRepository.flush();
-    log.info("ℹ️ 기존 RecommendedRecipeCandidate 데이터 삭제 완료 (userId: {})", userId);
+    deleteOldCandidates(user);
 
-    for (Map.Entry<DietType, List<String>> entry : mealTypeCandidatesFromLLM.entrySet()) {
+    for (Map.Entry<DietType, List<String>> entry : mealMap.entrySet()) {
       DietType dietType = entry.getKey();
-      List<String> recipesForMealType = entry.getValue();
-
-      for (String recipeNameWithSide : recipesForMealType) {
+      for (String recipeNameWithSide : entry.getValue()) {
         String mainRecipeName = recipeNameWithSide.split(",")[0].trim();
         RecipeData recipeData = recipeDataRepository.findByRecipeName(mainRecipeName);
-
-        if (recipeData == null) {
-          log.warn("❗ DB에 없는 레시피 (LLM이 생성): {} (식사 타입: {})", mainRecipeName, dietType);
-          continue;
-        }
+        if (recipeData == null) continue;
 
         RecommendedRecipeCandidate candidate = new RecommendedRecipeCandidate();
         candidate.setUser(user);
         candidate.setDietType(dietType);
         candidate.setRecipeData(recipeData);
-
         recommendedRecipeCandidateRepository.save(candidate);
       }
     }
-    log.info("✅ 식사 시간별 레시피 후보군 RecommendedRecipeCandidate DB 저장 완료.");
   }
 
   public void setWeekRecommendRecipe(String userId) {
@@ -393,4 +344,10 @@ public class RecipeService {
   private record RecipeScore(RecipeData recipe, double score) {
 
   }
+
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void deleteOldCandidates(User user) {
+    recommendedRecipeCandidateRepository.deleteByUser(user);
+  }
+
 }

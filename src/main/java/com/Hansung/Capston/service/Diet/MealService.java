@@ -56,7 +56,7 @@ public class MealService {
   // 식사 기록 불러오기
   @Transactional
   public MealLogResponse loadMealLogs(String userId) {
-    MealLogResponse res = new MealLogResponse();
+    MealLogResponse res;
 
     List<MealLog> mealLogs = mealLogRepository.findByUserUserId(userId);
     List<ImageMealLog> imageMealLogs = new ArrayList<>();
