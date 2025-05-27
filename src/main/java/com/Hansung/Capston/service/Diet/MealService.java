@@ -151,6 +151,7 @@ public class MealService {
         log.info("food data 없음");
         foodData = openAiApiService.getNutrientInfo(food);
         foodData.setOneServing(openAiApiService.estimateServingGram(food));
+        foodData.setFoodImage(request.getMealImage());
         foodDataRepository.save(foodData);
       } else {
         foodData = foundFoods.getFirst(); // 첫 번째 항목 사용
