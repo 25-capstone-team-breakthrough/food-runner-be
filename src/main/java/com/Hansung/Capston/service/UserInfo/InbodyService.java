@@ -13,6 +13,7 @@ import com.Hansung.Capston.service.ApiService.OpenAiApiService;
 import com.Hansung.Capston.service.ApiService.VisionService;
 import com.Hansung.Capston.service.Exercise.RecommandExerciseVideoService;
 import com.Hansung.Capston.service.Exercise.VideoService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,8 @@ public class InbodyService {
   private static final List<String> EX_VIDEO_CATEGORIES = List.of(
           "어깨","가슴","배","팔","허벅지","엉덩이","종아리","등"
   );
+    @Autowired
+    private InbodyImageRepository inbodyImageRepository;
 
   //인바디 이미지 업로드 시
   @Transactional
@@ -214,5 +217,17 @@ public class InbodyService {
   }
 
 
+  //인바디 삭제
+  @Transactional
+  public void deleteInbody(String userId, Integer inbodyId) {
+      Inbody inbody = inbodyRepository.findByInbodyIdAndUser_UserId(inbodyId, userId)
+              .orElseThrow(() -> new EntityNotFoundException("삭제할 기록을 찾을 수 없거나, 권한이 없습니다."));
+      InbodyImage image = inbodyImageRepository.findByInbody_InbodyIdAndInbody_User_UserId(inbodyId, userId)
+              .orElseThrow(() -> new EntityNotFoundException("삭제할 기록을 찾을 수 없거나, 권한이 없습니다."));
+
+      inbodyImageRepository.delete(image);
+      inbodyRepository.delete(inbody);
+
+  }
 }
 

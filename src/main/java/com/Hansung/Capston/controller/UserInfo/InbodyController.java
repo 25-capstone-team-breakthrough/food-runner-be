@@ -79,6 +79,18 @@ public class InbodyController {
         return ResponseEntity.ok(dtos);
     }
 
+    //인바디 정보 삭제
+    @DeleteMapping("/inbody-info/{inbodyId}")
+    public ResponseEntity<String> removeInbody(@PathVariable Integer inbodyId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String userId = (String) auth.getPrincipal();
+        inbodyService.deleteInbody(userId, inbodyId);
+        return ResponseEntity.ok("인바디 정보가 삭제 되었습니다.");
+
+    }
 //    @PostMapping(
 //            value = "/ocr-test",
 //            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
