@@ -61,7 +61,7 @@ public class SupplementService {
   }
   
   // 영양제 섭취 기록 삭제하기
-  public void deleteSupplementLog(String userId, Long supplementLogId) {
+  public void deleteSupplementLog(Long supplementLogId) {
     supplementLogRepository.deleteById(supplementLogId);
   }
 
@@ -69,7 +69,7 @@ public class SupplementService {
   public String savePreferredSupplement(String userId,Long supplementId) {
     PreferredSupplement preferredSupplement;
 
-    if((preferredSupplement = preferredSupplementRepository.findByUserUserIdAndSupplementData_SupplementId(userId,supplementId)) != null){
+    if((preferredSupplementRepository.findByUserUserIdAndSupplementData_SupplementId(userId,supplementId)) != null){
       return "실패 : 이미 등록되어 있습니다.";
     } else {
       preferredSupplement = new PreferredSupplement();

@@ -75,7 +75,7 @@ public class SupplementController {
     }
     String userId = (String) auth.getPrincipal();
 
-    supplementService.deleteSupplementLog(userId, supplementLogId);
+    supplementService.deleteSupplementLog(supplementLogId);
 
     return ResponseEntity.ok("delete success");
   }
