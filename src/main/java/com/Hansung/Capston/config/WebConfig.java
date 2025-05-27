@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 프론트 도메인
+    config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://food-runner7.web.app")); // 프론트 도메인
     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
     config.setAllowedHeaders(Arrays.asList("*"));
     config.setAllowCredentials(true); // 프론트에서 withCredentials: true 쓸 때 필요

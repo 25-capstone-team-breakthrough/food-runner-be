@@ -144,6 +144,7 @@ public class MealService {
       if (foundFoods.isEmpty()) {
         // OpenAI 호출 후 저장
         foodData = openAiApiService.getNutrientInfo(food);
+        foodData.setOneServing(openAiApiService.estimateServingGram(food));
         if(foodData == null){
           return null;
         }

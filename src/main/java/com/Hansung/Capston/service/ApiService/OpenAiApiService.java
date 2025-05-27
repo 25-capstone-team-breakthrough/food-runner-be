@@ -395,11 +395,15 @@ public class OpenAiApiService {
   }
 
   public int estimateServingGram(String foodName) {
+    if(foodName.isEmpty()){
+      return 0;
+    }
     String prompt = String.format("""
       당신은 음식량을 정확히 추정하는 전문가입니다. 아래 음식에 대해 일반적인 성인 기준 1인분 섭취량을 **정확하게 g 단위**로 추정해주세요.
       
       - 음식 이름: %s
       - 식당에서 제공되거나 가정식 기준의 일반적인 1인분 양을 기준으로 하세요.
+      - 반찬 같은 사이드 디시들은 1회 제공량을 기준으로 하세요.
       - 재료가 아닌 요리 완성품 전체 기준으로 추정하세요.
       - 숫자만 반환하세요. 단위(g), 설명, 마침표 등은 절대 포함하지 마세요.
       - 예시: 250
