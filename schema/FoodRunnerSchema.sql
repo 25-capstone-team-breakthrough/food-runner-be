@@ -333,7 +333,7 @@ CREATE TABLE search_meal_log (
                                  FOREIGN KEY (meal_id) REFERENCES meal_log(meal_id)
 );
 
--- ✅ 영양소 기록 테이블
+-- ✅ 영양소 기록 테이블z
 CREATE TABLE nutrition_log (
                                nutrition_log_id INT AUTO_INCREMENT PRIMARY KEY,
                                user_id VARCHAR(50) NOT NULL,
