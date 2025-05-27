@@ -150,12 +150,18 @@ public class RecipeService {
           double recipeCarbohydrate = recipe.getCarbohydrate() != null ? recipe.getCarbohydrate() : 0.0;
           double recipeProtein = recipe.getProtein() != null ? recipe.getProtein() : 0.0;
           double recipeFat = recipe.getFat() != null ? recipe.getFat() : 0.0;
+          int recipeServing;
+          if(recipe.getServing().isEmpty()){
+            recipeServing = 1;
+          } else{
+            recipeServing = Integer.parseInt(recipe.getServing().replace("인분", ""));
+          }
 
           double score = 0.0;
-          score += Math.abs((recipeCalories - recCalories) / calorieRange);
-          score += Math.abs((recipeCarbohydrate - recCarbohydrates) / carbohydrateRange);
-          score += Math.abs((recipeProtein - recProtein) / proteinRange);
-          score += Math.abs((recipeFat - recFat) / fatRange);
+          score += Math.abs(((recipeCalories/recipeServing) - recCalories) / calorieRange);
+          score += Math.abs(((recipeCarbohydrate/recipeServing) - recCarbohydrates) / carbohydrateRange);
+          score += Math.abs(((recipeProtein/recipeServing) - recProtein) / proteinRange);
+          score += Math.abs(((recipeFat/recipeServing) - recFat) / fatRange);
 
           scoredRecipes.add(new RecipeScore(recipe, score));
         }
