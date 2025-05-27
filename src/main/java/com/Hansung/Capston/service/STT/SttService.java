@@ -5,50 +5,66 @@ import com.google.protobuf.ByteString;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 @Service
 public class SttService {
+
+    private byte[] convertToWav(byte[] inputBytes) throws IOException {
+        ProcessBuilder pb = new ProcessBuilder(
+                "ffmpeg",
+                "-i", "pipe:0",          // stdin으로 원본 입력
+                "-f", "wav",             // 출력 컨테이너 WAV
+                "-ar", "16000",          // 샘플레이트 16kHz
+                "-ac", "1",              // Mono
+                "-acodec", "pcm_s16le",  // Linear PCM 16bit
+                "pipe:1"                 // stdout으로 출력
+        );
+        Process process = pb.start();
+        // ffmpeg stdin에 M4A 데이터를 전달
+        try (OutputStream os = process.getOutputStream()) {
+            os.write(inputBytes);
+        }
+        // ffmpeg stdout에서 변환된 WAV 데이터 읽기
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (InputStream is = process.getInputStream()) {
+            byte[] buffer = new byte[4096];
+            int len;
+            while ((len = is.read(buffer)) != -1) {
+                baos.write(buffer, 0, len);
+            }
+        }
+        return baos.toByteArray();
+    }
     public String transcribe(MultipartFile audioFile) throws IOException {
         if (audioFile.isEmpty()) {
-            throw new IllegalArgumentException("audioFile is empty");
+            throw new IllegalArgumentException("오디오 파일이 비어 있습니다.");
         }
+        byte[] wavBytes = convertToWav(audioFile.getBytes());
+        ByteString audioData = ByteString.copyFrom(wavBytes);
+        RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder()
+                .setContent(audioData).build();
 
-        //오디오 파일을 byte array 로 변환
-        byte[] audioBytes = audioFile.getBytes();
+        RecognitionConfig config = RecognitionConfig.newBuilder()
+                .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
+                .setSampleRateHertz(16000)
+                .setLanguageCode("ko-KR")
+                .setModel("latest_short")
+                .setUseEnhanced(true)
+                .build();
 
-        //클라이언트 인스턴스 화
         try (SpeechClient speechClient = SpeechClient.create()) {
-            //오디오 객체 생성
-            ByteString audioData = ByteString.copyFrom(audioBytes);
-            RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder()
-                    .setContent(audioData)
-                    .build();
-
-            //설정 객체 생성
-            RecognitionConfig recognitionConfig =
-                    RecognitionConfig.newBuilder()
-                            .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
-                            .setSampleRateHertz(16000)
-                            .setLanguageCode("ko-KR")
-                            .setModel("latest_short")
-                            .setUseEnhanced(true)
-                            .build();
-
-            // 오디오-텍스트 변환 수행
-            RecognizeResponse response = speechClient.recognize(recognitionConfig, recognitionAudio);
-            List<SpeechRecognitionResult> results = response.getResultsList();
-
+            RecognizeResponse response = speechClient.recognize(config, recognitionAudio);
             StringBuilder sb = new StringBuilder();
-            for (SpeechRecognitionResult res : results) {
-                sb.append(res.getAlternatives(0).getTranscript())
-                        .append(" ");
+            for (SpeechRecognitionResult res : response.getResultsList()) {
+                sb.append(res.getAlternatives(0).getTranscript()).append(" ");
             }
             return sb.toString().trim();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new IOException(e);
         }
-
     }
 }
