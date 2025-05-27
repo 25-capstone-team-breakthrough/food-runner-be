@@ -18,11 +18,13 @@ import com.Hansung.Capston.service.ApiService.OpenAiApiService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 public class MealService {
   private final MealLogRepository mealLogRepository;
   private final ImageMealLogRepository imageMealLogRepository;
@@ -127,6 +129,9 @@ public class MealService {
 
     imageMealLog.setMealImage(request.getMealImage());
     List<String> foods =  openAiApiService.mealImageAnalysis(request.getMealImage());
+    if (foods == null) {
+      return null;
+    }
 
     StringBuilder name = new StringBuilder();
 
@@ -138,19 +143,18 @@ public class MealService {
     for(String food : foods){
 
       List<FoodData> foundFoods = foodDataRepository.findByFoodName(food.split(":")[0]);
-      Double gram = Double.valueOf(food.split(":")[1])/100;
+      Double gram = Double.parseDouble(food.split(":")[1])/100;
       FoodData foodData;
 
       if (foundFoods.isEmpty()) {
         // OpenAI 호출 후 저장
+        log.info("food data 없음");
         foodData = openAiApiService.getNutrientInfo(food);
         foodData.setOneServing(openAiApiService.estimateServingGram(food));
-        if(foodData == null){
-          return null;
-        }
         foodDataRepository.save(foodData);
       } else {
-        foodData = foundFoods.get(0); // 첫 번째 항목 사용
+        foodData = foundFoods.getFirst(); // 첫 번째 항목 사용
+        log.info("food data 있음 : {}", foodData.getFoodName());
       }
 
       fat += foodData.getFat() * gram;

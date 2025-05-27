@@ -44,30 +44,37 @@ public class OpenAiApiService {
     this.restTemplate = restTemplate;
   }
 
-  public List<String> mealImageAnalysis(String mealImage){
-
-    ImageAnalysisOpenAiApiRequest input = getImageAnalysisOpenAiApiRequest(
-        mealImage);
-    OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input,
-        OpenAiApiResponse.class);
+  public List<String> mealImageAnalysis(String mealImage) {
+    ImageAnalysisOpenAiApiRequest input = getImageAnalysisOpenAiApiRequest(mealImage);
+    OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input, OpenAiApiResponse.class);
 
     String response = Objects.requireNonNull(openAiApiResponse).getChoices().getFirst().getMessage().getContent();
     logger.info("음식 분석 llm response: {}", response);
     String trim = response.trim();
 
+    if (trim.equalsIgnoreCase("NONE:null")) {
+      return null;
+    }
+
     List<String> foodArray = Arrays.stream(trim.split(",\\s*"))
-        .map(s -> s.replaceAll("\\.$", "").trim()) // 맨 끝 마침표만 제거
+        .map(s -> s.replaceAll("\\.$", "").trim())
         .collect(Collectors.toList());
-    logger.info("Food Array: {}", foodArray);  // 로그 출력
+
+    logger.info("Food Array: {}", foodArray);
     return foodArray;
   }
 
   private ImageAnalysisOpenAiApiRequest getImageAnalysisOpenAiApiRequest(String mealImage) {
     ImageContent imageContent = new ImageContent(mealImage);
-    TextContent textContent = new TextContent("너는 오로지 음식이 뭔지만 판단하는 음식이미지 분석 ai 모델이야. "
-        + "이미지를 보고 어떤 음식이 얼마나 있는지 우리한테 알려줘야해. 재료가 아닌 요리 이름으로 말해줘야해. 사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 말되 그렇다고 모르는 거 있으면 대답에 포함하지말고. 3초 이내에"
-        + "형식은 음식이름:g 단위로 나타낸 양이야. 음식의 구분은 무조건 쉼표(,)로 다른 특수문자는 사용하지마. 무조건 아래 형식처럼만 답변해."
-        + "ex) 김치찌개:500,김밥:100");
+    TextContent textContent = new TextContent(
+        "너는 오로지 음식이 뭔지만 판단하는 음식이미지 분석 ai 모델이야. "
+            + "이미지를 보고 어떤 음식이 얼마나 있는지 우리한테 알려줘야 해. 재료가 아닌 요리 이름으로 말해줘야 해. "
+            + "사족은 빼고 어떤 음식이 있는지만 알려줘. 또한 너무 포괄적으로 얘기하지는 말고, 모르면 대답에 포함하지 마. "
+            + "반드시 '음식이름:그램(g)' 형식으로만 답하고, 음식 간 구분은 무조건 쉼표(,)만 사용해. "
+            + "만약 아무 음식도 식별되지 않으면 정확하게 다음처럼 대답해: NONE:null"
+            + "예시: 김치찌개:500, 김밥:100"
+    );
+
 
     List<Content> list = new ArrayList<>();
     list.add(textContent);
@@ -77,11 +84,18 @@ public class OpenAiApiService {
   }
 
   public FoodData getNutrientInfo(String food) {
+    log.info("음식 분석 시작: {}", food);
+
     // 텍스트 기반 요청 내용
-    String prompt = food + "에 대한 영양 정보를 100g 기준으로 추정하여 아래와 같은 형식으로 반환해주세요. 각 항목은 `key=value` 형태로 출력하고, 각 항목은 쉼표(,)로 구분해주세요.\n"
-        + "예시 형식:\n"
-        + "foodName=짜장면, calories=800, protein=20, carbohydrate=130, fat=15, sugar=12, sodium=2000, dietaryFiber=5, calcium=40, saturatedFat=3, transFat=0, cholesterol=50, vitaminA=50, vitaminB1=0.5, vitaminC=2, vitaminD=null, vitaminE=null, magnesium=30, zinc=0.8, lactium=null, potassium=300, lArginine=null, omega3=null"
-        + "만약에 사진에 음식이 없으면 foodName = null";
+    String prompt = "너는 전문 영양소 분석가이자 식품 데이터 전문가야. 사용자가 입력한 음식에 대해 100g 기준의 영양 정보를 추정해서 제공해야 해. "
+        + "일반적인 식사류뿐만 아니라 초콜릿, 케이크, 도넛, 쿠키, 아이스크림 같은 디저트류나 커피, 콜라 같은 음료도 정확하게 다룰 수 있어야 해."
+        + "\n\n🧾 응답 형식은 반드시 아래 예시처럼 `key=value` 형태로 출력하고, 항목 간 쉼표(,)로만 구분해야 해. 다른 텍스트나 설명은 절대 넣지 마."
+        + "\n\n📌 예시 (100g 기준):\n"
+        + "foodName=초콜릿, calories=550, protein=6.8, carbohydrate=60, fat=35, sugar=45, sodium=25, dietaryFiber=3, calcium=20, saturatedFat=22, transFat=0.5, cholesterol=5, vitaminA=null, vitaminB1=0.02, vitaminC=null, vitaminD=null, vitaminE=0.4, magnesium=75, zinc=1.5, lactium=null, potassium=290, lArginine=null, omega3=null"
+        + "\n\n❗️주의사항:\n- 반드시 100g 기준이어야 하며, 1인분 기준으로 추정하지 말 것\n- 값이 없으면 `null`로 작성\n- 응답은 한 줄로만 작성"
+        + "\n\n사용자 입력 음식: " + food;
+
+
 
     // TextContent 객체 생성
     List<Message> messages = new ArrayList<>();

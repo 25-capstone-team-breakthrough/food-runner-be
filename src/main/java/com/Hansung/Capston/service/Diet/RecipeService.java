@@ -187,6 +187,7 @@ public class RecipeService {
     }
   }
 
+  @Transactional
   public void setWeekRecommendRecipe(String userId) {
     User user = userRepository.findByUserId(userId)
         .orElseThrow(() -> new NoSuchElementException("User not found with userId: " + userId));
@@ -223,6 +224,7 @@ public class RecipeService {
     log.info("✅ 7일 식단 배정 완료 (RecommendedRecipeCandidate 풀에서 랜덤 선택).");
   }
 
+  @Transactional
   public String updateRecommendRecipe(String userId, DayOfWeek dayOfWeek, DietType dietType) {
     User user = userRepository.findByUserId(userId)
         .orElseThrow(() -> new NoSuchElementException("User not found with userId: " + userId));
@@ -298,11 +300,10 @@ public class RecipeService {
 
     for (RecipeData recipeData : recipeDataList) {
       List<FoodData> foodDataList = foodDataRepository.findByFoodName(recipeData.getRecipeName());
-
       FoodData foodData;
+
       if (!foodDataList.isEmpty()) {
         foodData = foodDataList.getFirst();
-
       } else{
         foodData = openAiApiService.getNutrientInfo(recipeData.getRecipeName());
         foodData.setFoodImage(recipeData.getRecipeImage());
