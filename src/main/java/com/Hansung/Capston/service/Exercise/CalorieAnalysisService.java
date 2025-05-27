@@ -39,7 +39,7 @@ public class CalorieAnalysisService {
 
     //근력
     private int calculateCaloriesByStrength(double weightKg, int sets, int reps, Double weight, double met) {
-        double repTimeSec = 3.0;
+        double repTimeSec = 10.0;
         double hours = (sets * reps)* repTimeSec / 3600.0;
         double weightForCalc = (weight != null && weight > 0)
                 ? weight
