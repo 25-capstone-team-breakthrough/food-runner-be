@@ -154,7 +154,7 @@ public class RecipeService {
           if(recipe.getServing().isEmpty()){
             recipeServing = 1;
           } else{
-            recipeServing = Integer.parseInt(recipe.getServing().replace("인분", ""));
+            recipeServing = Integer.parseInt(recipe.getServing().replaceAll("[^0-9]", ""));
           }
 
           double score = 0.0;
