@@ -417,6 +417,7 @@ public class OpenAiApiService {
 
     if (response != null && response.getChoices() != null) {
       String content = response.getChoices().get(0).getMessage().getContent().trim();
+      log.info(foodName +"의 1인분 양 : "+content);
       return Integer.parseInt(content);
     } else {
       return 100;
