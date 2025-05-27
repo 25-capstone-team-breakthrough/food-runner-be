@@ -2,6 +2,7 @@ package com.Hansung.Capston.dto.Diet.Meal;
 
 import com.Hansung.Capston.common.MealType;
 import com.Hansung.Capston.entity.Diet.Meal.MealLog;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import lombok.Data;
 
@@ -31,6 +32,7 @@ public class MealLogDTO {
   private Double potassium;
   private Double lArginine;
   private Double omega3;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
   private LocalDateTime date;
 
   static public MealLogDTO toDTO(MealLog mealLog) {

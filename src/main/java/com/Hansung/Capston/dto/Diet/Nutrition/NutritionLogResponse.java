@@ -1,6 +1,7 @@
 package com.Hansung.Capston.dto.Diet.Nutrition;
 
 import com.Hansung.Capston.entity.Diet.Nutrient.NutritionLog;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import lombok.Data;
 
@@ -29,6 +30,7 @@ public class NutritionLogResponse {
   private Double potassium;
   private Double lArginine;
   private Double omega3;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
   private LocalDate date;
 
   public static NutritionLogResponse toDto(NutritionLog nutritionLog) {
