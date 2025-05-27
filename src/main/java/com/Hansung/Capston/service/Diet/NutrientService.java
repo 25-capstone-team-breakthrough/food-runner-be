@@ -71,7 +71,7 @@ public class NutrientService {
   public void saveNutrientLog(String userId, boolean addOrDel, Long mealLogId) {
     // 해당 날짜에 존재하는 NutritionLog 찾기
     MealLog mealLog = mealLogRepository.findById(mealLogId).orElseThrow(() -> new RuntimeException("MealLog not found"));
-    LocalDate onlyDate = mealLog.getDate().toLocalDate();
+    LocalDate onlyDate = mealLog.getDate().plusHours(9).toLocalDate();
 
     // NutritionLog가 존재하는지 확인
     NutritionLog existingLog = nutritionLogRepository.findByUserIdAndDate(userId, onlyDate);
