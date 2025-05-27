@@ -114,6 +114,9 @@ public class FoodData {
   @Column(name = "l_arginine")
   private Double lArginine;
 
+  @Column(name = "one_serving")
+  private Integer oneServing;
+
   @PrePersist
   @PreUpdate
   public void setDefaults() {
@@ -140,5 +143,6 @@ public class FoodData {
     if (omega3 == null) omega3 = 0.0;
     if (lArginine == null) lArginine = 0.0;
     if (foodImage == null) foodImage = "";
+    if (oneServing == null) oneServing = 100;
   }
 }

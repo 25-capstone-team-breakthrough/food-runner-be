@@ -134,15 +134,16 @@ public class RecipeService {
 
         for (RecipeData recipe : allRecipes) {
           if (finalRecipeCandidates.contains(recipe)) continue;
-          int serving = recipe.getServing().isEmpty() ? 1 :
-              Integer.parseInt(recipe.getServing().replaceAll("[^0-9]", ""));
+
           double score = 0.0;
-          score += Math.abs(((recipe.getCalories() != null ? recipe.getCalories() : 0) / serving - recCalories) / recCalories);
-          score += Math.abs(((recipe.getCarbohydrate() != null ? recipe.getCarbohydrate() : 0) / serving - recCarbohydrates) / recCarbohydrates);
-          score += Math.abs(((recipe.getProtein() != null ? recipe.getProtein() : 0) / serving - recProtein) / recProtein);
-          score += Math.abs(((recipe.getFat() != null ? recipe.getFat() : 0) / serving - recFat) / recFat);
+          score += Math.abs(((recipe.getCalories() != null ? recipe.getCalories() : 0) - recCalories) / recCalories);
+          score += Math.abs(((recipe.getCarbohydrate() != null ? recipe.getCarbohydrate() : 0) - recCarbohydrates) / recCarbohydrates);
+          score += Math.abs(((recipe.getProtein() != null ? recipe.getProtein() : 0) - recProtein) / recProtein);
+          score += Math.abs(((recipe.getFat() != null ? recipe.getFat() : 0) - recFat) / recFat);
+
           scoredRecipes.add(new RecipeScore(recipe, score));
         }
+
 
         scoredRecipes.sort(Comparator.comparingDouble(RecipeScore::score));
         List<RecipeData> nutrientCandidates = scoredRecipes.stream()

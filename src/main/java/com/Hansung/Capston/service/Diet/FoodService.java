@@ -6,6 +6,7 @@ import com.Hansung.Capston.entity.Diet.Food.PreferredFood;
 import com.Hansung.Capston.repository.Diet.Food.FoodDataRepository;
 import com.Hansung.Capston.repository.Diet.Food.PreferredFoodRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
+import com.Hansung.Capston.service.ApiService.OpenAiApiService;
 import com.opencsv.bean.CsvToBeanBuilder;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
@@ -21,13 +22,16 @@ public class FoodService {
   private final FoodDataRepository foodDataRepository;
   private final PreferredFoodRepository preferredFoodRepository;
   private final UserRepository userRepository;
+  private final OpenAiApiService openAiApiService;
 
   @Autowired
   public FoodService(FoodDataRepository foodDataRepository,
-      PreferredFoodRepository preferredFoodRepository, UserRepository userRepository) {
+      PreferredFoodRepository preferredFoodRepository, UserRepository userRepository,
+      OpenAiApiService openAiApiService) {
     this.foodDataRepository = foodDataRepository;
     this.preferredFoodRepository = preferredFoodRepository;
     this.userRepository = userRepository;
+    this.openAiApiService = openAiApiService;
   }
   
   // 음식 데이터 불러오기
@@ -122,5 +126,20 @@ public class FoodService {
 
     return "데이터 갯수 : " + foodDatasetList.size() + "\n첫 번째 데이터 음식 명: " + firstFoodName;
 
+  }
+  
+  // food_data 의 1인분 양에 대해서 저장하는 함수
+  @Transactional
+  public String getOneServing(){
+    List<FoodData> foodDataList = loadFoodData();
+    List<FoodData> savedFoodDataList = new ArrayList<>();
+    for (FoodData foodData : foodDataList) {
+      int oneServing = openAiApiService.estimateServingGram(foodData.getFoodName());
+      foodData.setOneServing(oneServing);
+      savedFoodDataList.add(foodData);
+    }
+    foodDataRepository.saveAll(savedFoodDataList);
+
+    return "1인분 양 저장 성공";
   }
 }

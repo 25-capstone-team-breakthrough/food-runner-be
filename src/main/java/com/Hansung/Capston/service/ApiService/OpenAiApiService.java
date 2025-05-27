@@ -6,6 +6,7 @@ import com.Hansung.Capston.dto.Api.OpenAiApi.*;
 import com.Hansung.Capston.entity.Diet.Food.FoodData;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import java.util.HashMap;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
@@ -91,11 +92,11 @@ public class OpenAiApiService {
     TextAnalysisOpenAiApiRequest input = new TextAnalysisOpenAiApiRequest(model, messages);
 
     // OpenAI API 호출
-    OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input, OpenAiApiResponse.class);
+    OpenAiApiResponse response = restTemplate.postForObject(openAiUrl, input, OpenAiApiResponse.class);
 
     // 응답 처리
-    if (openAiApiResponse != null && openAiApiResponse.getChoices() != null) {
-      String content = openAiApiResponse.getChoices().get(0).getMessage().getContent();
+    if (response != null && response.getChoices() != null) {
+      String content = response.getChoices().get(0).getMessage().getContent();
       content = content.trim();
 
       // 응답 문자열을 쉼표로 구분하여 파싱
@@ -197,37 +198,6 @@ public class OpenAiApiService {
     return null;
   }
 
-  public String getRecommendedRecipes(List<String> recipes) {
-
-    String prompt = String.join(", ", recipes) +
-        "\n\n위에 나열된 정확한 레시피 이름만을 기반으로 (수정, 추가, 삭제 금지), **제공된 레시피 이름을 공백과 모든 문자를 포함하여 정확히 사용해야 합니다.**" +
-        " 아침, 점심, 저녁으로 구성된 7일간의 식단을 생성해주세요." +
-        " 레시피 이름은 위에 보이는 것과 **정확히 동일하게** 사용해야 합니다. 아무것도 변경하지 마세요." +
-        " 각 요일은 다음 형식을 따라야 합니다:\n" +
-        "아침1,아침2|점심|저녁-아침|점심1,점심2|저녁-...(총 7일)\n" +
-        "각 식사에는 최대 2개의 레시피만 포함해야 합니다. 2개일 경우, 하나는 밥이나 김치와 같은 간단한 반찬이어야 합니다." +
-        " 설명, 인사말, 추가 줄 없이 해당 형식의 원본 텍스트만 반환하세요.";
-
-
-    // TextContent 객체 생성
-    List<Message> messages = new ArrayList<>();
-    messages.add(new Message("user", prompt));
-
-
-    // TextAnalysisOpenAiApiRequest 객체 생성
-    TextAnalysisOpenAiApiRequest input = new TextAnalysisOpenAiApiRequest(model, messages);
-
-    // OpenAI API 호출
-    OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input, OpenAiApiResponse.class);
-
-    String content = openAiApiResponse.getChoices().get(0).getMessage().getContent();
-
-    log.info("✅ LLM 반환 식단 추천 결과:\n{}", content);
-
-    return content;
-  }
-
-  // Jackson ObjectMapper 자동 주입
   @Autowired
   private ObjectMapper objectMapper;
   //인바디 이미지 업로드시 인바디 텍스트  분석
@@ -282,7 +252,7 @@ public class OpenAiApiService {
     );
     TextAnalysisOpenAiApiRequest req = new TextAnalysisOpenAiApiRequest(model, messages);
     OpenAiApiResponse resp = restTemplate.postForObject(openAiUrl, req, OpenAiApiResponse.class);
-    String content = resp.getChoices().get(0).getMessage().getContent().trim();
+    String content = Objects.requireNonNull(resp).getChoices().getFirst().getMessage().getContent().trim();
     return Arrays.stream(content.split(",\\s*"))
             .map(String::trim)
             .collect(Collectors.toList());
@@ -306,7 +276,7 @@ public class OpenAiApiService {
     );
     TextAnalysisOpenAiApiRequest req = new TextAnalysisOpenAiApiRequest(model, messages);
     OpenAiApiResponse resp = restTemplate.postForObject(openAiUrl, req, OpenAiApiResponse.class);
-    String content = resp.getChoices().get(0).getMessage().getContent().trim();
+    String content = Objects.requireNonNull(resp).getChoices().getFirst().getMessage().getContent().trim();
 
     content = content.replaceAll("(?s)```json\\s*(\\{.*?\\})\\s*```", "$1");
     content = content.replace("```json", "").replace("```", "").trim();
@@ -372,27 +342,6 @@ public class OpenAiApiService {
     }
   }
 
-  public String getRecommendedRecipesForSpecificMeal(List<String> recipes, DayOfWeek dayOfWeek, DietType dietType) {
-    String prompt = String.join(", ", recipes) +
-            "\n\nBased on ONLY these exact recipe names listed above (no modifications, no additions, no removals), and **you must use the recipe names precisely as they are provided, including all whitespace and characters**," +
-            " generate a single meal recommendation for " + dayOfWeek + "'s " + dietType + "." +
-            " You must use the recipe names EXACTLY as they appear above — do not change anything." +
-            " The response must follow this format:\n" +
-            "recipe1,recipe2" +
-            "At most 2 recipes per meal. If there are 2, one must be a simple side dish like rice or kimchi." +
-            " Return ONLY the raw text in that format. No explanations, greetings, or extra lines.";
-
-    List<Message> messages = new ArrayList<>();
-    messages.add(new Message("user", prompt));
-
-    TextAnalysisOpenAiApiRequest input = new TextAnalysisOpenAiApiRequest(model, messages);
-    OpenAiApiResponse openAiApiResponse = restTemplate.postForObject(openAiUrl, input, OpenAiApiResponse.class);
-    String content = openAiApiResponse.getChoices().get(0).getMessage().getContent();
-
-    log.info("✅ LLM 반환 특정 끼니 추천 결과 ({} {}):\n{}", dayOfWeek, dietType, content);
-    return content;
-  }
-
   public Map<DietType, List<String>> getMealTypeRecipeCandidates(List<String> allRecipeNamesForLLM) {
     Map<DietType, List<String>> mealTypeCandidates = new HashMap<>();
 
@@ -444,4 +393,34 @@ public class OpenAiApiService {
         .filter(s -> !s.isEmpty()) // 빈 문자열 제거
         .collect(Collectors.toList());
   }
+
+  public int estimateServingGram(String foodName) {
+    String prompt = String.format("""
+      당신은 음식량을 정확히 추정하는 전문가입니다. 아래 음식에 대해 일반적인 성인 기준 1인분 섭취량을 **정확하게 g 단위**로 추정해주세요.
+      
+      - 음식 이름: %s
+      - 식당에서 제공되거나 가정식 기준의 일반적인 1인분 양을 기준으로 하세요.
+      - 재료가 아닌 요리 완성품 전체 기준으로 추정하세요.
+      - 숫자만 반환하세요. 단위(g), 설명, 마침표 등은 절대 포함하지 마세요.
+      - 예시: 250
+      """, foodName);
+
+
+    List<Message> messages = new ArrayList<>();
+    messages.add(new Message("user", prompt));
+
+    TextAnalysisOpenAiApiRequest request = new TextAnalysisOpenAiApiRequest(model, messages);
+
+    OpenAiApiResponse response = restTemplate.postForObject(
+        openAiUrl, request, OpenAiApiResponse.class
+    );
+
+    if (response != null && response.getChoices() != null) {
+      String content = response.getChoices().get(0).getMessage().getContent().trim();
+      return Integer.parseInt(content);
+    } else {
+      return 100;
+    }
+  }
+
 }

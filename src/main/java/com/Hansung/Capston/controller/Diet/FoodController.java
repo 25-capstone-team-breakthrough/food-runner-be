@@ -89,4 +89,9 @@ public class FoodController {
       return ResponseEntity.status(500).body("change fail: " + e.getMessage());
     }
   }
+
+  @PostMapping("/data/get-one-serving")
+  public ResponseEntity<String> getOneServing() {
+    return ResponseEntity.ok(foodService.getOneServing());
+  }
 }

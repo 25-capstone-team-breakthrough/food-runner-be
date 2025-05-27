@@ -319,7 +319,8 @@ CREATE TABLE food_data (
                            lactium DECIMAL(10,2) DEFAULT 0,
                            potassium DECIMAL(10,2) DEFAULT 0,
                            l_arginine DECIMAL(10,2) DEFAULT 0,
-                           omega3 DECIMAL(10,2) DEFAULT 0
+                           omega3 DECIMAL(10,2) DEFAULT 0,
+                           one_serving INT DEFAULT 0
 );
 
 
