@@ -86,6 +86,7 @@ public class ExerciseService {
                     ExerciseLogDto dto = new ExerciseLogDto();
                     dto.setLogId(log.getLogId());
                     dto.setExerciseId(log.getExerciseData().getExerciseId());
+                    dto.setExerciseName(log.getExerciseData().getExerciseName());
                     dto.setCreatedAt(log.getCreatedAt());
 
                     if (log.getExerciseType() == ExerciseType.CARDIO) {

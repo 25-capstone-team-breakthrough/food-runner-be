@@ -16,6 +16,7 @@ import java.util.List;
 public class ExerciseLogDto {
     private Integer logId;
     private Integer exerciseId;
+    private String exerciseName;
 
     private LocalDateTime createdAt;
 
