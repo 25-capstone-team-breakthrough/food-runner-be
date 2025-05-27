@@ -208,6 +208,7 @@ public class RecipeService {
         .orElseThrow(() -> new NoSuchElementException("User not found with userId: " + userId));
 
     recommendedRecipeCandidateRepository.deleteByUser(user);
+    recommendedRecipeCandidateRepository.flush();
     log.info("ℹ️ 기존 RecommendedRecipeCandidate 데이터 삭제 완료 (userId: {})", userId);
 
     for (Map.Entry<DietType, List<String>> entry : mealTypeCandidatesFromLLM.entrySet()) {
