@@ -17,7 +17,7 @@ public class SupplementLogResponse {
     SupplementLogResponse res = new SupplementLogResponse();
     res.setSupplementLogId(supplementLog.getSupplementLogId());
     res.setSupplementData(supplementLog.getSupplementData());
-    res.setDate(supplementLog.getDate());
+    res.setDate(supplementLog.getDate().plusHours(9));
 
     return res;
   }

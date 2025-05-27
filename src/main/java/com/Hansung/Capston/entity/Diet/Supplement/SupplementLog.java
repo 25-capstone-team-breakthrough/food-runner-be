@@ -39,6 +39,5 @@ public class SupplementLog {
   private SupplementData supplementData;
 
   @Column(name = "date", nullable = false)
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
   private LocalDateTime date;
 }

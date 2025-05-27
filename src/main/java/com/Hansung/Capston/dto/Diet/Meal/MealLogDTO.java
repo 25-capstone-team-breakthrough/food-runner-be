@@ -61,7 +61,7 @@ public class MealLogDTO {
     dto.potassium = mealLog.getPotassium();
     dto.lArginine = mealLog.getLArginine();
     dto.omega3 = mealLog.getOmega3();
-    dto.date = mealLog.getDate();
+    dto.date = mealLog.getDate().plusHours(9);
     return dto;
   }
 }

@@ -99,6 +99,5 @@ public class MealLog {
     private Double omega3;
 
     @Column(name = "date", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime date;
 }

@@ -92,6 +92,5 @@ public class NutritionLog {
   private Double omega3 = 0.0;
 
   @Column(name = "date", nullable = false)
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
   private LocalDate date;
 }

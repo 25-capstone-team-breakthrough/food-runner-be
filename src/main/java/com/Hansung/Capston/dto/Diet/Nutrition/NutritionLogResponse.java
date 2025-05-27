@@ -30,7 +30,6 @@ public class NutritionLogResponse {
   private Double potassium;
   private Double lArginine;
   private Double omega3;
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
   private LocalDate date;
 
   public static NutritionLogResponse toDto(NutritionLog nutritionLog) {
