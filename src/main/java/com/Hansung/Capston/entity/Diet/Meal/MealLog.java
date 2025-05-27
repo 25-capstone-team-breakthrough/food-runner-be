@@ -2,6 +2,7 @@ package com.Hansung.Capston.entity.Diet.Meal;
 
 import com.Hansung.Capston.common.MealType;
 import com.Hansung.Capston.entity.UserInfo.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import lombok.*;
@@ -98,5 +99,6 @@ public class MealLog {
     private Double omega3;
 
     @Column(name = "date", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime date;
 }

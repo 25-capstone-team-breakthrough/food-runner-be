@@ -1,6 +1,7 @@
 package com.Hansung.Capston.entity.Diet.Nutrient;
 
 import com.Hansung.Capston.entity.UserInfo.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -91,5 +92,6 @@ public class NutritionLog {
   private Double omega3 = 0.0;
 
   @Column(name = "date", nullable = false)
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
   private LocalDate date;
 }

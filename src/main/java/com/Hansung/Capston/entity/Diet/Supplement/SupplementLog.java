@@ -1,6 +1,7 @@
 package com.Hansung.Capston.entity.Diet.Supplement;
 
 import com.Hansung.Capston.entity.UserInfo.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,5 +39,6 @@ public class SupplementLog {
   private SupplementData supplementData;
 
   @Column(name = "date", nullable = false)
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
   private LocalDateTime date;
 }
