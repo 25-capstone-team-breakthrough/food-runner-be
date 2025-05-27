@@ -90,6 +90,7 @@ public class FoodController {
     }
   }
 
+  // 1인분 양 정보 가져오기
   @PostMapping("/data/get-one-serving")
   public ResponseEntity<String> getOneServing() {
     return ResponseEntity.ok(foodService.getOneServing());
