@@ -306,14 +306,15 @@ public class RecipeService {
         foodData = foodDataList.getFirst();
       } else{
         foodData = openAiApiService.getNutrientInfo(recipeData.getRecipeName());
-        foodData.setFoodImage(recipeData.getRecipeImage());
-        foodDataRepository.save(foodData);
-
+        foodData.setOneServing(openAiApiService.estimateServingGram(recipeData.getRecipeName()));
+        // foodData.setFoodImage(recipeData.getRecipeImage());
+        // foodDataRepository.save(foodData); // 이거는 비효율적
       }
       recipeData.setCalories(foodData.getCalories());
       recipeData.setProtein(foodData.getProtein());
       recipeData.setFat(foodData.getFat());
       recipeData.setCarbohydrate(foodData.getCarbohydrate());
+      recipeData.setOneServing(foodData.getOneServing());
       recipeDataRepository.save(recipeData);
 
     }

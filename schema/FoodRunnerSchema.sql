@@ -234,6 +234,7 @@ CREATE TABLE recipe_data (
                              protein DECIMAL(10,2) DEFAULT 0,
                              carbohydrate DECIMAL(10,2) DEFAULT 0,
                              fat DECIMAL(10,2) DEFAULT 0,
+                             one_serving INT DEFAULT 0,
                              FOREIGN KEY (related_recipe_1) REFERENCES recipe_data(recipe_id),
                              FOREIGN KEY (related_recipe_2) REFERENCES recipe_data(recipe_id),
                              FOREIGN KEY (related_recipe_3) REFERENCES recipe_data(recipe_id)
