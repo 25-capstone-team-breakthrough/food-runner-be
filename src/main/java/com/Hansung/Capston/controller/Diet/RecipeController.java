@@ -2,6 +2,7 @@ package com.Hansung.Capston.controller.Diet;
 
 import com.Hansung.Capston.common.DayOfWeek;
 import com.Hansung.Capston.common.DietType;
+import com.Hansung.Capston.dto.Diet.Recipe.RecipeDataResponse;
 import com.Hansung.Capston.dto.Diet.Recipe.RecommendRecipeResponse;
 import com.Hansung.Capston.entity.Diet.Recipe.RecipeData;
 import com.Hansung.Capston.service.Diet.RecipeService;
@@ -30,7 +31,7 @@ public class RecipeController {
 
   // 레시피 데이터 불러오기
   @GetMapping("/data/load")
-  public ResponseEntity<List<RecipeData>> loadRecipeData(){
+  public ResponseEntity<List<RecipeDataResponse>> loadRecipeData(){
     return ResponseEntity.ok(recipeService.loadRecipeData());
   }
 

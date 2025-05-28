@@ -5,6 +5,7 @@ import com.Hansung.Capston.common.DietType;
 import com.Hansung.Capston.dto.Diet.Ingredient.PreferredIngredientResponse;
 import com.Hansung.Capston.dto.Diet.Ingredient.RecommendedIngredientResponse;
 import com.Hansung.Capston.dto.Diet.Nutrition.RecommendedNutrientResponse;
+import com.Hansung.Capston.dto.Diet.Recipe.RecipeDataResponse;
 import com.Hansung.Capston.dto.Diet.Recipe.RecommendRecipeResponse;
 import com.Hansung.Capston.entity.Diet.Food.FoodData;
 import com.Hansung.Capston.entity.Diet.Recipe.RecipeData;
@@ -61,8 +62,15 @@ public class RecipeService {
     this.nutrientService = nutrientService;
   }
 
-  public List<RecipeData> loadRecipeData() {
-    return recipeDataRepository.findAll();
+  public List<RecipeDataResponse> loadRecipeData() {
+    List<RecipeData> recipeDataList = recipeDataRepository.findAll();
+    List<RecipeDataResponse> recipeDataResponseList = new ArrayList<>();
+
+    for (RecipeData recipeData : recipeDataList) {
+      recipeDataResponseList.add(RecipeDataResponse.toDto(recipeData));
+    }
+
+    return recipeDataResponseList;
   }
 
   public void saveRelatedRecipeData() {
@@ -294,7 +302,7 @@ public class RecipeService {
   }
 
   public void nutritionFromFoodData(){
-    List<RecipeData> recipeDataList = loadRecipeData();
+    List<RecipeData> recipeDataList = recipeDataRepository.findAll();
 
     for (RecipeData recipeData : recipeDataList) {
       List<FoodData> foodDataList = foodDataRepository.findByFoodName(recipeData.getRecipeName());
