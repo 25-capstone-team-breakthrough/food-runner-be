@@ -74,11 +74,17 @@ public class SttController {
 
         try{
             Map<String, Object> parsed = openAiApiService.parseExercise(transcript);
-            String exerciseName = (String) parsed.get("exerciseName");
+//            String exerciseName = (String) parsed.get("exerciseName");
+//
+//            ExerciseData data = exerciseDataRepository
+//                    .findByExerciseName(exerciseName)
+//                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 운동: " + exerciseName));
 
+            String rawName = (String) parsed.get("exerciseName");
+            String normalized = rawName.replaceAll("\\s+", "").toLowerCase();
             ExerciseData data = exerciseDataRepository
-                    .findByExerciseName(exerciseName)
-                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 운동: " + exerciseName));
+                    .findByNormalizedName(normalized)
+                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 운동: "+ rawName));
             String type = data.getExerciseType();
 
             ExerciseLogDto dto = new ExerciseLogDto();
