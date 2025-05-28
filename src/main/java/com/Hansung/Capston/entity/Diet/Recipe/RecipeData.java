@@ -67,4 +67,7 @@ public class RecipeData {
 
   @Column(name = "fat")
   private Double fat;
+
+  @Column(name = "one_serving")
+  private Integer oneServing;
 }

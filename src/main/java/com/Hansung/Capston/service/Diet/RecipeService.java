@@ -314,6 +314,8 @@ public class RecipeService {
       recipeData.setProtein(foodData.getProtein());
       recipeData.setFat(foodData.getFat());
       recipeData.setCarbohydrate(foodData.getCarbohydrate());
+      recipeData.setOneServing(foodData.getOneServing());
+      log.info("1인 권장량 : {}", recipeData.getOneServing());
       recipeDataRepository.save(recipeData);
 
     }
