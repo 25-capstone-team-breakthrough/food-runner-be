@@ -9,5 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface FoodDataRepository extends JpaRepository<FoodData, Long> {
 
   List<FoodData> findByFoodName(String foodName);
+
+  boolean findByFoodImageIsEmpty(String foodImage);
 }
 

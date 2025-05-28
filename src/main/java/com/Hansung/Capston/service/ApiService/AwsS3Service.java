@@ -1,9 +1,12 @@
 package com.Hansung.Capston.service.ApiService;
 
+import com.Hansung.Capston.entity.Diet.Food.FoodData;
+import com.Hansung.Capston.repository.Diet.Food.FoodDataRepository;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import java.util.UUID;
 public class AwsS3Service {
   private final AmazonS3 amazonS3Client;
   private static final Logger logger = LoggerFactory.getLogger(AwsS3Service.class);
+  private final FoodDataRepository foodDataRepository;
   @Value("${aws.s3.bucket}")
   private String bucketName;
 
@@ -33,8 +37,9 @@ public class AwsS3Service {
   private String inbodyBaseUrl;
 
   @Autowired
-  public AwsS3Service(AmazonS3 amazonS3Client) {
+  public AwsS3Service(AmazonS3 amazonS3Client, FoodDataRepository foodDataRepository) {
     this.amazonS3Client = amazonS3Client;
+    this.foodDataRepository = foodDataRepository;
   }
 
   public String generatePreSignedUrl(String fileName, String contentType) {
@@ -53,10 +58,12 @@ public class AwsS3Service {
 
   public void deleteImageFromS3(String imageUrl) {
     try {
-      String objectKey = extractObjectKeyFromUrl(imageUrl);
+      if(foodDataRepository.findByFoodImageIsEmpty(imageUrl)){
+        String objectKey = extractObjectKeyFromUrl(imageUrl);
 
-      amazonS3Client.deleteObject(bucketName, objectKey);
-      logger.info("Deleted image from s3 bucket: " + objectKey);
+        amazonS3Client.deleteObject(bucketName, objectKey);
+        logger.info("Deleted image from s3 bucket: " + objectKey);
+      }
     } catch (Exception e) {
       throw new RuntimeException("S3 이미지 삭제 실패", e);
     }
