@@ -144,10 +144,10 @@ public class RecipeService {
           if (finalRecipeCandidates.contains(recipe)) continue;
 
           double score = 0.0;
-          score += Math.abs(((recipe.getCalories() != null ? recipe.getCalories() : 0) - recCalories) / recCalories);
-          score += Math.abs(((recipe.getCarbohydrate() != null ? recipe.getCarbohydrate() : 0) - recCarbohydrates) / recCarbohydrates);
-          score += Math.abs(((recipe.getProtein() != null ? recipe.getProtein() : 0) - recProtein) / recProtein);
-          score += Math.abs(((recipe.getFat() != null ? recipe.getFat() : 0) - recFat) / recFat);
+          score += Math.abs(((recipe.getCalories() != null ? recipe.getCalories()*(recipe.getOneServing()/100.0) : 0) - recCalories) / recCalories);
+          score += Math.abs(((recipe.getCarbohydrate() != null ? recipe.getCarbohydrate()*(recipe.getOneServing()/100.0) : 0) - recCarbohydrates) / recCarbohydrates);
+          score += Math.abs(((recipe.getProtein() != null ? recipe.getProtein()*(recipe.getOneServing()/100.0) : 0) - recProtein) / recProtein);
+          score += Math.abs(((recipe.getFat() != null ? recipe.getFat()*(recipe.getOneServing()/100.0) : 0) - recFat) / recFat);
 
           scoredRecipes.add(new RecipeScore(recipe, score));
         }
