@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartFile; // test
 
 @Service
 @Transactional
@@ -308,14 +308,12 @@ public class RecipeService {
         foodData = openAiApiService.getNutrientInfo(recipeData.getRecipeName());
         foodData.setFoodImage(recipeData.getRecipeImage());
         foodDataRepository.save(foodData);
-
       }
       recipeData.setCalories(foodData.getCalories());
       recipeData.setProtein(foodData.getProtein());
       recipeData.setFat(foodData.getFat());
       recipeData.setCarbohydrate(foodData.getCarbohydrate());
       recipeData.setOneServing(foodData.getOneServing());
-      log.info("1인 권장량 : {}", recipeData.getOneServing());
       recipeDataRepository.save(recipeData);
 
     }
