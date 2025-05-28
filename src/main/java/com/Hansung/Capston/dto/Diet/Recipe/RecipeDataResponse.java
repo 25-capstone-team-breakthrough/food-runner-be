@@ -27,7 +27,8 @@ public class RecipeDataResponse {
   public static RecipeDataResponse toDto(RecipeData recipeData) {
     RecipeDataResponse dto = new RecipeDataResponse();
 
-    int serve = (recipeData.getOneServing()/100)*Integer.parseInt(recipeData.getServing().replaceAll("\\D",""));
+    int serve = dto.calculateServe();
+
 
     dto.setRecipeId(recipeData.getRecipeId());
     dto.setRecipeName(recipeData.getRecipeName());
@@ -47,5 +48,35 @@ public class RecipeDataResponse {
     dto.setCarbohydrate(recipeData.getCarbohydrate()*serve);
 
     return dto;
+  }
+
+  private int calculateServe() {
+    String servingString = serving;
+    String numbersOnly = "";
+
+    if (servingString != null) {
+      numbersOnly = servingString.replaceAll("\\D", "").trim();
+    }
+
+    int servingValue = 0; // 기본값 설정
+
+    if (!numbersOnly.isEmpty()) {
+      try {
+        servingValue = Integer.parseInt(numbersOnly);
+      } catch (NumberFormatException e) {
+        System.err.println("경고: recipeData.getServing()에서 숫자를 추출했지만 유효하지 않습니다: '" + servingString + "' -> '" + numbersOnly + "'");
+      }
+    } else {
+      System.err.println("경고: recipeData.getServing()에서 숫자를 추출할 수 없거나 비어있습니다: '" + servingString + "'");
+    }
+
+    int serve;
+    if (oneServing != 0) {
+      serve = (oneServing / 100) * servingValue;
+    } else {
+      serve = 1;
+    }
+
+    return serve;
   }
 }
