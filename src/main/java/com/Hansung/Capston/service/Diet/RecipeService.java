@@ -295,8 +295,6 @@ public class RecipeService {
 
   public void nutritionFromFoodData(){
     List<RecipeData> recipeDataList = loadRecipeData();
-    List<RecipeData> mok = new ArrayList<>();
-    List<FoodData> foods = new ArrayList<>();
 
     for (RecipeData recipeData : recipeDataList) {
       List<FoodData> foodDataList = foodDataRepository.findByFoodName(recipeData.getRecipeName());
@@ -313,8 +311,8 @@ public class RecipeService {
       recipeData.setFat(foodData.getFat());
       recipeData.setCarbohydrate(foodData.getCarbohydrate());
       recipeData.setOneServing(foodData.getOneServing());
+      log.info("1인분 양 : {}", foodData.getOneServing());
       recipeDataRepository.save(recipeData);
-
     }
   }
 
