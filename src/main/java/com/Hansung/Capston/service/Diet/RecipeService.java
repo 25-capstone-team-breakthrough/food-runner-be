@@ -307,7 +307,6 @@ public class RecipeService {
       } else{
         foodData = openAiApiService.getNutrientInfo(recipeData.getRecipeName());
         foodData.setFoodImage(recipeData.getRecipeImage());
-        foodDataRepository.save(foodData);
       }
       recipeData.setCalories(foodData.getCalories());
       recipeData.setProtein(foodData.getProtein());
