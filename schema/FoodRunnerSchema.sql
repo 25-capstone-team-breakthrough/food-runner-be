@@ -8,6 +8,7 @@ CREATE TABLE user (
                       name VARCHAR(15) NOT NULL, -- 이름
                       password VARCHAR(255) NOT NULL, -- 암호화된 비밀번호
                       role VARCHAR(20) NOT NULL DEFAULT 'ROLE_USER',
+                      is_exist_bmi TINYINT(1) NOT NULL DEFAULT 0,
                       PRIMARY KEY (user_id)
 );
 -- BMI 테이블
@@ -51,6 +52,26 @@ CREATE TABLE inbody_image (
                               FOREIGN KEY (inbody_id) REFERENCES inbody(inbody_id),
                               FOREIGN KEY (user_id)   REFERENCES user(user_id)
 );
+
+-- 일반 운동영상 저장 테이블
+CREATE TABLE exercise_video (
+  id                      BIGINT        NOT NULL AUTO_INCREMENT,
+  user_id                 VARCHAR(36)   NOT NULL,  -- user 테이블의 PK(user_id) 참조
+  category                VARCHAR(50)   NOT NULL,  -- ex) 어깨, 가슴 등
+  video_id                VARCHAR(20)   NOT NULL,  -- YouTube 영상 ID
+  title                   VARCHAR(255)  NOT NULL,  -- 영상 제목
+  url                     VARCHAR(255)  NOT NULL,  -- https://www.youtube.com/watch?v={video_id}
+  is_ai_recommendation    BOOLEAN       NOT NULL DEFAULT TRUE,
+  PRIMARY KEY (id),
+  INDEX idx_exercise_video_user      (user_id),
+  INDEX idx_exercise_video_category  (category),
+  CONSTRAINT fk_exercise_video_user
+    FOREIGN KEY (user_id)
+    REFERENCES user(user_id)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4;
+
+
 -- 추천 운동영상 저장 테이블
 CREATE TABLE recommand_exercise_video (
   id                      BIGINT        NOT NULL AUTO_INCREMENT,

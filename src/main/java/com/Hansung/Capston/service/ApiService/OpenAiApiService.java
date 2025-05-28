@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -413,15 +415,31 @@ public class OpenAiApiService {
       return 0;
     }
     String prompt = String.format("""
-      당신은 음식량을 정확히 추정하는 전문가입니다. 아래 음식에 대해 일반적인 성인 기준 1인분 섭취량을 **정확하게 g 단위**로 추정해주세요.
+      당신은 전문적인 식품 영양사이자 음식량 추정 전문가입니다. 아래 조건을 정확히 이해하고 따르십시오.
       
-      - 음식 이름: %s
-      - 식당에서 제공되거나 가정식 기준의 일반적인 1인분 양을 기준으로 하세요.
-      - 반찬 같은 사이드 디시들은 1회 제공량을 기준으로 하세요.
-      - 재료가 아닌 요리 완성품 전체 기준으로 추정하세요.
-      - 숫자만 반환하세요. 단위(g), 설명, 마침표 등은 절대 포함하지 마세요.
-      - 예시: 250
+      ==== 목표 ====
+      음식 이름을 보고, 일반적인 성인 기준으로 1인분 섭취량을 **정확히 g 단위의 숫자 하나**로 추정합니다.
+      
+      ==== 지켜야 할 규칙 ====
+      1. 반드시 요리가 완성된 상태의 전체량을 기준으로 추정합니다.
+         - 예: 김치찌개 → 국물 포함된 완성된 김치찌개 한 그릇
+         - 예: 비빔밥 → 고기/채소/밥 포함 전체
+      2. 식당 혹은 가정식 기준의 보통 성인을 위한 일반적인 양을 기준으로 합니다.
+         - 어린이, 체중 감량 식단, 운동식단은 고려하지 마십시오.
+      3. 반드시 정수 형태의 숫자만 출력하십시오. 단위(g), 설명, 쉼표, 마침표, 공백도 모두 포함하지 마십시오.
+         - 예: 출력 → `250`
+         - 잘못된 출력 → `250g`, `약 250`, `250 그램`, `250.`
+      4. 숫자는 대략적인 평균이더라도 반드시 구체적인 정수로 출력합니다. 소수점은 포함하지 마십시오.
+      5. 잘 모르겠더라도 반드시 일반적인 평균 기준을 추정해서 정수 하나를 출력하십시오.
+      
+      ==== 음식 이름 ====
+      %s
+      
+      ==== 출력 형식 ====
+      반드시 아래 예시처럼 **숫자 하나만** 출력하세요:
+      예시: 180
       """, foodName);
+
 
 
     List<Message> messages = new ArrayList<>();
@@ -433,13 +451,30 @@ public class OpenAiApiService {
         openAiUrl, request, OpenAiApiResponse.class
     );
 
-    if (response != null && response.getChoices() != null) {
-      String content = response.getChoices().get(0).getMessage().getContent().trim();
-      log.info(foodName +"의 1인분 양 : "+content);
-      return Integer.parseInt(content);
-    } else {
-      return 100;
+    if (response != null && response.getChoices() != null && !response.getChoices().isEmpty()) {
+      String content = response.getChoices().get(0).getMessage().getContent();
+      log.info("{}의 원 응답 : {}", foodName, content); // ⬅️ 꼭 추가
+
+      if (content != null) {
+        Matcher matcher = Pattern.compile("\\d+").matcher(content);
+        if (matcher.find()) {
+          String numberOnly = matcher.group();
+          try {
+            int gram = Integer.parseInt(numberOnly);
+            log.info("{}의 1인분 양 : {}g", foodName, gram);
+            return gram;
+          } catch (NumberFormatException e) {
+            log.warn("파싱 실패: {}", content);
+          }
+        } else {
+          log.warn("숫자 추출 실패: {}", content);
+        }
+      } else {
+        log.warn("OpenAI 응답 content가 null입니다");
+      }
     }
+    return 100;
+
   }
 
 }

@@ -268,7 +268,7 @@ public class MealService {
     if(log.getType().equals(MealType.image)){
       ImageMealLog imageMealLog = imageMealLogRepository.findByMealId(log.getMealId());
       imageMealLogRepository.delete(imageMealLog);
-      // 나중에 추가 awsS3Service.deleteImageFromS3(imageMealLog.getMealImage());
+      awsS3Service.deleteImageFromS3(imageMealLog.getMealImage());
       mealLogRepository.delete(log);
     } else if(log.getType().equals(MealType.search)){
       searchMealLogRepository.delete(searchMealLogRepository.findByMealid(log.getMealId()));
