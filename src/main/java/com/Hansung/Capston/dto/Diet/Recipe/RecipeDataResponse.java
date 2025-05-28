@@ -27,6 +27,8 @@ public class RecipeDataResponse {
   public static RecipeDataResponse toDto(RecipeData recipeData) {
     RecipeDataResponse dto = new RecipeDataResponse();
 
+    int serve = (recipeData.getOneServing()/100)*Integer.parseInt(recipeData.getServing().replaceAll("\\D",""));
+
     dto.setRecipeId(recipeData.getRecipeId());
     dto.setRecipeName(recipeData.getRecipeName());
     dto.setRecommendedCount(recipeData.getRecommendedCount());
@@ -39,10 +41,10 @@ public class RecipeDataResponse {
     dto.setRelatedRecipe2(recipeData.getRelatedRecipe2());
     dto.setRelatedRecipe3(recipeData.getRelatedRecipe3());
     dto.setOneServing(recipeData.getOneServing());
-    dto.setCalories(recipeData.getCalories()*(recipeData.getOneServing()/100.0));
-    dto.setProtein(recipeData.getProtein()*(recipeData.getOneServing()/100.0));
-    dto.setFat(recipeData.getFat()*(recipeData.getOneServing()/100.0));
-    dto.setCarbohydrate(recipeData.getCarbohydrate()*(recipeData.getOneServing()/100.0));
+    dto.setCalories(recipeData.getCalories()*serve);
+    dto.setProtein(recipeData.getProtein()*serve);
+    dto.setFat(recipeData.getFat()*serve);
+    dto.setCarbohydrate(recipeData.getCarbohydrate()*serve);
 
     return dto;
   }
