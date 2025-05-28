@@ -1,5 +1,6 @@
 package com.Hansung.Capston.service.Diet;
 
+import com.Hansung.Capston.dto.Diet.Food.FoodDataResponse;
 import com.Hansung.Capston.dto.Diet.Food.PreferredFoodResponse;
 import com.Hansung.Capston.entity.Diet.Food.FoodData;
 import com.Hansung.Capston.entity.Diet.Food.PreferredFood;
@@ -35,8 +36,14 @@ public class FoodService {
   }
   
   // 음식 데이터 불러오기
-  public List<FoodData> loadFoodData() {
-    return foodDataRepository.findAll();
+  public List<FoodDataResponse> loadFoodData() {
+    List<FoodData> foodDataList = foodDataRepository.findAll();
+    List<FoodDataResponse> foodDataResponseList = new ArrayList<>();
+    for (FoodData foodData : foodDataList) {
+      foodDataResponseList.add(FoodDataResponse.toDto(foodData));
+    }
+
+    return foodDataResponseList;
   }
   
   // 음식 즐겨찾기 등록하기
@@ -131,7 +138,7 @@ public class FoodService {
   // food_data 의 1인분 양에 대해서 저장하는 함수
   @Transactional
   public String getOneServing(){
-    List<FoodData> foodDataList = loadFoodData();
+    List<FoodData> foodDataList = foodDataRepository.findAll();
     List<FoodData> savedFoodDataList = new ArrayList<>();
     for (FoodData foodData : foodDataList) {
       int oneServing = openAiApiService.estimateServingGram(foodData.getFoodName());

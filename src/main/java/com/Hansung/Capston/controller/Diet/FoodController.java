@@ -1,5 +1,6 @@
 package com.Hansung.Capston.controller.Diet;
 
+import com.Hansung.Capston.dto.Diet.Food.FoodDataResponse;
 import com.Hansung.Capston.dto.Diet.Food.PreferredFoodResponse;
 import com.Hansung.Capston.entity.Diet.Food.FoodData;
 import com.Hansung.Capston.entity.Diet.Food.PreferredFood;
@@ -27,12 +28,11 @@ public class FoodController {
   
   // 음식 데이터 불러오기
   @GetMapping("/data/load")
-  public ResponseEntity<List<FoodData>> loadFoodData() {
+  public ResponseEntity<List<FoodDataResponse>> loadFoodData() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || auth.getPrincipal() == null) {
       return ResponseEntity.status(401).build();
     }
-    String userId = (String) auth.getPrincipal();
 
     return ResponseEntity.ok(foodService.loadFoodData());
   }

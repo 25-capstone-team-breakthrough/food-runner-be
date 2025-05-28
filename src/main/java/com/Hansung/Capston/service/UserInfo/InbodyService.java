@@ -213,7 +213,13 @@ public class InbodyService {
   //인바디 조회
   @Transactional(readOnly = true)
   public List<Inbody> getAllByUser(String userId) {
-    return inbodyRepository.findAllByUserUserIdOrderByCreatedAtDesc(userId);
+    List<Inbody> inbodyList = inbodyRepository.findAllByUserUserIdOrderByCreatedAtDesc(userId);
+    List<Inbody> res = new ArrayList<>();
+    for (Inbody inbody : inbodyList) {
+      inbody.setCreatedAt(inbody.getCreatedAt().plusHours(9));
+      res.add(inbody);
+    }
+    return res;
   }
 
 
