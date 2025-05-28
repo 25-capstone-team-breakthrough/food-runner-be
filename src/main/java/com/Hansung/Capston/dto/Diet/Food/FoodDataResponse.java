@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class FoodDataResponse {
+  private Long foodId;
   private String foodName;
   private String foodCompany;
   private String foodImage;
@@ -60,6 +61,7 @@ public class FoodDataResponse {
     FoodDataResponse dto = new FoodDataResponse();
 
     // 기본 정보
+    dto.setFoodId(foodData.getFoodId());
     dto.setFoodName(foodData.getFoodName());
     dto.setFoodCompany(foodData.getFoodCompany());
     dto.setFoodImage(foodData.getFoodImage());

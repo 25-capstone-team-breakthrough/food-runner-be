@@ -39,10 +39,11 @@ public class AwsS3Service {
 
   public String generatePreSignedUrl(String fileName, String contentType) {
     String uniqueFileName = UUID.randomUUID().toString() + "-" + fileName;
+    String objectKey = "meal-image/" + uniqueFileName;
     Date expiration = Date.from(LocalDateTime.now().plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant());
 
     GeneratePresignedUrlRequest generatePresignedUrlRequest =
-        new GeneratePresignedUrlRequest(bucketName+"/meal-image", uniqueFileName, HttpMethod.PUT)
+        new GeneratePresignedUrlRequest(bucketName, objectKey, HttpMethod.PUT)
             .withExpiration(expiration)
             .withContentType(contentType);
 

@@ -119,33 +119,34 @@ CREATE TABLE exercise_log (
 );
 
 -- 유산소 운동 기록 테이블
-CREATE TABLE cardio_Exercise_Log (
+CREATE TABLE cardio_exercise_log (
     cardio_log_id    INT AUTO_INCREMENT NOT NULL,  -- 유산소 운동 기록 PK
     exercise_log_id  INT               NOT NULL,   -- 상위 Exercise_Log FK
     distance         FLOAT,                        -- 거리 (예: km)
     time             INT,                          -- 운동 시간 (예: 분)
     pace             FLOAT,                        -- 페이스 (예: 분/km)
     PRIMARY KEY (cardio_log_id),
-    FOREIGN KEY (exercise_log_id) REFERENCES Exercise_Log(log_id) ON delete cascade
+    FOREIGN KEY (exercise_log_id) REFERENCES exercise_log(log_id) ON delete cascade
 );
 
 -- 근력 운동 기록 테이블
-CREATE TABLE strength_Exercise_Log (
+CREATE TABLE strength_exercise_log (
     strength_log_id  INT AUTO_INCREMENT NOT NULL,  -- 근력 운동 기록 PK
     exercise_log_id  INT               NOT NULL,   -- 상위 Exercise_Log FK
     sets             INT,                          -- 세트 수
     reps             INT,                          -- 반복 수
     weight           FLOAT,                        -- 중량
     PRIMARY KEY (strength_log_id),
-    FOREIGN KEY (exercise_log_id) REFERENCES Exercise_Log(log_id) ON delete cascade
+    FOREIGN KEY (exercise_log_id) REFERENCES exercise_log(log_id) ON delete cascade
 );
 
 -- 소모칼로리 결과 저장 테이블
-CREATE TABLE exercise_Log_Calories (
+CREATE TABLE exercise_log_calories (
     calorie_log_id     INT AUTO_INCREMENT PRIMARY KEY,   -- 소모 칼로리 기록 고유 ID
     exercise_log_id    INT               NOT NULL,       -- 상위 운동 기록 FK
     calories_burned    int             NOT NULL,       -- 계산된 소모 칼로리
-    FOREIGN KEY (exercise_log_id) REFERENCES Exercise_Log(log_id) ON DELETE CASCADE
+
+    FOREIGN KEY (exercise_log_id) REFERENCES exercise_log(log_id) ON DELETE CASCADE
 );
 
 
