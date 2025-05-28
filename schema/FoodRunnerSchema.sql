@@ -52,21 +52,24 @@ CREATE TABLE inbody_image (
                               FOREIGN KEY (user_id)   REFERENCES user(user_id)
 );
 
---운동영상 저장테이블
+-- 일반 운동영상 저장 테이블
 CREATE TABLE exercise_video (
-  id BIGINT          NOT NULL AUTO_INCREMENT,
-  user_id VARCHAR(36) NOT NULL,
-  category VARCHAR(50) NOT NULL,
-	video_id VARCHAR(20) NOT NULL,
-  title VARCHAR(255)  NOT NULL,
-  url VARCHAR(255)    NOT NULL,
-  is_ai_recommendation TINYINT(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `idx_exercise_video_user` (`user_id`),
-  KEY `idx_exercise_video_category` (`category`)
+  id                      BIGINT        NOT NULL AUTO_INCREMENT,
+  user_id                 VARCHAR(36)   NOT NULL,  -- user 테이블의 PK(user_id) 참조
+  category                VARCHAR(50)   NOT NULL,  -- ex) 어깨, 가슴 등
+  video_id                VARCHAR(20)   NOT NULL,  -- YouTube 영상 ID
+  title                   VARCHAR(255)  NOT NULL,  -- 영상 제목
+  url                     VARCHAR(255)  NOT NULL,  -- https://www.youtube.com/watch?v={video_id}
+  is_ai_recommendation    BOOLEAN       NOT NULL DEFAULT TRUE,
+  PRIMARY KEY (id),
+  INDEX idx_exercise_video_user      (user_id),
+  INDEX idx_exercise_video_category  (category),
+  CONSTRAINT fk_exercise_video_user
+    FOREIGN KEY (user_id)
+    REFERENCES user(user_id)
 ) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+  DEFAULT CHARSET=utf8mb4;
+
 
 -- 추천 운동영상 저장 테이블
 CREATE TABLE recommand_exercise_video (
