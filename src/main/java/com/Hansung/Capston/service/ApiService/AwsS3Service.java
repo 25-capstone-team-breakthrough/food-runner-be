@@ -55,7 +55,7 @@ public class AwsS3Service {
     try {
       String objectKey = extractObjectKeyFromUrl(imageUrl);
 
-      amazonS3Client.deleteObject(bucketName+"/meal-image", objectKey);
+      amazonS3Client.deleteObject(bucketName, objectKey);
       logger.info("Deleted image from s3 bucket: " + objectKey);
     } catch (Exception e) {
       throw new RuntimeException("S3 이미지 삭제 실패", e);
