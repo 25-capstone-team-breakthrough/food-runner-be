@@ -1,12 +1,10 @@
 package com.Hansung.Capston.service.ApiService;
 
-import com.Hansung.Capston.entity.Diet.Food.FoodData;
 import com.Hansung.Capston.repository.Diet.Food.FoodDataRepository;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +56,7 @@ public class AwsS3Service {
 
   public void deleteImageFromS3(String imageUrl) {
     try {
-      if(foodDataRepository.findByFoodImageIsEmpty(imageUrl)){
+      if(foodDataRepository.existsByFoodImage(imageUrl)){
         String objectKey = extractObjectKeyFromUrl(imageUrl);
 
         amazonS3Client.deleteObject(bucketName, objectKey);
