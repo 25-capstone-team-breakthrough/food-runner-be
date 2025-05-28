@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class RecommendRecipeResponse {
   private Long recommendedRecipeId;
-  private RecipeData recipeData;
+  private RecipeDataResponse recipeData;
   private DietType dietType;
   private DayOfWeek date;
 
@@ -19,7 +19,7 @@ public class RecommendRecipeResponse {
     RecommendRecipeResponse response = new RecommendRecipeResponse();
 
     response.setRecommendedRecipeId(recommendedRecipe.getRecommendedRecipeId());
-    response.setRecipeData(recommendedRecipe.getRecipeData());
+    response.setRecipeData(RecipeDataResponse.toDto(recommendedRecipe.getRecipeData()));
     response.setDietType(recommendedRecipe.getType());
     response.setDate(recommendedRecipe.getDate());
 
