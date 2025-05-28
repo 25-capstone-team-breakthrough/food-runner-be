@@ -42,7 +42,7 @@ public class AwsS3Service {
     Date expiration = Date.from(LocalDateTime.now().plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant());
 
     GeneratePresignedUrlRequest generatePresignedUrlRequest =
-        new GeneratePresignedUrlRequest(bucketName, uniqueFileName, HttpMethod.PUT)
+        new GeneratePresignedUrlRequest(bucketName+"/meal-image", uniqueFileName, HttpMethod.PUT)
             .withExpiration(expiration)
             .withContentType(contentType);
 
@@ -54,7 +54,7 @@ public class AwsS3Service {
     try {
       String objectKey = extractObjectKeyFromUrl(imageUrl);
 
-      amazonS3Client.deleteObject(bucketName, objectKey);
+      amazonS3Client.deleteObject(bucketName+"/meal-image", objectKey);
       logger.info("Deleted image from s3 bucket: " + objectKey);
     } catch (Exception e) {
       throw new RuntimeException("S3 이미지 삭제 실패", e);
