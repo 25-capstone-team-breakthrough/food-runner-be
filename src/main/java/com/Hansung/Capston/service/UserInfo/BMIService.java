@@ -31,7 +31,10 @@ public class BMIService {
         bmi.setWeight(request.getWeight());
 
         bmiRepository.save(bmi);
-
+        if(user.getUserId().equals(userId)){
+            user.setExistBmi(true);
+            userRepository.save(user);
+        }
         return bmi;
     }
 

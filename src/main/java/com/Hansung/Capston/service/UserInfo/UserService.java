@@ -35,6 +35,7 @@ public class UserService {
         user.setName(request.getName());
         user.setPassword(encoder.encode(request.getPassword()));
         user.setRole(MemberType.ROLE_USER);
+        user.setExistBmi(false);
 
         user = userRepository.save(user);
         return SignUpResponse.from(user);

@@ -8,6 +8,7 @@ CREATE TABLE user (
                       name VARCHAR(15) NOT NULL, -- 이름
                       password VARCHAR(255) NOT NULL, -- 암호화된 비밀번호
                       role VARCHAR(20) NOT NULL DEFAULT 'ROLE_USER',
+                      is_exist_bmi TINYINT(1) NOT NULL DEFAULT 0,
                       PRIMARY KEY (user_id)
 );
 -- BMI 테이블

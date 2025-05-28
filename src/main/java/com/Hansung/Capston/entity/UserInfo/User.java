@@ -30,6 +30,9 @@ public class User {
     @Column(name = "role")
     private MemberType role; //유저인지 관리자인지
 
+    @Column(name = "is_exist_bmi")
+    private boolean isExistBmi; // bmi가 입력된 상태인지 아닌지
+
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<ExerciseSave> favorites = new ArrayList<>();
 
