@@ -91,7 +91,7 @@ CREATE TABLE recommand_exercise_video (
 
 
 -- 운동 즐겨찾기 테이블 Exercise_save
-CREATE TABLE Exercise_save(
+CREATE TABLE exercise_save(
     exercise_save INT AUTO_INCREMENT NOT NULL,  -- 즐겨찾기 고유 ID (PK)
     user_id               VARCHAR(36)       NOT NULL,   -- 사용자 ID (User 테이블 FK)
     exercise_id           INT               NOT NULL,   -- 운동 ID ()
@@ -100,7 +100,7 @@ CREATE TABLE Exercise_save(
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE Exercise_Data (
+CREATE TABLE exercise_Data (
     exercise_id INT AUTO_INCREMENT PRIMARY KEY,     -- 운동 ID
     exercise_name VARCHAR(255) NOT NULL,             -- 운동 이름
     exercise_description TEXT,                        -- 운동 설명
@@ -108,7 +108,7 @@ CREATE TABLE Exercise_Data (
 	exercise_Type VARCHAR(36) NOT NULL					-- 운동 타입
 );
 
-CREATE TABLE Exercise_log (
+CREATE TABLE exercise_log (
     log_id INT AUTO_INCREMENT PRIMARY KEY,       -- 운동 기록 고유 ID
     user_id VARCHAR(36) NOT NULL,                  -- 사용자 ID (예: JWT에서 추출)
     exercise_id INT NOT NULL,                      -- 클라이언트 로컬에 저장된 운동 메타 데이터의 운동 ID
@@ -119,7 +119,7 @@ CREATE TABLE Exercise_log (
 );
 
 -- 유산소 운동 기록 테이블
-CREATE TABLE Cardio_Exercise_Log (
+CREATE TABLE cardio_Exercise_Log (
     cardio_log_id    INT AUTO_INCREMENT NOT NULL,  -- 유산소 운동 기록 PK
     exercise_log_id  INT               NOT NULL,   -- 상위 Exercise_Log FK
     distance         FLOAT,                        -- 거리 (예: km)
@@ -130,7 +130,7 @@ CREATE TABLE Cardio_Exercise_Log (
 );
 
 -- 근력 운동 기록 테이블
-CREATE TABLE Strength_Exercise_Log (
+CREATE TABLE strength_Exercise_Log (
     strength_log_id  INT AUTO_INCREMENT NOT NULL,  -- 근력 운동 기록 PK
     exercise_log_id  INT               NOT NULL,   -- 상위 Exercise_Log FK
     sets             INT,                          -- 세트 수
@@ -141,7 +141,7 @@ CREATE TABLE Strength_Exercise_Log (
 );
 
 -- 소모칼로리 결과 저장 테이블
-CREATE TABLE Exercise_Log_Calories (
+CREATE TABLE exercise_Log_Calories (
     calorie_log_id     INT AUTO_INCREMENT PRIMARY KEY,   -- 소모 칼로리 기록 고유 ID
     exercise_log_id    INT               NOT NULL,       -- 상위 운동 기록 FK
     calories_burned    int             NOT NULL,       -- 계산된 소모 칼로리
