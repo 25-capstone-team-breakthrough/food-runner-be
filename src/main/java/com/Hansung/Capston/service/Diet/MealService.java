@@ -143,7 +143,8 @@ public class MealService {
     for(String food : foods){
 
       List<FoodData> foundFoods = foodDataRepository.findByFoodName(food.split(":")[0]);
-      Double gram = Double.parseDouble(food.split(":")[1])/100;
+      String cleaned = food.split(":")[1].replace("g", "");
+      Double gram = Double.parseDouble(cleaned)/100;
       FoodData foodData;
 
       if (foundFoods.isEmpty()) {
