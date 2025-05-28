@@ -27,7 +27,7 @@ public class RecipeDataResponse {
   public static RecipeDataResponse toDto(RecipeData recipeData) {
     RecipeDataResponse dto = new RecipeDataResponse();
 
-    int serve = dto.calculateServe();
+    int serve = dto.calculateServe(recipeData);
 
 
     dto.setRecipeId(recipeData.getRecipeId());
@@ -50,8 +50,8 @@ public class RecipeDataResponse {
     return dto;
   }
 
-  private int calculateServe() {
-    String servingString = serving;
+  private int calculateServe(RecipeData recipeData) {
+    String servingString = recipeData.getServing();
     String numbersOnly = "";
 
     if (servingString != null) {
@@ -71,8 +71,8 @@ public class RecipeDataResponse {
     }
 
     int serve;
-    if (oneServing != 0) {
-      serve = (oneServing / 100) * servingValue;
+    if (recipeData.getOneServing() != 0) {
+      serve = (recipeData.getOneServing() / 100) * servingValue;
     } else {
       serve = 1;
     }
