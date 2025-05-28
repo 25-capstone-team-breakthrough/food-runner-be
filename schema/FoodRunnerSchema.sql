@@ -51,6 +51,23 @@ CREATE TABLE inbody_image (
                               FOREIGN KEY (inbody_id) REFERENCES inbody(inbody_id),
                               FOREIGN KEY (user_id)   REFERENCES user(user_id)
 );
+
+--운동영상 저장테이블
+CREATE TABLE exercise_video (
+  id BIGINT          NOT NULL AUTO_INCREMENT,
+  user_id VARCHAR(36) NOT NULL,
+  category VARCHAR(50) NOT NULL,
+	video_id VARCHAR(20) NOT NULL,
+  title VARCHAR(255)  NOT NULL,
+  url VARCHAR(255)    NOT NULL,
+  is_ai_recommendation TINYINT(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `idx_exercise_video_user` (`user_id`),
+  KEY `idx_exercise_video_category` (`category`)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+
 -- 추천 운동영상 저장 테이블
 CREATE TABLE recommand_exercise_video (
   id                      BIGINT        NOT NULL AUTO_INCREMENT,
