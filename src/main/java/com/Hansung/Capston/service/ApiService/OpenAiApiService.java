@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -424,7 +426,7 @@ public class OpenAiApiService {
          - 예: 비빔밥 → 고기/채소/밥 포함 전체
       2. 식당 혹은 가정식 기준의 보통 성인을 위한 일반적인 양을 기준으로 합니다.
          - 어린이, 체중 감량 식단, 운동식단은 고려하지 마십시오.
-      3. 반드시 숫자만 출력하십시오. 단위(g), 설명, 쉼표, 마침표, 공백도 모두 포함하지 마십시오.
+      3. 반드시 정수 형태의 숫자만 출력하십시오. 단위(g), 설명, 쉼표, 마침표, 공백도 모두 포함하지 마십시오.
          - 예: 출력 → `250`
          - 잘못된 출력 → `250g`, `약 250`, `250 그램`, `250.`
       4. 숫자는 대략적인 평균이더라도 반드시 구체적인 정수로 출력합니다. 소수점은 포함하지 마십시오.
@@ -449,14 +451,30 @@ public class OpenAiApiService {
         openAiUrl, request, OpenAiApiResponse.class
     );
 
-    if (response != null && response.getChoices() != null) {
-      String content = response.getChoices().get(0).getMessage().getContent().trim();
-      log.info("{}의 1인분 양 : {}", foodName, content);
-      return Integer.parseInt(content);
-    } else {
-      log.info("측정 실패");
-      return 100;
+    if (response != null && response.getChoices() != null && !response.getChoices().isEmpty()) {
+      String content = response.getChoices().get(0).getMessage().getContent();
+      log.info("{}의 원 응답 : {}", foodName, content); // ⬅️ 꼭 추가
+
+      if (content != null) {
+        Matcher matcher = Pattern.compile("\\d+").matcher(content);
+        if (matcher.find()) {
+          String numberOnly = matcher.group();
+          try {
+            int gram = Integer.parseInt(numberOnly);
+            log.info("{}의 1인분 양 : {}g", foodName, gram);
+            return gram;
+          } catch (NumberFormatException e) {
+            log.warn("파싱 실패: {}", content);
+          }
+        } else {
+          log.warn("숫자 추출 실패: {}", content);
+        }
+      } else {
+        log.warn("OpenAI 응답 content가 null입니다");
+      }
     }
+    return 100;
+
   }
 
 }
