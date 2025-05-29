@@ -87,7 +87,7 @@ public class ExerciseService {
                     dto.setLogId(log.getLogId());
                     dto.setExerciseId(log.getExerciseData().getExerciseId());
                     dto.setExerciseName(log.getExerciseData().getExerciseName());
-                    dto.setCreatedAt(log.getCreatedAt());
+                    dto.setCreatedAt(log.getCreatedAt().plusHours(9));
 
                     if (log.getExerciseType() == ExerciseType.CARDIO) {
                         CardioExerciseLog cardio = cardioExerciseLogRepository
