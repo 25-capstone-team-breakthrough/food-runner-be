@@ -38,14 +38,17 @@ public class SupplementService {
   }
   
   // 영양제 섭취 기록 등록하기
-  public void saveSupplementLog(String userId, LocalDateTime dateTime, Long supplementId) {
+  public Long saveSupplementLog(String userId, LocalDateTime dateTime, Long supplementId) {
     SupplementLog supplementLog = new SupplementLog();
 
-    supplementLog.setUser(userRepository.findById(userId).get());
+    supplementLog.setUser(userRepository.findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId)));
     supplementLog.setDate(dateTime);
-    supplementLog.setSupplementData(supplementDataRepository.findById(supplementId).get());
+    supplementLog.setSupplementData(supplementDataRepository.findById(supplementId)
+        .orElseThrow(() -> new IllegalArgumentException("SupplementData not found with id: " + supplementId)));
 
-    supplementLogRepository.save(supplementLog);
+    SupplementLog savedLog = supplementLogRepository.save(supplementLog);
+    return savedLog.getSupplementLogId();
   }
   
   // 영양제 섭취 기록 불러오기

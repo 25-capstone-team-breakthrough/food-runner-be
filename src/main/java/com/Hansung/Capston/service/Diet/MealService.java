@@ -101,7 +101,7 @@ public class MealService {
       MealLog savedMealLog = mealLogRepository.save(log);
       logs.imageMealLog().setMealLog(savedMealLog);
       imageMealLogRepository.save(logs.imageMealLog());
-      nutrientService.saveNutrientLog(userId, true, savedMealLog.getMealId());
+      nutrientService.saveNutrientLogFromMealLog(userId, true, savedMealLog.getMealId());
       ingredientService.saveRecommendedIngredient(userId);
       return savedMealLog;
 
@@ -113,7 +113,7 @@ public class MealService {
       MealLog savedMealLog = mealLogRepository.save(log);
       logs.searchMealLog().setMealLog(savedMealLog);
       searchMealLogRepository.save(logs.searchMealLog());
-      nutrientService.saveNutrientLog(userId, true, savedMealLog.getMealId());
+      nutrientService.saveNutrientLogFromMealLog(userId, true, savedMealLog.getMealId());
       ingredientService.saveRecommendedIngredient(userId);
       return savedMealLog;
     }
@@ -263,7 +263,7 @@ public class MealService {
   @Transactional
   public void deleteMealLog(Long mealLogId) {
     MealLog log = mealLogRepository.findById(mealLogId).get();
-    nutrientService.saveNutrientLog(log.getUser().getUserId(), false, log.getMealId());
+    nutrientService.saveNutrientLogFromMealLog(log.getUser().getUserId(), false, log.getMealId());
 
     if(log.getType().equals(MealType.image)){
       ImageMealLog imageMealLog = imageMealLogRepository.findByMealId(log.getMealId());

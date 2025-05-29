@@ -6,6 +6,7 @@ import com.Hansung.Capston.dto.Diet.Supplement.SupplementLogResponse;
 import com.Hansung.Capston.entity.Diet.Supplement.PreferredSupplement;
 import com.Hansung.Capston.entity.Diet.Supplement.SupplementData;
 import com.Hansung.Capston.entity.Diet.Supplement.SupplementLog;
+import com.Hansung.Capston.service.Diet.NutrientService;
 import com.Hansung.Capston.service.Diet.SupplementService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/diet/sup")
 public class SupplementController {
   private final SupplementService supplementService;
+  private final NutrientService nutrientService;
 
   @Autowired
-  public SupplementController(SupplementService supplementService) {
+  public SupplementController(SupplementService supplementService, NutrientService nutrientService) {
     this.supplementService = supplementService;
+    this.nutrientService = nutrientService;
   }
   
   // 영양제 데이터 불러오기
@@ -49,7 +52,9 @@ public class SupplementController {
     }
     String userId = (String) auth.getPrincipal();
 
-    supplementService.saveSupplementLog(userId, request.getDateTime(), request.getId());
+
+    nutrientService.saveNutritionLogFromSupplementLog(userId,true,
+        supplementService.saveSupplementLog(userId, request.getDateTime(), request.getId()));
 
     return ResponseEntity.ok("save success");
   }
@@ -75,6 +80,7 @@ public class SupplementController {
     }
     String userId = (String) auth.getPrincipal();
 
+    nutrientService.saveNutrientLogFromMealLog(userId, false, supplementLogId);
     supplementService.deleteSupplementLog(supplementLogId);
 
     return ResponseEntity.ok("delete success");

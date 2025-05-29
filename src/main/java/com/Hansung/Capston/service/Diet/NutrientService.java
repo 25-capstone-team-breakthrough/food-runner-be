@@ -6,17 +6,19 @@ import com.Hansung.Capston.entity.Diet.Meal.MealLog;
 import com.Hansung.Capston.entity.Diet.Nutrient.NutritionLog;
 import com.Hansung.Capston.common.NutritionType;
 import com.Hansung.Capston.entity.Diet.Nutrient.RecommendedNutrient;
+import com.Hansung.Capston.entity.Diet.Supplement.SupplementData;
+import com.Hansung.Capston.entity.Diet.Supplement.SupplementLog;
 import com.Hansung.Capston.entity.UserInfo.BMI;
 import com.Hansung.Capston.entity.UserInfo.User;
 import com.Hansung.Capston.repository.Diet.Meal.MealLogRepository;
 import com.Hansung.Capston.repository.Diet.Nutrition.NutritionLogRepository;
 import com.Hansung.Capston.repository.Diet.Nutrition.RecommendedNutrientRepository;
+import com.Hansung.Capston.repository.Diet.Supplement.SupplementLogRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
 import com.Hansung.Capston.service.UserInfo.BMIService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,16 +31,19 @@ public class NutrientService {
   private final MealLogRepository mealLogRepository;
 
   private final BMIService bmiService;
+  private final SupplementLogRepository supplementLogRepository;
 
   @Autowired
   public NutrientService(NutritionLogRepository nutritionLogRepository,
       RecommendedNutrientRepository recommendedNutrientRepository,
-      UserRepository userRepository, MealLogRepository mealLogRepository, BMIService bmiService) {
+      UserRepository userRepository, MealLogRepository mealLogRepository, BMIService bmiService,
+      SupplementLogRepository supplementLogRepository) {
     this.nutritionLogRepository = nutritionLogRepository;
     this.recommendedNutrientRepository = recommendedNutrientRepository;
     this.userRepository = userRepository;
     this.mealLogRepository = mealLogRepository;
     this.bmiService = bmiService;
+    this.supplementLogRepository = supplementLogRepository;
   }
 
   // 섭취 영양소 정보 불러오기
@@ -68,7 +73,7 @@ public class NutrientService {
 
   // 섭취 영양소 정보 업데이트 및 생성(일 단위) -- MealController에서 사용
   @Transactional
-  public void saveNutrientLog(String userId, boolean addOrDel, Long mealLogId) {
+  public void saveNutrientLogFromMealLog(String userId, boolean addOrDel, Long mealLogId) {
     // 해당 날짜에 존재하는 NutritionLog 찾기
     MealLog mealLog = mealLogRepository.findById(mealLogId).orElseThrow(() -> new RuntimeException("MealLog not found"));
     LocalDate onlyDate = mealLog.getDate().plusHours(9).toLocalDate();
@@ -138,6 +143,82 @@ public class NutrientService {
       nutrientLog.setPotassium(nutrientLog.getPotassium() - mealLog.getPotassium());
       nutrientLog.setLArginine(nutrientLog.getLArginine() - mealLog.getLArginine());
       nutrientLog.setOmega3(nutrientLog.getOmega3() - mealLog.getOmega3());
+    }
+
+    nutritionLogRepository.save(nutrientLog);  // 최종적으로 업데이트 및 저장
+  }
+
+  public void saveNutritionLogFromSupplementLog(String userId, boolean addOrDel, Long supplementLogId) {
+    SupplementLog supLog = supplementLogRepository.findById(supplementLogId).orElseThrow(() -> new RuntimeException("SupplementLog not found"));
+    LocalDate onlyDate = supLog.getDate().plusHours(9).toLocalDate();
+    SupplementData supplementData = supLog.getSupplementData();
+
+
+    // NutritionLog가 존재하는지 확인
+    NutritionLog existingLog = nutritionLogRepository.findByUserIdAndDate(userId, onlyDate);
+
+    NutritionLog nutrientLog;
+
+    if (existingLog != null) {
+      nutrientLog = existingLog;  // 존재하는 로그 사용
+      nutrientLog.setNutritionLogId(existingLog.getNutritionLogId());
+    } else {
+      User user = userRepository.findById(userId)
+          .orElseThrow(() -> new RuntimeException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
+
+      nutrientLog = new NutritionLog();
+      nutrientLog.setUser(user);
+      nutrientLog.setDate(onlyDate);  // mealLog의 날짜를 그대로 사용
+      nutritionLogRepository.save(nutrientLog);  // 새로운 NutritionLog 저장
+    }
+
+    // 영양소 정보 업데이트
+    if (addOrDel) {
+      nutrientLog.setCalories(nutrientLog.getCalories() + supplementData.getCalories());
+      nutrientLog.setProtein(nutrientLog.getProtein() + supplementData.getProtein());
+      nutrientLog.setCarbohydrate(nutrientLog.getCarbohydrate() + supplementData.getCarbohydrate());
+      nutrientLog.setFat(nutrientLog.getFat() + supplementData.getFat());
+      nutrientLog.setSugar(nutrientLog.getSugar() + supplementData.getSugar());
+      nutrientLog.setSodium(nutrientLog.getSodium() + supplementData.getSodium());
+      nutrientLog.setDietaryFiber(nutrientLog.getDietaryFiber() + supplementData.getDietaryFiber());
+      nutrientLog.setCalcium(nutrientLog.getCalcium() + supplementData.getCalcium());
+      nutrientLog.setSaturatedFat(nutrientLog.getSaturatedFat() + supplementData.getSaturatedFat());
+      nutrientLog.setTransFat(nutrientLog.getTransFat() + supplementData.getTransFat());
+      nutrientLog.setCholesterol(nutrientLog.getCholesterol() + supplementData.getCholesterol());
+      nutrientLog.setVitaminA(nutrientLog.getVitaminA() + supplementData.getVitaminA());
+      nutrientLog.setVitaminB1(nutrientLog.getVitaminB1() + supplementData.getVitaminB1());
+      nutrientLog.setVitaminC(nutrientLog.getVitaminC() + supplementData.getVitaminC());
+      nutrientLog.setVitaminD(nutrientLog.getVitaminD() + supplementData.getVitaminD());
+      nutrientLog.setVitaminE(nutrientLog.getVitaminE() + supplementData.getVitaminE());
+      nutrientLog.setMagnesium(nutrientLog.getMagnesium() + supplementData.getMagnesium());
+      nutrientLog.setZinc(nutrientLog.getZinc() + supplementData.getZinc());
+      nutrientLog.setLactium(nutrientLog.getLactium() + (supplementData.getLactium()*88.2));
+      nutrientLog.setPotassium(nutrientLog.getPotassium() + supplementData.getPotassium());
+      nutrientLog.setLArginine(nutrientLog.getLArginine() + supplementData.getLArginine());
+      nutrientLog.setOmega3(nutrientLog.getOmega3() + supplementData.getOmega3());
+    } else {
+      nutrientLog.setCalories(nutrientLog.getCalories() - supplementData.getCalories());
+      nutrientLog.setProtein(nutrientLog.getProtein() - supplementData.getProtein());
+      nutrientLog.setCarbohydrate(nutrientLog.getCarbohydrate() - supplementData.getCarbohydrate());
+      nutrientLog.setFat(nutrientLog.getFat() - supplementData.getFat());
+      nutrientLog.setSugar(nutrientLog.getSugar() - supplementData.getSugar());
+      nutrientLog.setSodium(nutrientLog.getSodium() - supplementData.getSodium());
+      nutrientLog.setDietaryFiber(nutrientLog.getDietaryFiber() - supplementData.getDietaryFiber());
+      nutrientLog.setCalcium(nutrientLog.getCalcium() - supplementData.getCalcium());
+      nutrientLog.setSaturatedFat(nutrientLog.getSaturatedFat() - supplementData.getSaturatedFat());
+      nutrientLog.setTransFat(nutrientLog.getTransFat() - supplementData.getTransFat());
+      nutrientLog.setCholesterol(nutrientLog.getCholesterol() - supplementData.getCholesterol());
+      nutrientLog.setVitaminA(nutrientLog.getVitaminA() - supplementData.getVitaminA());
+      nutrientLog.setVitaminB1(nutrientLog.getVitaminB1() - supplementData.getVitaminB1());
+      nutrientLog.setVitaminC(nutrientLog.getVitaminC() - supplementData.getVitaminC());
+      nutrientLog.setVitaminD(nutrientLog.getVitaminD() - supplementData.getVitaminD());
+      nutrientLog.setVitaminE(nutrientLog.getVitaminE() - supplementData.getVitaminE());
+      nutrientLog.setMagnesium(nutrientLog.getMagnesium() - supplementData.getMagnesium());
+      nutrientLog.setZinc(nutrientLog.getZinc() - supplementData.getZinc());
+      nutrientLog.setLactium(nutrientLog.getLactium() - (supplementData.getLactium()*88.2));
+      nutrientLog.setPotassium(nutrientLog.getPotassium() - supplementData.getPotassium());
+      nutrientLog.setLArginine(nutrientLog.getLArginine() - supplementData.getLArginine());
+      nutrientLog.setOmega3(nutrientLog.getOmega3() - supplementData.getOmega3());
     }
 
     nutritionLogRepository.save(nutrientLog);  // 최종적으로 업데이트 및 저장
