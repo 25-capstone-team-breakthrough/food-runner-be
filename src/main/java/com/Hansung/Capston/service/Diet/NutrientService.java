@@ -273,7 +273,7 @@ public class NutrientService {
     double potassium = (type == NutritionType.MIN) ? 2600 : 3600; // mg
     double lArginine = (type == NutritionType.MIN) ? 0 : 6000; // mg
     double omega3 = (type == NutritionType.MIN) ? 500 : 2500; // mg
-    double lactium = (type == NutritionType.MIN) ? 150 : 300; // mg
+    double lactium = (type == NutritionType.MIN) ? 238 : 714; // mg
 
     recommendedNutrient.setCalories(calories);
     recommendedNutrient.setCarbohydrate(carbohydrate);
