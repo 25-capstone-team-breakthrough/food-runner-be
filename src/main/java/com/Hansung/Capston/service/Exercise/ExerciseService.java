@@ -53,7 +53,7 @@ public class ExerciseService {
         exerciseLog.setUser(user);
         exerciseLog.setExerciseData(data);
         exerciseLog.setExerciseType(ExerciseType.valueOf(data.getExerciseType()));
-        exerciseLog.setCreatedAt(LocalDateTime.now());
+        exerciseLog.setCreatedAt(dto.getCreatedAt() != null ? dto.getCreatedAt() : LocalDateTime.now());
 
         exerciseLogRepository.save(exerciseLog);
 
