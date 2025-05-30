@@ -80,7 +80,7 @@ public class SupplementController {
     }
     String userId = (String) auth.getPrincipal();
 
-    nutrientService.saveNutrientLogFromMealLog(userId, false, supplementLogId);
+    nutrientService.saveNutritionLogFromSupplementLog(userId, false, supplementLogId);
     supplementService.deleteSupplementLog(supplementLogId);
 
     return ResponseEntity.ok("delete success");
