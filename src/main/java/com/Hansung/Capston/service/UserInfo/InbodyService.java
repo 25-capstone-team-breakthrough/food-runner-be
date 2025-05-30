@@ -2,9 +2,11 @@ package com.Hansung.Capston.service.UserInfo;
 
 import com.Hansung.Capston.dto.Exersice.YoutubeExerciseDTO;
 import com.Hansung.Capston.entity.Exercise.RecommandExerciseVideo;
+import com.Hansung.Capston.entity.UserInfo.BMI;
 import com.Hansung.Capston.entity.UserInfo.Inbody.Inbody;
 import com.Hansung.Capston.entity.UserInfo.Inbody.InbodyImage;
 import com.Hansung.Capston.entity.UserInfo.User;
+import com.Hansung.Capston.repository.UserInfo.BMIRepository;
 import com.Hansung.Capston.repository.UserInfo.Inbody.InbodyImageRepository;
 import com.Hansung.Capston.repository.UserInfo.Inbody.InbodyRepository;
 import com.Hansung.Capston.repository.UserInfo.UserRepository;
@@ -43,6 +45,9 @@ public class InbodyService {
   private RecommandExerciseVideoService recommandExerciseVideoService;
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private BMIRepository bmiRepository;
+
 
 
   private static final Pattern SEG_PATTERN =
@@ -87,7 +92,7 @@ public class InbodyService {
             .bodyFatAmount(    metrics.get("bodyFatAmount"))
             .weight(           metrics.get("weight"))
             .skeletalMuscleMass(metrics.get("skeletalMuscleMass"))
-            .bmi(              metrics.get("bmi"))
+            .bmi(metrics.get("bmi"))
             .bodyFatPercentage(metrics.get("bodyFatPercentage"))
             .segmentalLeanAnalysis(lean)
             .segmentalFatAnalysis( fat)
@@ -104,6 +109,13 @@ public class InbodyService {
                     .createdAt(LocalDateTime.now())
                     .build()
     );
+
+
+    // 인바디 업로드시 bmi 몸무게 변경
+    BMI bmi = bmiRepository.findById(userId).orElse(new BMI());
+    bmi.setWeight(metrics.get("weight"));
+    bmiRepository.save(bmi);
+
     // 8) AI 및 YouTube 운동 추천
     List<String> leanArr = Arrays.asList(lean.split(","));
     List<String> fatArr  = Arrays.asList(fat.split(","));
